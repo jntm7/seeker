@@ -25,6 +25,8 @@
 *.pem
 AGENTS.md
 SKILLS.md
+.agents/
+skills-lock.json
 
 # debug
 npm-debug.log*
@@ -41,3 +43,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
