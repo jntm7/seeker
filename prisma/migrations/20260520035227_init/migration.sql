@@ -47,8 +47,8 @@ CREATE TABLE "companies" (
     "website" TEXT,
     "industry" TEXT,
     "location" TEXT,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" DATETIME NOT NULL
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateTable
@@ -56,14 +56,14 @@ CREATE TABLE "applications" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT NOT NULL,
     "companyId" TEXT NOT NULL,
-    "role_title" TEXT NOT NULL,
+    "roleTitle" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'applied',
-    "date_applied" DATETIME,
-    "job_url" TEXT,
+    "dateApplied" DATETIME,
+    "jobUrl" TEXT,
     "location" TEXT,
     "notes" TEXT,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" DATETIME NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "applications_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "applications_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -72,11 +72,11 @@ CREATE TABLE "applications" (
 CREATE TABLE "events" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "applicationId" TEXT NOT NULL,
-    "event_type" TEXT NOT NULL,
-    "event_date" DATETIME NOT NULL,
+    "eventType" TEXT NOT NULL,
+    "eventDate" DATETIME NOT NULL,
     "notes" TEXT,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" DATETIME NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "events_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "applications" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 

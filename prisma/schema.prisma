@@ -78,8 +78,8 @@ model Company {
   website      String?
   industry     String?
   location     String?
-  createdAt    DateTime       @default(now()) @map("created_at")
-  updatedAt    DateTime       @updatedAt @map("updated_at")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   applications Application[]
 
   @@index([name])
@@ -90,14 +90,14 @@ model Application {
   id          String             @id @default(uuid())
   userId      String
   companyId   String
-  roleTitle   String             @map("role_title")
+  roleTitle   String
   status      ApplicationStatus  @default(applied)
-  dateApplied DateTime?          @map("date_applied")
-  jobUrl      String?            @map("job_url")
+  dateApplied DateTime?
+  jobUrl      String?
   location    String?
   notes       String?
-  createdAt   DateTime           @default(now()) @map("created_at")
-  updatedAt   DateTime           @updatedAt @map("updated_at")
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   company     Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
   user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   events      Event[]
@@ -110,11 +110,11 @@ model Application {
 model Event {
   id            String      @id @default(uuid())
   applicationId String
-  eventType     EventType   @map("event_type")
-  eventDate     DateTime    @map("event_date")
+  eventType     EventType
+  eventDate     DateTime
   notes         String?
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   @@index([applicationId])
