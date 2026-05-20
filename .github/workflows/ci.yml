@@ -24,6 +24,8 @@ jobs:
 
       - name: Generate Prisma Client
         run: npx prisma generate
+        env:
+          CHECKPOINT_DISABLE: "1"
 
       - name: Run ESLint
         run: npm run lint
