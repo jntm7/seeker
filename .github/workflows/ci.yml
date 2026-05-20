@@ -37,3 +37,5 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          DATABASE_URL: "file:./dev.db"
