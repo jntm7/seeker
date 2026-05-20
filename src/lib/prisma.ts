@@ -1,4 +1,9 @@
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
+
+const url = process.env["DATABASE_URL"]
+if (!url) throw new Error("DATABASE_URL is required")
+const adapter = new PrismaLibSql({ url })
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
@@ -7,11 +12,7 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    log: [
-      { emit: "event", level: "query" },
-      { emit: "event", level: "error" },
-      { emit: "event", level: "warn" },
-    ],
+    adapter,
   });
 
 if (process.env.NODE_ENV !== "production") {
