@@ -1,13 +1,20 @@
 # Seeker
 
-Seeker is a job application management platform, designed with intuitive dashboards to organize and track application status for job seekers.
+Seeker is a job application tracking platform, designed with Grafana-inspired dashboards to organize and track application status for job seekers.
 
 ## Tech Stack
 
+- Next.js (App Router)
+- TypeScript
+- SQLite via Prisma ORM
+- Auth.js
+- Tailwind CSS
+- shadcn/ui
 
-## Installation
+## Pre-requisites
 
+- Docker & Docker Compose
+- Google or GitHub OAuth app for authentication
 
 ## Known Bugs & Issues
-
 
