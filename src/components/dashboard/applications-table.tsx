@@ -37,7 +37,10 @@ export function ApplicationsTable() {
                 <TableCell className="font-medium">{app.roleTitle}</TableCell>
                 <TableCell>{app.company}</TableCell>
                 <TableCell>
-                  <Badge variant="secondary" className={config.color}>
+                  <Badge
+                    style={{ backgroundColor: config.hex, color: "#fff" }}
+                    className="rounded-full border-0 font-normal"
+                  >
                     {config.label}
                   </Badge>
                 </TableCell>

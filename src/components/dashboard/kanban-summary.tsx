@@ -15,16 +15,26 @@ export function KanbanSummary() {
         const items = applications.filter((a) => a.status === status)
 
         return (
-          <Card key={status} className="flex flex-col">
-            <CardHeader className="pb-2">
+          <Card key={status} className="flex flex-col pt-0 gap-0">
+            <CardHeader
+              className="pt-2.5 pb-2"
+              style={{ backgroundColor: `${config.hex}0d` }}
+            >
               <CardTitle className="flex items-center justify-between text-xs font-medium">
-                <span>{config.label}</span>
-                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[11px]">
+                <span style={{ color: config.hex }}>{config.label}</span>
+                <Badge
+                  variant="secondary"
+                  className="ml-1 h-5 px-1.5 text-[11px]"
+                  style={{
+                    backgroundColor: `${config.hex}20`,
+                    color: config.hex,
+                  }}
+                >
                   {items.length}
                 </Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-1 flex-col gap-1.5 pt-0">
+            <CardContent className="flex flex-1 flex-col gap-1.5 pt-2">
               {items.length === 0 && (
                 <p className="text-xs text-muted-foreground">No applications</p>
               )}

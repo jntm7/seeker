@@ -86,12 +86,12 @@ export const stats: MockStat[] = [
   { label: "Rejected", value: 1, trend: "-1 from last week" },
 ]
 
-export const statusConfig: Record<ApplicationStatus, { label: string; color: string }> = {
-  todo: { label: "To Do", color: "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400" },
-  applied: { label: "Applied", color: "bg-blue-500/15 text-blue-600 dark:text-blue-400" },
-  screening: { label: "Screening", color: "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400" },
-  interview: { label: "Interview", color: "bg-purple-500/15 text-purple-600 dark:text-purple-400" },
-  offer: { label: "Offer", color: "bg-green-500/15 text-green-600 dark:text-green-400" },
-  rejected: { label: "Rejected", color: "bg-red-500/15 text-red-600 dark:text-red-400" },
-  withdrawn: { label: "Withdrawn", color: "bg-zinc-500/10 text-zinc-500 dark:text-zinc-500" },
+export const statusConfig: Record<ApplicationStatus, { label: string; color: string; hex: string }> = {
+  todo: { label: "To Do", color: "bg-status-todo/15 text-status-todo", hex: "#948979" },
+  applied: { label: "Applied", color: "bg-status-applied/15 text-status-applied", hex: "#5b7fa5" },
+  screening: { label: "Screening", color: "bg-status-screening/15 text-status-screening", hex: "#c4944a" },
+  interview: { label: "Interview", color: "bg-status-interview/15 text-status-interview", hex: "#8a7ab5" },
+  offer: { label: "Offer", color: "bg-status-offer/15 text-status-offer", hex: "#5d9f6a" },
+  rejected: { label: "Rejected", color: "bg-status-rejected/15 text-status-rejected", hex: "#b56a6a" },
+  withdrawn: { label: "Withdrawn", color: "bg-status-withdrawn/15 text-status-withdrawn", hex: "#b8a894" },
 }
