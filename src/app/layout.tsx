@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { IBM_Plex_Sans } from "next/font/google";
 import { Home, User, Lock } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -46,18 +47,18 @@ export default function RootLayout({
       <body className="min-h-screen bg-background font-sans antialiased">
         <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="mx-auto flex h-14 max-w-7xl items-center px-4 md:px-6 lg:px-8">
-            <a href="/" className="font-semibold tracking-tight">
+            <Link href="/" className="font-semibold tracking-tight">
               Seeker
-            </a>
+            </Link>
             <div className="flex-1" />
             <nav className="flex items-center gap-5 text-sm">
-              <a
+              <Link
                 href="/"
                 className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Home size={16} />
                 Dashboard
-              </a>
+              </Link>
               <a
                 href="#"
                 className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"

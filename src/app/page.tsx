@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { stats } from "@/lib/mock-data"
 
 export default async function DashboardPage() {
-  const session = process.env.NODE_ENV === "development"
+  const session = process.env.AUTH_BYPASS === "true"
     ? { user: { name: "Dev User", email: "dev@seeker.local" } }
     : await auth()
   if (!session?.user) redirect("/auth/signin")

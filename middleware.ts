@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   if (publicPaths.some((p) => pathname.startsWith(p))) return NextResponse.next()
 
-  if (process.env.NODE_ENV === "development") return NextResponse.next()
+  if (process.env.AUTH_BYPASS === "true") return NextResponse.next()
 
   const sessionToken = request.cookies.get("authjs.session-token") ?? request.cookies.get("__Secure-authjs.session-token")
   if (!sessionToken) {

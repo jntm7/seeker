@@ -26,28 +26,6 @@ export type MockStat = {
   trend?: string
 }
 
-const companies = [
-  "Shopify", "Google", "Stripe", "Vercel", "Figma",
-  "Notion", "Linear", "Supabase", "PlanetScale", "Railway",
-  "Cloudflare", "Datadog", "Square", "Block", "Mercy",
-]
-
-const roles = [
-  "Software Engineer Intern", "Junior Frontend Developer", "Full Stack Engineer",
-  "Backend Engineer", "Platform Engineer", "SDET Intern",
-  "DevOps Engineer", "Product Engineer", "React Developer",
-  "ML Engineer Intern",
-]
-
-const locations = [
-  "Toronto, ON", "San Francisco, CA", "Remote", "New York, NY",
-  "Vancouver, BC", "Waterloo, ON", "Seattle, WA", "Austin, TX",
-]
-
-const statuses: ApplicationStatus[] = [
-  "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
-]
-
 export const applications: MockApplication[] = [
   { id: "1", roleTitle: "Software Engineer Intern", company: "Shopify", status: "interview", dateApplied: "2026-04-12", location: "Toronto, ON", jobUrl: "https://shopify.com/careers", notes: "Had phone screen, awaiting technical", updatedAt: "2026-05-15" },
   { id: "2", roleTitle: "Frontend Developer", company: "Vercel", status: "applied", dateApplied: "2026-05-01", location: "Remote", jobUrl: "https://vercel.com/careers", notes: null, updatedAt: "2026-05-01" },
