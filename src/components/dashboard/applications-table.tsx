@@ -1,3 +1,4 @@
+import Link from "next/link"
 import {
   Table,
   TableBody,
@@ -34,7 +35,14 @@ export function ApplicationsTable() {
             const config = statusConfig[app.status]
             return (
               <TableRow key={app.id}>
-                <TableCell className="font-medium">{app.roleTitle}</TableCell>
+                <TableCell className="font-medium">
+                  <Link
+                    href={`/applications/${app.id}`}
+                    className="hover:underline"
+                  >
+                    {app.roleTitle}
+                  </Link>
+                </TableCell>
                 <TableCell>{app.company}</TableCell>
                 <TableCell>
                   <Badge
