@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { applications as initialApplications, statusConfig, type MockApplication } from "@/lib/mock-data"
+import { statusConfig, type MockApplication } from "@/lib/mock-data"
 import type { ApplicationStatus } from "@/generated/prisma/client"
 import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 
@@ -26,12 +26,40 @@ const statusOrder: ApplicationStatus[] = [
 
 type SortField = "roleTitle" | "company" | "dateApplied"
 type SortDirection = "asc" | "desc"
+type TimeFilter = "all" | "week" | "month" | "3months" | "6months"
 
-export function ApplicationsTable() {
-  const [apps, setApps] = useState<MockApplication[]>(initialApplications)
+const timeFilterOptions: { value: TimeFilter; label: string }[] = [
+  { value: "all", label: "All time" },
+  { value: "week", label: "This week" },
+  { value: "month", label: "This month" },
+  { value: "3months", label: "Last 3 months" },
+  { value: "6months", label: "Last 6 months" },
+]
+
+function isWithinTimeFilter(dateStr: string | null, filter: TimeFilter): boolean {
+  if (!dateStr || filter === "all") return true
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffDays = diffMs / (1000 * 60 * 60 * 24)
+  if (filter === "week") return diffDays <= 7
+  if (filter === "month") return diffDays <= 30
+  if (filter === "3months") return diffDays <= 90
+  if (filter === "6months") return diffDays <= 180
+  return true
+}
+
+export function ApplicationsTable({
+  apps,
+  setApps,
+}: {
+  apps: MockApplication[]
+  setApps: React.Dispatch<React.SetStateAction<MockApplication[]>>
+}) {
   const [editingNotes, setEditingNotes] = useState<string | null>(null)
   const [notesValue, setNotesValue] = useState("")
   const [statusFilter, setStatusFilter] = useState<ApplicationStatus | "all">("all")
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("all")
   const [sortField, setSortField] = useState<SortField>("dateApplied")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
 
@@ -46,6 +74,7 @@ export function ApplicationsTable() {
 
   const filtered = apps
     .filter((app) => statusFilter === "all" || app.status === statusFilter)
+    .filter((app) => isWithinTimeFilter(app.dateApplied, timeFilter))
     .sort((a, b) => {
       let cmp = 0
       if (sortField === "dateApplied") {
@@ -93,17 +122,39 @@ export function ApplicationsTable() {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-muted-foreground">
+          {activeCount} {activeCount === 1 ? "application" : "applications"}
+        </span>
+        <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger
             className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
           >
-            {statusFilter === "all" ? "All Statuses" : statusConfig[statusFilter].label}
+            {timeFilter === "all" ? "Time Range" : timeFilterOptions.find((o) => o.value === timeFilter)?.label}
             <ChevronDown size={14} />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
+          <DropdownMenuContent align="start" className="w-auto">
+            {timeFilterOptions.map((option) => (
+              <DropdownMenuItem
+                key={option.value}
+                onClick={() => setTimeFilter(option.value)}
+              >
+                {option.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+          >
+            {statusFilter === "all" ? "Status" : statusConfig[statusFilter].label}
+            <ChevronDown size={14} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-auto">
             <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-              All Statuses
+              All Applications
             </DropdownMenuItem>
             {statusOrder.map((status) => {
               const sConfig = statusConfig[status]
@@ -125,9 +176,7 @@ export function ApplicationsTable() {
             })}
           </DropdownMenuContent>
         </DropdownMenu>
-        <span className="text-sm text-muted-foreground">
-          {activeCount} {activeCount === 1 ? "application" : "applications"}
-        </span>
+        </div>
       </div>
 
       <div className="rounded-md border">
@@ -180,7 +229,7 @@ export function ApplicationsTable() {
               filtered.map((app) => {
                 const config = statusConfig[app.status]
                 return (
-                  <TableRow key={app.id}>
+                  <TableRow key={app.id} className="h-14">
                     <TableCell className="font-medium">
                       <Link
                         href={`/applications/${app.id}`}
@@ -199,7 +248,7 @@ export function ApplicationsTable() {
                           {config.label}
                           <ChevronDown size={12} />
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
+          <DropdownMenuContent align="start">
                           {statusOrder.map((status) => {
                             const sConfig = statusConfig[status]
                             return (
