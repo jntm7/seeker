@@ -195,7 +195,7 @@ export default function ApplicationsFullTable({
               placeholder="Search by role, company, or location..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(0) }}
-              className="h-9 rounded-md border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="h-9 w-72 rounded-md border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring sm:w-full"
             />
           </div>
           {selectedIds.size > 0 && (
