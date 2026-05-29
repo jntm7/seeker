@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ArrowLeft, MapPin, Calendar, ExternalLink } from "lucide-react"
-import { EventType } from "@/generated/prisma/client"
-
+import type { EventType } from "@/generated/prisma/client"
 const eventTypeConfig: Record<EventType, { label: string; color: string }> = {
   todo: { label: "To Do", color: "text-status-todo" },
   applied: { label: "Applied", color: "text-status-applied" },
