@@ -12,7 +12,7 @@ export function StatCards({ stats }: { stats: MockStat[] }) {
         >
           <CardContent className="flex items-center justify-between p-4">
             <div className="pl-6">
-              <p className="text-lg font-semibold whitespace-pre-line" style={{ color: stat.hex }}>
+              <p className="text-lg font-semibold" style={{ color: stat.hex }}>
                 {stat.label}
               </p>
               {stat.trend && (
