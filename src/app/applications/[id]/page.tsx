@@ -37,11 +37,11 @@ export default async function ApplicationDetailPage({
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
       <div className="flex items-center gap-4">
         <Link
-          href="/"
+          href="/applications"
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft size={16} />
-          <span className="text-sm">Dashboard</span>
+          <span className="text-sm">Applications</span>
         </Link>
       </div>
 
