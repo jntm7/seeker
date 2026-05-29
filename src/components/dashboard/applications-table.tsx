@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { applications as initialApplications, statusConfig, type MockApplication } from "@/lib/mock-data"
-import { ApplicationStatus } from "@/generated/prisma/client"
+import type { ApplicationStatus } from "@/generated/prisma/client"
 import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 
 const statusOrder: ApplicationStatus[] = [
