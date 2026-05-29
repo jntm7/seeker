@@ -24,6 +24,7 @@ export type MockStat = {
   label: string
   value: number
   trend?: string
+  hex: string
 }
 
 export const applications: MockApplication[] = [
@@ -58,10 +59,10 @@ export const events: MockEvent[] = [
 ]
 
 export const stats: MockStat[] = [
-  { label: "Active", value: 8, trend: "+2 this week" },
-  { label: "Interviews", value: 2, trend: "1 upcoming" },
-  { label: "Offers", value: 1, trend: "Under review" },
-  { label: "Rejected", value: 1, trend: "-1 from last week" },
+  { label: "Active", value: 8, trend: "+2 this week", hex: "#5b7fa5" },
+  { label: "Interviews", value: 2, trend: "1 upcoming", hex: "#8a7ab5" },
+  { label: "Offers", value: 1, trend: "Under review", hex: "#5d9f6a" },
+  { label: "Rejected\nor Withdrawn", value: 2, hex: "#b56a6a" },
 ]
 
 export const statusConfig: Record<ApplicationStatus, { label: string; color: string; hex: string }> = {
