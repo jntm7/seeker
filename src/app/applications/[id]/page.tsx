@@ -133,11 +133,15 @@ export default async function ApplicationDetailPage({
                           borderColor:
                             event.eventType === "note"
                               ? "var(--muted)"
-                              : config.hex,
+                              : event.eventType === "rejection"
+                                ? statusConfig.rejected.hex
+                                : statusConfig[event.eventType].hex,
                           backgroundColor:
                             event.eventType === "note"
                               ? "var(--muted)"
-                              : config.hex,
+                              : event.eventType === "rejection"
+                                ? statusConfig.rejected.hex
+                                : statusConfig[event.eventType].hex,
                         }}
                       />
                       <div className="flex-1 space-y-1">
