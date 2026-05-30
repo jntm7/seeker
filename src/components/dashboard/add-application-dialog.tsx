@@ -67,7 +67,8 @@ export function AddApplicationDialog({
       setNotes("")
       setOpen(false)
     } catch {
-      alert("Failed to create application. Please try again.")
+      const { toast } = await import("sonner")
+      toast.error("Failed to create application. Please try again.")
     } finally {
       setSubmitting(false)
     }
