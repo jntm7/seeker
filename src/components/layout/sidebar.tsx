@@ -13,7 +13,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   User,
-  Lock,
   Compass,
   Sun,
   Moon,
@@ -25,7 +24,7 @@ import { useSidebar } from "@/components/layout/sidebar-context"
 import { AnimatedIcon } from "@/components/ui/animated-icon"
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/applications", label: "Applications", icon: Briefcase },
   { href: "/activity", label: "Activity", icon: History },
   { href: "/companies", label: "Companies", icon: Building2 },
@@ -35,7 +34,6 @@ const navItems = [
 
 const userItems = [
   { href: "/profile", label: "Profile", icon: User },
-  { href: "/auth/signin", label: "Login", icon: Lock },
 ]
 
 const settingsItems = [
@@ -72,10 +70,10 @@ export function Sidebar() {
           <div className="absolute inset-0 bg-black/30" onClick={() => setOpen(false)} />
           <aside className="absolute inset-y-0 left-0 z-50 flex w-44 flex-col border-r bg-background">
             <div className="flex h-14 items-center justify-between px-4">
-              <div className="flex items-center gap-2.5">
+              <Link href="/dashboard" className="flex items-center gap-2.5">
                 <Compass size={20} className="text-purple-600 dark:text-purple-400 shrink-0" />
                 <span className="text-sm font-semibold text-purple-600 dark:text-purple-400 tracking-tight">Seeker</span>
-              </div>
+              </Link>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -176,7 +174,7 @@ export function Sidebar() {
           {collapsed ? <AnimatedIcon icon={PanelLeftOpen} size={14} /> : <AnimatedIcon icon={PanelLeftClose} size={14} />}
         </button>
 
-        <div className="flex h-14 items-center justify-center shrink-0">
+        <Link href="/dashboard" className="flex h-14 items-center justify-center shrink-0">
           <div className={cn(
             "flex items-center gap-2.5",
             collapsed && "px-2"
@@ -184,7 +182,7 @@ export function Sidebar() {
             <Compass size={20} className="text-purple-600 dark:text-purple-400 shrink-0" />
             {!collapsed && <span className="text-sm font-semibold text-purple-600 dark:text-purple-400 tracking-tight">Seeker</span>}
           </div>
-        </div>
+        </Link>
 
         <div className="border-t" />
         <div className="h-2" />

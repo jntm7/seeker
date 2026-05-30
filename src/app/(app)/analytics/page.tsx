@@ -5,7 +5,7 @@ import { getApplications, getStats } from "@/lib/data/applications"
 
 export default async function AnalyticsPage() {
   const session = await auth()
-  if (!session?.user) redirect("/auth/signin")
+  if (!session?.user) redirect("/")
 
   const [applications, stats] = await Promise.all([
     getApplications(),

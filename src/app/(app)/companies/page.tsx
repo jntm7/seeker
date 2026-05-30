@@ -5,7 +5,7 @@ import { getApplications } from "@/lib/data/applications"
 
 export default async function CompaniesPage() {
   const session = await auth()
-  if (!session?.user) redirect("/auth/signin")
+  if (!session?.user) redirect("/")
 
   const applications = await getApplications()
 

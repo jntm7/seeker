@@ -7,12 +7,12 @@ import { prisma } from "./prisma"
 import { config } from "./config"
 import { seedAdminInvite, isValidInvite, acceptInvite } from "./data/invites"
 
-export const { handlers, signIn, signOut, auth: nextAuth } = NextAuth({
+const { handlers, signIn, signOut, auth: nextAuth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [GitHub, Google, Apple],
   session: { strategy: "database" },
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/",
   },
   callbacks: {
     async signIn({ user }) {
@@ -25,6 +25,8 @@ export const { handlers, signIn, signOut, auth: nextAuth } = NextAuth({
     },
   },
 })
+
+export { handlers, signIn, signOut }
 
 export async function auth() {
   if (config.demoMode) {

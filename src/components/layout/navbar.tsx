@@ -3,7 +3,8 @@
 import { GlobalSearch } from "@/components/layout/global-search"
 import { useSidebar } from "@/components/layout/sidebar-context"
 import { AnimatedIcon } from "@/components/ui/animated-icon"
-import { Menu } from "lucide-react"
+import { Menu, LogOut } from "lucide-react"
+import { signOut } from "next-auth/react"
 
 export function Navbar() {
   const { toggle } = useSidebar()
@@ -20,6 +21,14 @@ export function Navbar() {
           <AnimatedIcon icon={Menu} size={18} />
         </button>
         <GlobalSearch />
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/" })}
+          className="absolute right-4 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        >
+          <LogOut size={14} />
+          <span className="hidden sm:inline">Log out</span>
+        </button>
       </div>
     </header>
   )

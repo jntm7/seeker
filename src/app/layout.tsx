@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
-import { Navbar } from "@/components/layout/navbar";
-import { Sidebar } from "@/components/layout/sidebar";
-import { SidebarProvider } from "@/components/layout/sidebar-context";
 import "./globals.css";
 
 const ibmPlexSans = IBM_Plex_Sans({
@@ -45,13 +42,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <SidebarProvider>
-          <Navbar />
-          <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
-            <Sidebar />
-            <main className="flex-1 overflow-x-clip overflow-y-auto">{children}</main>
-          </div>
-        </SidebarProvider>
+        {children}
       </body>
     </html>
   );

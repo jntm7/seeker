@@ -1,16 +1,16 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { CalendarPageContent } from "@/components/calendar/calendar-page-content"
+import { ActivityPageContent } from "@/components/activity/activity-page-content"
 import { getApplications, getEvents } from "@/lib/data/applications"
 
-export default async function CalendarPage() {
+export default async function ActivityPage() {
   const session = await auth()
-  if (!session?.user) redirect("/auth/signin")
+  if (!session?.user) redirect("/")
 
   const [applications, events] = await Promise.all([
     getApplications(),
     getEvents(),
   ])
 
-  return <CalendarPageContent applications={applications} events={events} />
+  return <ActivityPageContent applications={applications} events={events} />
 }
