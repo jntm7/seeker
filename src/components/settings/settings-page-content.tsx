@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { Download, Bell, Users, Trash2, AlertTriangle, Check } from "lucide-react"
 import { exportData, deleteAccount } from "@/lib/actions/account"
 import { sendInvite } from "@/lib/actions/invites"
+import { signOut } from "next-auth/react"
 import type { InviteRole } from "@/generated/prisma/client"
 
 export function SettingsPageContent() {
@@ -42,7 +43,11 @@ export function SettingsPageContent() {
     if (!window.confirm("Are you sure you want to delete your account? This cannot be undone.")) return
     setDeleting(true)
     await deleteAccount()
-    window.location.href = "/"
+    if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
+      window.location.href = "/"
+    } else {
+      await signOut({ callbackUrl: "/" })
+    }
   }
 
   return (
