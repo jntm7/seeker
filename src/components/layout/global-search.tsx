@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { applications } from "@/lib/mock-data"
-import { statusConfig } from "@/lib/mock-data"
+import { statusConfig } from "@/lib/data/types"
 import { Search } from "lucide-react"
 
 export function GlobalSearch() {

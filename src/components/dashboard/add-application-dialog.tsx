@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { type MockApplication, statusConfig } from "@/lib/mock-data"
+import { type MockApplication, statusConfig } from "@/lib/data/types"
 import { type ApplicationStatus } from "@/generated/prisma/client"
 import { Plus, ChevronDown } from "lucide-react"
 

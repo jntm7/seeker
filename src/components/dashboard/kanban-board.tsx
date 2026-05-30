@@ -22,7 +22,7 @@ import { useDroppable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { statusConfig, type MockApplication } from "@/lib/mock-data"
+import { statusConfig, type MockApplication } from "@/lib/data/types"
 import { type ApplicationStatus } from "@/generated/prisma/client"
 import { GripVertical } from "lucide-react"
 

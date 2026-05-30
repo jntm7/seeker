@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { applications, statusConfig } from "@/lib/mock-data"
+// TODO: route kanban-summary through data service layer
 import { type ApplicationStatus } from "@/generated/prisma/client"
 
 const pipelineOrder: ApplicationStatus[] = [

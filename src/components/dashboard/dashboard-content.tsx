@@ -6,9 +6,9 @@ import { KanbanBoard } from "@/components/dashboard/kanban-board"
 import { ApplicationsTable } from "@/components/dashboard/applications-table"
 import { AddApplicationDialog } from "@/components/dashboard/add-application-dialog"
 import { Separator } from "@/components/ui/separator"
-import { applications as initialApplications, stats, type MockApplication } from "@/lib/mock-data"
+import type { MockApplication, MockStat } from "@/lib/data/types"
 
-export function DashboardContent() {
+export function DashboardContent({ applications: initialApplications, stats: initialStats }: { applications: MockApplication[]; stats: MockStat[] }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
 
   function addApplication(app: MockApplication) {
@@ -27,7 +27,7 @@ export function DashboardContent() {
         <AddApplicationDialog onAdd={addApplication} />
       </div>
 
-      <StatCards stats={stats} />
+      <StatCards stats={initialStats} />
 
       <Separator />
 

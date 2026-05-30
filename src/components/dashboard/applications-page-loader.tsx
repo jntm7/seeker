@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import dynamic from "next/dynamic"
-import { applications as initialApplications, type MockApplication } from "@/lib/mock-data"
+import type { MockApplication } from "@/lib/data/types"
 import { Separator } from "@/components/ui/separator"
 
 const ApplicationsFullTable = dynamic(
@@ -10,7 +10,7 @@ const ApplicationsFullTable = dynamic(
   { ssr: false }
 )
 
-export function ApplicationsPageLoader() {
+export function ApplicationsPageLoader({ applications: initialApplications }: { applications: MockApplication[] }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
 
   return (

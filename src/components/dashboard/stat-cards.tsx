@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { type MockStat } from "@/lib/mock-data"
+import { type MockStat } from "@/lib/data/types"
 
 export function StatCards({ stats }: { stats: MockStat[] }) {
   return (
