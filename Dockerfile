@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+ENV DOCKER_BUILD=true
 RUN npx prisma generate
 RUN npm run build
 
