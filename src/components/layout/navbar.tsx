@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { GlobalSearch } from "@/components/layout/global-search"
 import { useSidebar } from "@/components/layout/sidebar-context"
 import { AnimatedIcon } from "@/components/ui/animated-icon"
@@ -8,6 +9,16 @@ import { signOut } from "next-auth/react"
 
 export function Navbar() {
   const { toggle } = useSidebar()
+  const router = useRouter()
+  const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
+
+  function handleSignOut() {
+    if (isDemo) {
+      router.push("/")
+    } else {
+      signOut({ callbackUrl: "/" })
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -23,11 +34,11 @@ export function Navbar() {
         <GlobalSearch />
         <button
           type="button"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={handleSignOut}
           className="absolute right-4 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
-          <LogOut size={14} />
-          <span className="hidden sm:inline">Log out</span>
+          <AnimatedIcon icon={LogOut} size={14} />
+          <span className="hidden sm:inline">Log Out</span>
         </button>
       </div>
     </header>
