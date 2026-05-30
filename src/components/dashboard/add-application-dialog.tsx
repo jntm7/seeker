@@ -86,12 +86,12 @@ export function AddApplicationDialog({
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[520px]">
         <DialogHeader>
           <DialogTitle>Add Application</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2.5">
             <Label htmlFor="roleTitle">Role Title *</Label>
             <Input
               id="roleTitle"
@@ -102,7 +102,7 @@ export function AddApplicationDialog({
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <Label htmlFor="company">Company *</Label>
             <Input
               id="company"
@@ -113,8 +113,8 @@ export function AddApplicationDialog({
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Status</Label>
+          <div className="space-y-2.5">
+            <Label>Status *</Label>
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
@@ -148,7 +148,7 @@ export function AddApplicationDialog({
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <Label htmlFor="dateApplied">Date Applied</Label>
               <Input
                 id="dateApplied"
@@ -158,7 +158,7 @@ export function AddApplicationDialog({
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <Label htmlFor="location">Location</Label>
               <Input
                 id="location"
@@ -169,7 +169,7 @@ export function AddApplicationDialog({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <Label htmlFor="jobUrl">Job URL</Label>
             <Input
               id="jobUrl"
@@ -179,7 +179,7 @@ export function AddApplicationDialog({
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <Label htmlFor="notes">Notes</Label>
             <Input
               id="notes"
@@ -189,7 +189,7 @@ export function AddApplicationDialog({
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={submitting}>
+          <Button type="submit" size="lg" className="w-full px-5 py-3 text-base bg-secondary text-secondary-foreground hover:bg-secondary/80" disabled={submitting}>
             {submitting ? "Adding..." : "Add Application"}
           </Button>
         </form>

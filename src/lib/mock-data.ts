@@ -17,6 +17,10 @@ export const applications: MockApplication[] = [
   { id: "10", roleTitle: "DevOps Engineer", company: "Datadog", status: "applied", dateApplied: "2026-05-16", location: "New York, NY", jobUrl: "https://careers.datadog.com", notes: null, updatedAt: "2026-05-16" },
   { id: "11", roleTitle: "Junior Developer", company: "PlanetScale", status: "interview", dateApplied: "2026-04-30", location: "Remote", jobUrl: null, notes: "Technical interview next week", updatedAt: "2026-05-17" },
   { id: "12", roleTitle: "Software Engineer", company: "Railway", status: "todo", dateApplied: null, location: "Remote", jobUrl: "https://railway.app/careers", notes: "Referral from friend", updatedAt: "2026-05-19" },
+  { id: "13", roleTitle: "Data Science Intern", company: "Shopify", status: "applied", dateApplied: "2026-05-20", location: "Toronto, ON", jobUrl: "https://shopify.com/careers", notes: null, updatedAt: "2026-05-20" },
+  { id: "14", roleTitle: "Engineering Manager", company: "Linear", status: "applied", dateApplied: "2026-05-22", location: "Remote", jobUrl: "https://linear.app/careers", notes: "Asked for referral from former colleague", updatedAt: "2026-05-22" },
+  { id: "15", roleTitle: "Site Reliability Engineer", company: "Cloudflare", status: "screening", dateApplied: "2026-05-18", location: "Austin, TX", jobUrl: "https://cloudflare.com/careers", notes: "Recruiter reached out on LinkedIn", updatedAt: "2026-05-21" },
+  { id: "16", roleTitle: "iOS Developer", company: "Stripe", status: "todo", dateApplied: null, location: "San Francisco, CA", jobUrl: "https://stripe.com/jobs", notes: "Need to prepare portfolio", updatedAt: "2026-05-22" },
 ]
 
 export const events: MockEvent[] = [
@@ -38,11 +42,16 @@ export const events: MockEvent[] = [
   { id: "e16", applicationId: "11", eventType: "interview", eventDate: "2026-06-10", notes: "System design interview" },
   { id: "e17", applicationId: "3", eventType: "screening", eventDate: "2026-05-30", notes: "Follow-up call" },
   { id: "e18", applicationId: "8", eventType: "todo", eventDate: "2026-06-01", notes: "Application deadline" },
+  { id: "e19", applicationId: "13", eventType: "applied", eventDate: "2026-05-20", notes: null },
+  { id: "e20", applicationId: "14", eventType: "applied", eventDate: "2026-05-22", notes: null },
+  { id: "e21", applicationId: "15", eventType: "applied", eventDate: "2026-05-18", notes: null },
+  { id: "e22", applicationId: "15", eventType: "screening", eventDate: "2026-05-21", notes: "Initial call with recruiter" },
+  { id: "e23", applicationId: "16", eventType: "todo", eventDate: "2026-06-10", notes: "Portfolio review deadline" },
 ]
 
 export const stats: MockStat[] = [
-  { label: "Active", value: 8, trend: "+2 this week", hex: "#5b7fa5" },
-  { label: "Interviews", value: 2, trend: "1 upcoming", hex: "#8a7ab5" },
-  { label: "Offers", value: 1, trend: "Under review", hex: "#5d9f6a" },
-  { label: "Rejected", value: 1, hex: "#b56a6a" },
+  { label: "Active", value: 10, trend: "In Progress", hex: "#5b7fa5" },
+  { label: "Interviews", value: 2, trend: "Scheduled", hex: "#8a7ab5" },
+  { label: "Offers", value: 1, trend: "Under Review", hex: "#5d9f6a" },
+  { label: "Rejected", value: 1, trend: "No Offer", hex: "#b56a6a" },
 ]

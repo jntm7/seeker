@@ -113,42 +113,48 @@ export function ActivityPageContent({ applications, events }: { applications: Mo
       <Separator />
 
       {todayEvents.length > 0 && (
-        <section>
-          <h2 className="mb-3 text-sm font-semibold text-status-applied">Today</h2>
-          <div className="space-y-2">
-            {todayEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
-        </section>
+        <>
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-status-applied">Today</h2>
+            <div className="space-y-4">
+              {todayEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          </section>
+          <Separator />
+        </>
       )}
 
       {upcoming.length > 0 && (
-        <section>
-          <h2 className="mb-3 text-sm font-semibold text-foreground">Upcoming</h2>
-          <div className="space-y-4">
-            {upcoming.map(([date, evts]) => (
-              <div key={date}>
-                <h3 className="mb-2 text-xs font-medium text-muted-foreground">{formatDate(date)}</h3>
-                <div className="space-y-2">
-                  {evts.map((event) => (
-                    <EventCard key={event.id} event={event} />
-                  ))}
+        <>
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-foreground">Upcoming</h2>
+            <div className="space-y-8">
+              {upcoming.map(([date, evts]) => (
+                <div key={date}>
+                  <h3 className="mb-2 text-xs font-medium text-muted-foreground">{formatDate(date)}</h3>
+                  <div className="space-y-4">
+                    {evts.map((event) => (
+                      <EventCard key={event.id} event={event} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+          <Separator />
+        </>
       )}
 
       {past.length > 0 && (
         <section>
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">Past</h2>
-          <div className="space-y-4">
+          <div className="space-y-8">
             {past.map(([date, evts]) => (
               <div key={date}>
                 <h3 className="mb-2 text-xs font-medium text-muted-foreground">{formatDate(date)}</h3>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {evts.map((event) => (
                     <EventCard key={event.id} event={event} />
                   ))}
@@ -183,7 +189,7 @@ function EventCard({ event }: { event: EnrichedEvent }) {
               <Badge
                 className="rounded-full border-0 px-2 py-0 text-[10px] font-normal"
                 style={{
-                  backgroundColor: `${eventColors[event.eventType]}18`,
+                  backgroundColor: `${eventColors[event.eventType]}25`,
                   color: eventColors[event.eventType],
                 }}
               >

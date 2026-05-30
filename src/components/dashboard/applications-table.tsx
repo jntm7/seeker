@@ -26,7 +26,7 @@ const statusOrder: ApplicationStatus[] = [
   "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
 ]
 
-type SortField = "roleTitle" | "company" | "dateApplied"
+type SortField = "roleTitle" | "company" | "dateApplied" | "location" | "status"
 type SortDirection = "asc" | "desc"
 type TimeFilter = "all" | "week" | "month" | "3months" | "6months"
 
@@ -87,6 +87,10 @@ export function ApplicationsTable({
         cmp = a.roleTitle.localeCompare(b.roleTitle)
       } else if (sortField === "company") {
         cmp = a.company.localeCompare(b.company)
+      } else if (sortField === "location") {
+        cmp = (a.location ?? "").localeCompare(b.location ?? "")
+      } else if (sortField === "status") {
+        cmp = a.status.localeCompare(b.status)
       }
       return sortDirection === "desc" ? -cmp : cmp
     })
@@ -108,8 +112,6 @@ export function ApplicationsTable({
     })
   }
 
-  const activeCount = filtered.length
-
   function renderSortIcon(field: SortField) {
     if (sortField !== field) return <ArrowUpDown size={14} className="opacity-40" />
     return sortDirection === "asc"
@@ -119,14 +121,11 @@ export function ApplicationsTable({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">
-          {activeCount} {activeCount === 1 ? "application" : "applications"}
-        </span>
+      <div className="flex items-center justify-end">
         <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+            className="inline-flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted"
           >
             {timeFilter === "all" ? "Time Range" : timeFilterOptions.find((o) => o.value === timeFilter)?.label}
             <ChevronDown size={14} />
@@ -144,7 +143,7 @@ export function ApplicationsTable({
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+            className="inline-flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted"
           >
             {statusFilter === "all" ? "Status" : statusConfig[statusFilter].label}
             <ChevronDown size={14} />
@@ -176,7 +175,7 @@ export function ApplicationsTable({
         </div>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-card">
         <Table>
           <TableHeader>
             <TableRow>
@@ -200,7 +199,16 @@ export function ApplicationsTable({
                   {renderSortIcon("company")}
                 </button>
               </TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>
+                <button
+                  type="button"
+                  onClick={() => toggleSort("status")}
+                  className="inline-flex items-center gap-1 font-medium hover:text-foreground transition-colors"
+                >
+                  Status
+                  {renderSortIcon("status")}
+                </button>
+              </TableHead>
               <TableHead>
                 <button
                   type="button"
@@ -211,7 +219,16 @@ export function ApplicationsTable({
                   {renderSortIcon("dateApplied")}
                 </button>
               </TableHead>
-              <TableHead className="hidden md:table-cell">Location</TableHead>
+              <TableHead className="hidden md:table-cell">
+                <button
+                  type="button"
+                  onClick={() => toggleSort("location")}
+                  className="inline-flex items-center gap-1 font-medium hover:text-foreground transition-colors"
+                >
+                  Location
+                  {renderSortIcon("location")}
+                </button>
+              </TableHead>
               <TableHead className="hidden lg:table-cell">Notes</TableHead>
             </TableRow>
           </TableHeader>
@@ -238,13 +255,13 @@ export function ApplicationsTable({
                     <TableCell>{app.company}</TableCell>
                     <TableCell>
                       <span
-                        className="inline-flex items-center rounded-md px-2 py-1 text-xs font-normal"
-                        style={{ backgroundColor: `${config.hex}15`, color: config.hex }}
+                        className="inline-flex items-center rounded-md px-2.5 py-1 text-sm font-medium"
+                        style={{ backgroundColor: `${config.hex}35`, color: config.hex }}
                       >
                         {config.label}
                       </span>
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    <TableCell>
                       {app.dateApplied
                         ? new Date(app.dateApplied).toLocaleDateString("en-US", {
                             month: "short",
@@ -252,7 +269,7 @@ export function ApplicationsTable({
                           })
                         : "—"}
                     </TableCell>
-                    <TableCell className="hidden md:table-cell text-muted-foreground">
+                    <TableCell className="hidden md:table-cell">
                       {app.location ?? "—"}
                     </TableCell>
                     <TableCell className="hidden lg:table-cell max-w-[200px]">

@@ -249,7 +249,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
                             <Badge
                               className="rounded-full border-0 px-2 py-0 text-[10px] font-normal"
                               style={{
-                                backgroundColor: `${eventColors[event.eventType]}18`,
+                                backgroundColor: `${eventColors[event.eventType]}25`,
                                 color: eventColors[event.eventType],
                               }}
                             >
@@ -295,7 +295,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
                             <Badge
                               className="rounded-full border-0 px-1.5 py-0 text-[9px] font-normal"
                               style={{
-                                backgroundColor: `${eventColors[event.eventType]}18`,
+                                backgroundColor: `${eventColors[event.eventType]}25`,
                                 color: eventColors[event.eventType],
                               }}
                             >

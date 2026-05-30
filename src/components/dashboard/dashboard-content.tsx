@@ -14,10 +14,10 @@ function computeStats(apps: MockApplication[]) {
   const offers = apps.filter((a) => a.status === "offer").length
   const rejected = apps.filter((a) => a.status === "rejected").length
   return [
-    { label: "Active", value: active, trend: `${active} in progress`, hex: statusConfig.applied.hex },
-    { label: "Interviews", value: interviews, trend: `${interviews} scheduled`, hex: statusConfig.interview.hex },
-    { label: "Offers", value: offers, trend: offers > 0 ? "Under review" : "None yet", hex: statusConfig.offer.hex },
-    { label: "Rejected", value: rejected, hex: statusConfig.rejected.hex },
+    { label: "Active", value: active, trend: "In Progress", hex: statusConfig.applied.hex },
+    { label: "Interviews", value: interviews, trend: "Scheduled", hex: statusConfig.interview.hex },
+    { label: "Offers", value: offers, trend: offers > 0 ? "Under review" : undefined, hex: statusConfig.offer.hex },
+    { label: "Rejected", value: rejected, trend: "No Offer", hex: statusConfig.rejected.hex },
   ]
 }
 
@@ -42,24 +42,27 @@ export function DashboardContent({ applications: initialApplications }: { applic
         <AddApplicationDialog onAdd={addApplication} />
       </div>
 
-      <div className="-mt-6">
-        <StatCards stats={stats} />
-      </div>
+      <StatCards stats={stats} />
 
       <Separator />
 
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Pipeline</h2>
-        <p className="mt-1 mb-4 text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           Kanban view of your application pipeline by stage
         </p>
-        <KanbanBoard apps={apps} setApps={setApps} />
       </div>
+      <KanbanBoard apps={apps} setApps={setApps} />
 
       <Separator />
 
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Applications</h2>
+      <div className="flex flex-col">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Applications</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {apps.length} {apps.length === 1 ? "application" : "applications"}
+          </p>
+        </div>
         <ApplicationsTable apps={apps} setApps={setApps} />
       </div>
     </div>

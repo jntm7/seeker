@@ -187,7 +187,7 @@ export default function ApplicationsFullTable({
               placeholder="Search by role, company, or location"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(0) }}
-              className="h-9 w-76 rounded-md border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="h-9 w-76 rounded-md border bg-card pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
           {selectedIds.size > 0 && (
@@ -202,7 +202,7 @@ export default function ApplicationsFullTable({
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger
-              className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+              className="inline-flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted"
             >
               {timeFilter === "all" ? "Time Range" : timeFilterOptions.find((o) => o.value === timeFilter)?.label}
               <ChevronDown size={14} />
@@ -220,7 +220,7 @@ export default function ApplicationsFullTable({
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger
-              className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+              className="inline-flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted"
             >
               {statusFilter === "all" ? "Status" : statusConfig[statusFilter].label}
               <ChevronDown size={14} />
@@ -252,7 +252,7 @@ export default function ApplicationsFullTable({
         </div>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-card">
         <Table>
           <TableHeader>
             <TableRow>
@@ -348,13 +348,13 @@ export default function ApplicationsFullTable({
                     <TableCell>{app.company}</TableCell>
                     <TableCell>
                       <span
-                        className="inline-flex items-center rounded-md px-2 py-1 text-xs font-normal"
-                        style={{ backgroundColor: `${config.hex}15`, color: config.hex }}
+                        className="inline-flex items-center rounded-md px-2.5 py-1 text-sm font-medium"
+                        style={{ backgroundColor: `${config.hex}35`, color: config.hex }}
                       >
                         {config.label}
                       </span>
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    <TableCell>
                       {app.dateApplied
                         ? new Date(app.dateApplied).toLocaleDateString("en-US", {
                             month: "short",
@@ -362,7 +362,7 @@ export default function ApplicationsFullTable({
                           })
                         : "—"}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    <TableCell>
                       {app.location ?? "—"}
                     </TableCell>
                     <TableCell className="max-w-[200px]">

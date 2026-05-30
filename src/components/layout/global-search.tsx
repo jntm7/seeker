@@ -60,7 +60,7 @@ export function GlobalSearch({ applications }: { applications: MockApplication[]
         value={query}
         onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}
-        className="h-9 w-full rounded-md border bg-muted/50 pl-9 pr-12 text-sm outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-colors"
+        className="h-9 w-full rounded-md border bg-card pl-9 pr-12 text-sm outline-none focus:ring-2 focus:ring-ring transition-colors"
       />
       <kbd className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center rounded-md border bg-background px-1.5 text-xs font-medium text-muted-foreground shadow-xs leading-none py-[3px]">
         {isMac ? (
