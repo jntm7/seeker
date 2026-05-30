@@ -12,8 +12,8 @@ export default async function LandingPage() {
       <div className="w-full max-w-sm">
         <div className="mb-10 flex flex-col items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <Compass size={32} className="text-purple-600 dark:text-purple-400 shrink-0" />
-            <span className="text-3xl font-bold text-purple-600 dark:text-purple-400 tracking-tight">Seeker</span>
+            <Compass size={32} className="text-purple-700 dark:text-purple-300 shrink-0" />
+            <span className="text-3xl font-bold text-purple-700 dark:text-purple-300 tracking-tight">Seeker</span>
           </div>
           <p className="text-sm text-muted-foreground text-center max-w-xs">
             Track your job search, manage applications, and share progress with your mentor.
