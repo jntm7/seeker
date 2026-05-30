@@ -52,7 +52,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
   const [viewDate, setViewDate] = useState(today)
   const [selectedDay, setSelectedDay] = useState<number | null>(today.getDate())
 
-  const { year, month, cells, daysInMonth } = useCalendar(viewDate)
+  const { year, month, cells } = useCalendar(viewDate)
 
   const enrichedEvents = useMemo(() => {
     const appMap = new Map(applications.map((a) => [a.id, a]))

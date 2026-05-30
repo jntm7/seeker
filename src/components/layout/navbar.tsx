@@ -1,27 +1,21 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { GlobalSearch } from "@/components/layout/global-search"
 import { useSidebar } from "@/components/layout/sidebar-context"
 import { AnimatedIcon } from "@/components/ui/animated-icon"
 import { Menu, Sun, Moon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import type { MockApplication } from "@/lib/data/types"
 
 export function Navbar({ applications }: { applications: MockApplication[] }) {
   const { toggle } = useSidebar()
-  const router = useRouter()
   const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
-  const [dark, setDark] = useState(false)
-
-  useEffect(() => {
+  const [dark, setDark] = useState(() => {
+    if (typeof window === "undefined") return false
     const stored = localStorage.getItem("theme")
-    if (stored === "dark" || stored === "light") {
-      setDark(stored === "dark")
-    } else {
-      setDark(document.documentElement.classList.contains("dark"))
-    }
-  }, [])
+    if (stored === "dark" || stored === "light") return stored === "dark"
+    return document.documentElement.classList.contains("dark")
+  })
 
   function toggleTheme() {
     const next = !dark

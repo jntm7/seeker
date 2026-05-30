@@ -1,5 +1,4 @@
 import type { MockApplication, MockEvent, MockStat } from "./data/types"
-import { statusConfig } from "./data/types"
 
 export const applications: MockApplication[] = [
   { id: "1", roleTitle: "Software Engineer Intern", company: "Shopify", status: "interview", dateApplied: "2026-04-12", location: "Toronto, ON", jobUrl: "https://shopify.com/careers", notes: "Had phone screen, awaiting technical", updatedAt: "2026-05-15" },
