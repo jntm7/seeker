@@ -7,7 +7,16 @@ import type { EventType } from "@/generated/prisma/client"
 async function getUserId(): Promise<string | null> {
   if (config.demoMode) return "demo"
   const session = await auth()
-  return session?.user?.id ?? session?.user?.email ?? null
+  if (session?.user?.id) return session.user.id
+  if (!session?.user?.email) return null
+
+  const { prisma } = await import("@/lib/prisma")
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { id: true },
+  })
+
+  return user?.id ?? null
 }
 
 export async function addEvent(data: {
