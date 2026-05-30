@@ -74,11 +74,11 @@ export function ActivityPageContent({ applications, events }: { applications: Mo
       })
       .filter((e): e is EnrichedEvent => e !== null)
       .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
-  }, [])
+  }, [applications, events])
 
   const grouped = useMemo(() => {
     const groups = new Map<string, EnrichedEvent[]>()
-    for (const event of events) {
+    for (const event of enriched) {
       const key = dateKey(event.eventDate)
       const list = groups.get(key) ?? []
       list.push(event)

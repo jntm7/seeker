@@ -48,6 +48,8 @@ export function AnalyticsPageContent({ applications, stats }: { applications: Mo
       withdrawn: byStatus.withdrawn ?? 0,
     }
   }, [applications])
+
+  const maxStatusCount = Math.max(...Object.values(byStatus), 1)
   const maxMonthCount = Math.max(...Object.values(byMonth), 1)
   const monthEntries = Object.entries(byMonth).sort(([a], [b]) => {
     const parse = (s: string) => {
