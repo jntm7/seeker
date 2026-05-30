@@ -1,30 +1,8 @@
-import { ApplicationStatus, EventType } from "@/generated/prisma/client"
+import type { MockApplication, MockEvent, MockStat } from "./data/types"
+import { statusConfig } from "./data/types"
 
-export type MockApplication = {
-  id: string
-  roleTitle: string
-  company: string
-  status: ApplicationStatus
-  dateApplied: string | null
-  location: string | null
-  jobUrl: string | null
-  notes: string | null
-  updatedAt: string
-}
-
-export type MockEvent = {
-  id: string
-  applicationId: string
-  eventType: EventType
-  eventDate: string
-  notes: string | null
-}
-
-export type MockStat = {
-  label: string
-  value: number
-  trend?: string
-}
+export type { MockApplication, MockEvent, MockStat }
+export { statusConfig }
 
 export const applications: MockApplication[] = [
   { id: "1", roleTitle: "Software Engineer Intern", company: "Shopify", status: "interview", dateApplied: "2026-04-12", location: "Toronto, ON", jobUrl: "https://shopify.com/careers", notes: "Had phone screen, awaiting technical", updatedAt: "2026-05-15" },
@@ -55,21 +33,16 @@ export const events: MockEvent[] = [
   { id: "e11", applicationId: "5", eventType: "rejection", eventDate: "2026-05-08", notes: "Moved forward with another candidate" },
   { id: "e12", applicationId: "11", eventType: "applied", eventDate: "2026-04-30", notes: null },
   { id: "e13", applicationId: "11", eventType: "screening", eventDate: "2026-05-08", notes: "Initial call" },
+  { id: "e14", applicationId: "1", eventType: "interview", eventDate: "2026-06-02", notes: "Technical interview - round 2" },
+  { id: "e15", applicationId: "4", eventType: "offer", eventDate: "2026-06-05", notes: "Offer response deadline" },
+  { id: "e16", applicationId: "11", eventType: "interview", eventDate: "2026-06-10", notes: "System design interview" },
+  { id: "e17", applicationId: "3", eventType: "screening", eventDate: "2026-05-30", notes: "Follow-up call" },
+  { id: "e18", applicationId: "8", eventType: "todo", eventDate: "2026-06-01", notes: "Application deadline" },
 ]
 
 export const stats: MockStat[] = [
-  { label: "Active", value: 8, trend: "+2 this week" },
-  { label: "Interviews", value: 2, trend: "1 upcoming" },
-  { label: "Offers", value: 1, trend: "Under review" },
-  { label: "Rejected", value: 1, trend: "-1 from last week" },
+  { label: "Active", value: 8, trend: "+2 this week", hex: "#5b7fa5" },
+  { label: "Interviews", value: 2, trend: "1 upcoming", hex: "#8a7ab5" },
+  { label: "Offers", value: 1, trend: "Under review", hex: "#5d9f6a" },
+  { label: "Rejected", value: 1, hex: "#b56a6a" },
 ]
-
-export const statusConfig: Record<ApplicationStatus, { label: string; color: string; hex: string }> = {
-  todo: { label: "To Do", color: "bg-status-todo/15 text-status-todo", hex: "#948979" },
-  applied: { label: "Applied", color: "bg-status-applied/15 text-status-applied", hex: "#5b7fa5" },
-  screening: { label: "Screening", color: "bg-status-screening/15 text-status-screening", hex: "#c4944a" },
-  interview: { label: "Interview", color: "bg-status-interview/15 text-status-interview", hex: "#8a7ab5" },
-  offer: { label: "Offer", color: "bg-status-offer/15 text-status-offer", hex: "#5d9f6a" },
-  rejected: { label: "Rejected", color: "bg-status-rejected/15 text-status-rejected", hex: "#b56a6a" },
-  withdrawn: { label: "Withdrawn", color: "bg-status-withdrawn/15 text-status-withdrawn", hex: "#b8a894" },
-}

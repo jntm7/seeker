@@ -1,6 +1,8 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
-import { applications, events, statusConfig } from "@/lib/mock-data"
+import { auth } from "@/lib/auth"
+import { getApplication, getEventsByApplication } from "@/lib/data/applications"
+import { statusConfig } from "@/lib/data/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -21,27 +23,30 @@ export default async function ApplicationDetailPage({
 }: {
   params: Promise<{ id: string }>
 }) {
+  const session = await auth()
+  if (!session?.user) redirect("/")
+
   const { id } = await params
-  const application = applications.find((a) => a.id === id)
+  const userId = session.user.id ?? session.user.email ?? undefined
+  const application = await getApplication(id, userId)
 
   if (!application) {
     notFound()
   }
 
   const config = statusConfig[application.status]
-  const appEvents = events
-    .filter((e) => e.applicationId === application.id)
-    .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
+  const appEvents = await getEventsByApplication(application.id, userId)
+  const sortedEvents = appEvents.sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
       <div className="flex items-center gap-4">
         <Link
-          href="/"
+          href="/applications"
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft size={16} />
-          <span className="text-sm">Dashboard</span>
+          <span className="text-sm">Applications</span>
         </Link>
       </div>
 
@@ -117,12 +122,12 @@ export default async function ApplicationDetailPage({
             <CardTitle className="text-base">Timeline</CardTitle>
           </CardHeader>
           <CardContent>
-            {appEvents.length === 0 ? (
+            {sortedEvents.length === 0 ? (
               <p className="text-sm text-muted-foreground">No events yet</p>
             ) : (
               <div className="relative space-y-4">
                 <div className="absolute left-2 top-2 bottom-2 w-px bg-border" />
-                {appEvents.map((event) => {
+                {sortedEvents.map((event) => {
                   const eventConfig = eventTypeConfig[event.eventType]
                   return (
                     <div key={event.id} className="relative flex gap-4">

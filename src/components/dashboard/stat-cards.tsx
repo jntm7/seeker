@@ -1,21 +1,27 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { type MockStat } from "@/lib/mock-data"
+import { Card, CardContent } from "@/components/ui/card"
+import { type MockStat } from "@/lib/data/types"
 
 export function StatCards({ stats }: { stats: MockStat[] }) {
   return (
     <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       {stats.map((stat) => (
-        <Card key={stat.label}>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {stat.label}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stat.value}</div>
-            {stat.trend && (
-              <p className="mt-1 text-xs text-muted-foreground">{stat.trend}</p>
-            )}
+        <Card
+          key={stat.label}
+          className="border"
+          style={{ backgroundColor: `${stat.hex}10`, borderColor: `${stat.hex}50` }}
+        >
+          <CardContent className="flex items-center justify-between p-4">
+            <div className="pl-6">
+              <p className="text-lg font-semibold" style={{ color: stat.hex }}>
+                {stat.label}
+              </p>
+              {stat.trend && (
+                <p className="mt-1 text-sm text-muted-foreground">{stat.trend}</p>
+              )}
+            </div>
+            <div className="text-5xl font-bold pr-6" style={{ color: stat.hex }}>
+              {stat.value}
+            </div>
           </CardContent>
         </Card>
       ))}

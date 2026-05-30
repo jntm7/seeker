@@ -14,9 +14,9 @@ A core objective of this project is to practice my skills in leveraging AI as bo
 
 ### Models
 
-- Claude Sonnet 4.6
+- Claude Opus 4.6
 - GLM 5.1
-- Qwen 3.6 Plus
+- Deepseek V4 Flash
 
 ## Tech Stack
 
