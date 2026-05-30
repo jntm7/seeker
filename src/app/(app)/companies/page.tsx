@@ -7,7 +7,8 @@ export default async function CompaniesPage() {
   const session = await auth()
   if (!session?.user) redirect("/")
 
-  const applications = await getApplications()
+  const userId = session.user.id ?? session.user.email ?? undefined
+  const applications = await getApplications(userId)
 
   return <CompaniesPageContent applications={applications} />
 }

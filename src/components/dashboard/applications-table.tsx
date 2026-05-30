@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { statusConfig, type MockApplication } from "@/lib/data/types"
 import type { ApplicationStatus } from "@/generated/prisma/client"
+import { updateApplication } from "@/lib/actions/applications"
 import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 
 const statusOrder: ApplicationStatus[] = [
@@ -101,9 +102,10 @@ export function ApplicationsTable({
       )
     )
     setEditingNotes(null)
+    updateApplication(id, { notes: notesValue || null }).catch(() => {})
   }
 
-  const activeCount = statusFilter === "all" ? apps.length : apps.filter((a) => a.status === statusFilter).length
+  const activeCount = filtered.length
 
   function renderSortIcon(field: SortField) {
     if (sortField !== field) return <ArrowUpDown size={14} className="opacity-40" />

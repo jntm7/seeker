@@ -1,15 +1,30 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { StatCards } from "@/components/dashboard/stat-cards"
 import { KanbanBoard } from "@/components/dashboard/kanban-board"
 import { ApplicationsTable } from "@/components/dashboard/applications-table"
 import { AddApplicationDialog } from "@/components/dashboard/add-application-dialog"
 import { Separator } from "@/components/ui/separator"
-import type { MockApplication, MockStat } from "@/lib/data/types"
+import { statusConfig, type MockApplication } from "@/lib/data/types"
 
-export function DashboardContent({ applications: initialApplications, stats: initialStats }: { applications: MockApplication[]; stats: MockStat[] }) {
+function computeStats(apps: MockApplication[]) {
+  const active = apps.filter((a) => ["applied", "screening", "interview"].includes(a.status)).length
+  const interviews = apps.filter((a) => a.status === "interview").length
+  const offers = apps.filter((a) => a.status === "offer").length
+  const rejected = apps.filter((a) => a.status === "rejected").length
+  return [
+    { label: "Active", value: active, trend: `${active} in progress`, hex: statusConfig.applied.hex },
+    { label: "Interviews", value: interviews, trend: `${interviews} scheduled`, hex: statusConfig.interview.hex },
+    { label: "Offers", value: offers, trend: offers > 0 ? "Under review" : "None yet", hex: statusConfig.offer.hex },
+    { label: "Rejected", value: rejected, hex: statusConfig.rejected.hex },
+  ]
+}
+
+export function DashboardContent({ applications: initialApplications }: { applications: MockApplication[] }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
+
+  const stats = useMemo(() => computeStats(apps), [apps])
 
   function addApplication(app: MockApplication) {
     setApps((prev) => [app, ...prev])
@@ -28,7 +43,7 @@ export function DashboardContent({ applications: initialApplications, stats: ini
       </div>
 
       <div className="-mt-6">
-        <StatCards stats={initialStats} />
+        <StatCards stats={stats} />
       </div>
 
       <Separator />

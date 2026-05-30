@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { statusConfig, type MockApplication } from "@/lib/data/types"
 import type { ApplicationStatus } from "@/generated/prisma/client"
+import { updateApplication, bulkDeleteApplications } from "@/lib/actions/applications"
 import {
   ChevronDown,
   ChevronLeft,
@@ -125,8 +126,10 @@ export default function ApplicationsFullTable({
   const paged = filtered.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE)
 
   function deleteSelected() {
+    const ids = [...selectedIds]
     setApps((prev) => prev.filter((app) => !selectedIds.has(app.id)))
     setSelectedIds(new Set())
+    bulkDeleteApplications(ids).catch(() => {})
   }
 
   function toggleSelectAll() {
@@ -158,6 +161,7 @@ export default function ApplicationsFullTable({
       )
     )
     setEditingNotes(null)
+    updateApplication(id, { notes: notesValue || null }).catch(() => {})
   }
 
   function renderSortIcon(field: SortField) {
@@ -175,10 +179,10 @@ export default function ApplicationsFullTable({
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search by role, company, or location..."
+              placeholder="Search by role, company, or location"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(0) }}
-              className="h-9 w-72 rounded-md border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring sm:w-full"
+              className="h-9 w-76 rounded-md border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
           {selectedIds.size > 0 && (

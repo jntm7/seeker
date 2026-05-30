@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
+import { auth } from "@/lib/auth"
 import { getApplication, getEventsByApplication } from "@/lib/data/applications"
 import { statusConfig } from "@/lib/data/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,15 +23,19 @@ export default async function ApplicationDetailPage({
 }: {
   params: Promise<{ id: string }>
 }) {
+  const session = await auth()
+  if (!session?.user) redirect("/")
+
   const { id } = await params
-  const application = await getApplication(id)
+  const userId = session.user.id ?? session.user.email ?? undefined
+  const application = await getApplication(id, userId)
 
   if (!application) {
     notFound()
   }
 
   const config = statusConfig[application.status]
-  const appEvents = await getEventsByApplication(application.id)
+  const appEvents = await getEventsByApplication(application.id, userId)
   const sortedEvents = appEvents.sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
 
   return (

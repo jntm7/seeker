@@ -7,9 +7,10 @@ export default async function CalendarPage() {
   const session = await auth()
   if (!session?.user) redirect("/")
 
+  const userId = session.user.id ?? session.user.email ?? undefined
   const [applications, events] = await Promise.all([
-    getApplications(),
-    getEvents(),
+    getApplications(userId),
+    getEvents(userId),
   ])
 
   return <CalendarPageContent applications={applications} events={events} />

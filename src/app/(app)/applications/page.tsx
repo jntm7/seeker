@@ -7,7 +7,8 @@ export default async function ApplicationsPage() {
   const session = await auth()
   if (!session?.user) redirect("/")
 
-  const applications = await getApplications()
+  const userId = session.user.id ?? session.user.email ?? undefined
+  const applications = await getApplications(userId)
 
   return <ApplicationsPageLoader applications={applications} />
 }
