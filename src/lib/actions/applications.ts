@@ -97,6 +97,73 @@ export async function deleteApplication(id: string) {
   await prisma.application.delete({ where: { id } })
 }
 
+export async function createApplicationWithCompany(data: {
+  companyName: string
+  roleTitle: string
+  status?: ApplicationStatus
+  dateApplied?: string
+  location?: string
+  jobUrl?: string
+  notes?: string
+}) {
+  if (config.demoMode) {
+    return {
+      id: crypto.randomUUID(),
+      company: data.companyName,
+      roleTitle: data.roleTitle,
+      status: data.status ?? "todo",
+      dateApplied: data.dateApplied ?? null,
+      location: data.location ?? null,
+      jobUrl: data.jobUrl ?? null,
+      notes: data.notes ?? null,
+      updatedAt: new Date().toISOString().split("T")[0],
+    }
+  }
+
+  const userId = await getUserId()
+  if (!userId) throw new Error("Unauthorized")
+
+  const { prisma } = await import("@/lib/prisma")
+  const user = await prisma.user.findUnique({ where: { id: userId } }) ??
+    await prisma.user.findUnique({ where: { email: userId } })
+  if (!user) throw new Error("User not found")
+
+  let company = await prisma.company.findFirst({
+    where: { name: { equals: data.companyName, mode: "insensitive" } },
+  })
+  if (!company) {
+    company = await prisma.company.create({
+      data: { name: data.companyName },
+    })
+  }
+
+  const app = await prisma.application.create({
+    data: {
+      userId: user.id,
+      companyId: company.id,
+      roleTitle: data.roleTitle,
+      status: data.status ?? "todo",
+      dateApplied: data.dateApplied ? new Date(data.dateApplied) : null,
+      location: data.location,
+      jobUrl: data.jobUrl,
+      notes: data.notes,
+    },
+    include: { company: true },
+  })
+
+  return {
+    id: app.id,
+    company: app.company.name,
+    roleTitle: app.roleTitle,
+    status: app.status as ApplicationStatus,
+    dateApplied: app.dateApplied?.toISOString().split("T")[0] ?? null,
+    location: app.location,
+    jobUrl: app.jobUrl,
+    notes: app.notes,
+    updatedAt: app.updatedAt.toISOString().split("T")[0],
+  }
+}
+
 export async function bulkDeleteApplications(ids: string[]) {
   if (config.demoMode) return
 

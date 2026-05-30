@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { statusConfig, type MockApplication } from "@/lib/data/types"
 import type { ApplicationStatus } from "@/generated/prisma/client"
 import { updateApplication, bulkDeleteApplications } from "@/lib/actions/applications"
+import { toast } from "sonner"
 import {
   ChevronDown,
   ChevronLeft,
@@ -129,7 +130,9 @@ export default function ApplicationsFullTable({
     const ids = [...selectedIds]
     setApps((prev) => prev.filter((app) => !selectedIds.has(app.id)))
     setSelectedIds(new Set())
-    bulkDeleteApplications(ids).catch(() => {})
+    bulkDeleteApplications(ids).catch(() => {
+      toast.error("Failed to delete applications")
+    })
   }
 
   function toggleSelectAll() {
@@ -161,7 +164,9 @@ export default function ApplicationsFullTable({
       )
     )
     setEditingNotes(null)
-    updateApplication(id, { notes: notesValue || null }).catch(() => {})
+    updateApplication(id, { notes: notesValue || null }).catch(() => {
+      toast.error("Failed to save notes")
+    })
   }
 
   function renderSortIcon(field: SortField) {

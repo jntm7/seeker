@@ -1,5 +1,6 @@
 import { getApplications } from "@/lib/data/applications"
 import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation"
 import { Navbar } from "@/components/layout/navbar"
 import { Sidebar } from "@/components/layout/sidebar"
 import { SidebarProvider } from "@/components/layout/sidebar-context"
@@ -10,7 +11,9 @@ export default async function AppLayout({
   children: React.ReactNode
 }) {
   const session = await auth()
-  const userId = session?.user?.id ?? session?.user?.email ?? undefined
+  if (!session?.user) redirect("/")
+
+  const userId = session.user.id ?? session.user.email ?? undefined
   const applications = await getApplications(userId)
 
   return (

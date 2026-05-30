@@ -103,6 +103,9 @@ export default async function LandingPage({
               <form
                 action={async () => {
                   "use server"
+                  const { cookies } = await import("next/headers")
+                  const cookieStore = await cookies()
+                  cookieStore.set("demo_mode", "true", { path: "/", maxAge: 60 * 60 * 24 * 30 })
                   redirect("/dashboard")
                 }}
               >

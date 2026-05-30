@@ -25,6 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { statusConfig, type MockApplication } from "@/lib/data/types"
 import { type ApplicationStatus } from "@/generated/prisma/client"
 import { updateApplicationStatus } from "@/lib/actions/applications"
+import { toast } from "sonner"
 import { GripVertical } from "lucide-react"
 
 const pipelineOrder: ApplicationStatus[] = [
@@ -179,7 +180,9 @@ export function KanbanBoard({
             : a
         )
       )
-      updateApplicationStatus(String(activeApp.id), targetStatus).catch(() => {})
+      updateApplicationStatus(String(activeApp.id), targetStatus).catch(() => {
+        toast.error("Failed to update application status")
+      })
     }
   }
 

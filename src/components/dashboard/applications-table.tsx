@@ -19,6 +19,7 @@ import {
 import { statusConfig, type MockApplication } from "@/lib/data/types"
 import type { ApplicationStatus } from "@/generated/prisma/client"
 import { updateApplication } from "@/lib/actions/applications"
+import { toast } from "sonner"
 import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 
 const statusOrder: ApplicationStatus[] = [
@@ -102,7 +103,9 @@ export function ApplicationsTable({
       )
     )
     setEditingNotes(null)
-    updateApplication(id, { notes: notesValue || null }).catch(() => {})
+    updateApplication(id, { notes: notesValue || null }).catch(() => {
+      toast.error("Failed to save notes")
+    })
   }
 
   const activeCount = filtered.length

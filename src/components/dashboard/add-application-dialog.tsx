@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { type MockApplication, statusConfig } from "@/lib/data/types"
 import { type ApplicationStatus } from "@/generated/prisma/client"
+import { createApplicationWithCompany } from "@/lib/actions/applications"
 import { Plus, ChevronDown } from "lucide-react"
 
 const statusOrder: ApplicationStatus[] = [
@@ -31,6 +32,7 @@ export function AddApplicationDialog({
   onAdd: (app: MockApplication) => void
 }) {
   const [open, setOpen] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [roleTitle, setRoleTitle] = useState("")
   const [company, setCompany] = useState("")
   const [status, setStatus] = useState<ApplicationStatus>("todo")
@@ -39,30 +41,36 @@ export function AddApplicationDialog({
   const [jobUrl, setJobUrl] = useState("")
   const [notes, setNotes] = useState("")
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!roleTitle.trim() || !company.trim()) return
 
-    onAdd({
-      id: String(Date.now()),
-      roleTitle: roleTitle.trim(),
-      company: company.trim(),
-      status,
-      dateApplied: dateApplied || null,
-      location: location.trim() || null,
-      jobUrl: jobUrl.trim() || null,
-      notes: notes.trim() || null,
-      updatedAt: new Date().toISOString().split("T")[0],
-    })
+    setSubmitting(true)
+    try {
+      const result = await createApplicationWithCompany({
+        companyName: company.trim(),
+        roleTitle: roleTitle.trim(),
+        status,
+        dateApplied: dateApplied || undefined,
+        location: location.trim() || undefined,
+        jobUrl: jobUrl.trim() || undefined,
+        notes: notes.trim() || undefined,
+      })
 
-    setRoleTitle("")
-    setCompany("")
-    setStatus("todo")
-    setDateApplied("")
-    setLocation("")
-    setJobUrl("")
-    setNotes("")
-    setOpen(false)
+      onAdd(result as MockApplication)
+      setRoleTitle("")
+      setCompany("")
+      setStatus("todo")
+      setDateApplied("")
+      setLocation("")
+      setJobUrl("")
+      setNotes("")
+      setOpen(false)
+    } catch {
+      alert("Failed to create application. Please try again.")
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const config = statusConfig[status]
@@ -180,8 +188,8 @@ export function AddApplicationDialog({
             />
           </div>
 
-          <Button type="submit" className="w-full">
-            Add Application
+          <Button type="submit" className="w-full" disabled={submitting}>
+            {submitting ? "Adding..." : "Add Application"}
           </Button>
         </form>
       </DialogContent>
