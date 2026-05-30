@@ -57,7 +57,7 @@ export function CompaniesPageContent({ applications }: { applications: MockAppli
       c.name.toLowerCase().includes(q) ||
       c.apps.some((a) => a.roleTitle.toLowerCase().includes(q))
     )
-  }, [search])
+  }, [applications, search])
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
