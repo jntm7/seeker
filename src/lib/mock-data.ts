@@ -56,6 +56,11 @@ export const events: MockEvent[] = [
   { id: "e11", applicationId: "5", eventType: "rejection", eventDate: "2026-05-08", notes: "Moved forward with another candidate" },
   { id: "e12", applicationId: "11", eventType: "applied", eventDate: "2026-04-30", notes: null },
   { id: "e13", applicationId: "11", eventType: "screening", eventDate: "2026-05-08", notes: "Initial call" },
+  { id: "e14", applicationId: "1", eventType: "interview", eventDate: "2026-06-02", notes: "Technical interview - round 2" },
+  { id: "e15", applicationId: "4", eventType: "offer", eventDate: "2026-06-05", notes: "Offer response deadline" },
+  { id: "e16", applicationId: "11", eventType: "interview", eventDate: "2026-06-10", notes: "System design interview" },
+  { id: "e17", applicationId: "3", eventType: "screening", eventDate: "2026-05-30", notes: "Follow-up call" },
+  { id: "e18", applicationId: "8", eventType: "todo", eventDate: "2026-06-01", notes: "Application deadline" },
 ]
 
 export const stats: MockStat[] = [
@@ -66,11 +71,11 @@ export const stats: MockStat[] = [
 ]
 
 export const statusConfig: Record<ApplicationStatus, { label: string; color: string; hex: string }> = {
-  todo: { label: "To Do", color: "bg-status-todo/15 text-status-todo", hex: "#948979" },
+  todo: { label: "To Do", color: "bg-status-todo/15 text-status-todo", hex: "#7a7585" },
   applied: { label: "Applied", color: "bg-status-applied/15 text-status-applied", hex: "#5b7fa5" },
-  screening: { label: "Screening", color: "bg-status-screening/15 text-status-screening", hex: "#c4944a" },
+  screening: { label: "Screening", color: "bg-status-screening/15 text-status-screening", hex: "#9a8570" },
   interview: { label: "Interview", color: "bg-status-interview/15 text-status-interview", hex: "#8a7ab5" },
   offer: { label: "Offer", color: "bg-status-offer/15 text-status-offer", hex: "#5d9f6a" },
   rejected: { label: "Rejected", color: "bg-status-rejected/15 text-status-rejected", hex: "#b56a6a" },
-  withdrawn: { label: "Withdrawn", color: "bg-status-withdrawn/15 text-status-withdrawn", hex: "#b8a894" },
+  withdrawn: { label: "Withdrawn", color: "bg-status-withdrawn/15 text-status-withdrawn", hex: "#6f6978" },
 }
