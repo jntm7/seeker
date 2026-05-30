@@ -1,36 +1,64 @@
-import NextAuth from "next-auth"
-import GitHub from "next-auth/providers/github"
-import Google from "next-auth/providers/google"
-import Apple from "next-auth/providers/apple"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { prisma } from "./prisma"
+import type { NextRequest } from "next/server"
 import { config } from "./config"
-import { seedAdminInvite, isValidInvite, acceptInvite } from "./data/invites"
 
-const { handlers, signIn, signOut, auth: nextAuth } = NextAuth({
-  adapter: PrismaAdapter(prisma),
-  providers: [GitHub, Google, Apple],
-  session: { strategy: "database" },
-  pages: {
-    signIn: "/",
-  },
-  callbacks: {
-    async signIn({ user }) {
-      if (!user.email) return false
-      if (config.demoMode) return true
-      await seedAdminInvite()
-      if (!(await isValidInvite(user.email))) return false
-      await acceptInvite(user.email)
-      return true
+async function createAuth() {
+  if (config.demoMode) {
+    return {
+      handlers: { GET: () => new Response(null, { status: 404 }), POST: () => new Response(null, { status: 404 }) },
+      signIn: async () => { throw new Error("Not available in demo mode") },
+      signOut: async () => { throw new Error("Not available in demo mode") },
+      auth: async () => ({ user: { id: "demo", name: "Demo User", email: "demo@seeker.local" } }),
+    }
+  }
+
+  const NextAuth = (await import("next-auth")).default
+  const GitHub = (await import("next-auth/providers/github")).default
+  const Google = (await import("next-auth/providers/google")).default
+  const Apple = (await import("next-auth/providers/apple")).default
+  const { PrismaAdapter } = await import("@auth/prisma-adapter")
+  const { prisma } = await import("./prisma")
+  const { seedAdminInvite, isValidInvite, acceptInvite } = await import("./data/invites")
+
+  return NextAuth({
+    adapter: PrismaAdapter(prisma),
+    providers: [GitHub, Google, Apple],
+    session: { strategy: "database" },
+    pages: { signIn: "/" },
+    callbacks: {
+      async signIn({ user }: { user: { email?: string | null } }) {
+        if (!user.email) return false
+        await seedAdminInvite()
+        if (!(await isValidInvite(user.email))) return false
+        await acceptInvite(user.email)
+        return true
+      },
     },
-  },
-})
+  })
+}
 
-export { handlers, signIn, signOut }
+const authPromise = createAuth()
+
+export async function GET(req: NextRequest) {
+  const { handlers } = await authPromise
+  return handlers.GET(req)
+}
+
+export async function POST(req: NextRequest) {
+  const { handlers } = await authPromise
+  return handlers.POST(req)
+}
+
+export async function signIn(provider?: string, options?: Record<string, string>) {
+  const auth = await authPromise
+  return auth.signIn(provider, options)
+}
+
+export async function signOut() {
+  const auth = await authPromise
+  return auth.signOut()
+}
 
 export async function auth() {
-  if (config.demoMode) {
-    return { user: { id: "demo", name: "Demo User", email: "demo@seeker.local" } }
-  }
-  return nextAuth()
+  const instance = await authPromise
+  return instance.auth()
 }
