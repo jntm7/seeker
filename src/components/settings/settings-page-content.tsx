@@ -1,17 +1,48 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Download, Bell, Users, Trash2, AlertTriangle } from "lucide-react"
+import { Download, Bell, Users, Trash2, AlertTriangle, Check, X } from "lucide-react"
+import { exportData, deleteAccount } from "@/lib/actions/account"
+import { sendInvite, cancelInvite } from "@/lib/actions/invites"
+import type { InviteRole } from "@/generated/prisma/client"
 
 export function SettingsPageContent() {
   const [exported, setExported] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [inviteRole, setInviteRole] = useState<InviteRole>("mentor")
+  const [inviteSent, setInviteSent] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
-  function handleExport() {
+  async function handleExport() {
+    const data = await exportData()
+    if (!data) return
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "seeker-export.json"
+    a.click()
+    URL.revokeObjectURL(url)
     setExported(true)
     setTimeout(() => setExported(false), 2000)
+  }
+
+  async function handleSendInvite() {
+    if (!inviteEmail) return
+    await sendInvite(inviteEmail, inviteRole)
+    setInviteSent(true)
+    setInviteEmail("")
+    setTimeout(() => setInviteSent(false), 2000)
+  }
+
+  async function handleDeleteAccount() {
+    if (!window.confirm("Are you sure you want to delete your account? This cannot be undone.")) return
+    setDeleting(true)
+    await deleteAccount()
+    window.location.href = "/"
   }
 
   return (
@@ -29,7 +60,7 @@ export function SettingsPageContent() {
             <Download size={16} className="text-muted-foreground" />
             Data Export
           </CardTitle>
-          <CardDescription>Download all your application data as a CSV file</CardDescription>
+          <CardDescription>Download all your application data as JSON</CardDescription>
         </CardHeader>
         <CardContent>
           <Button variant="outline" onClick={handleExport}>
@@ -77,11 +108,27 @@ export function SettingsPageContent() {
             <input
               type="email"
               placeholder="Enter email address..."
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
               className="flex-1 rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
-            <Button variant="outline">Send Invite</Button>
+            <select
+              value={inviteRole}
+              onChange={(e) => setInviteRole(e.target.value as InviteRole)}
+              className="rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="mentor">Mentor</option>
+              <option value="admin">Admin</option>
+            </select>
+            <Button variant="outline" onClick={handleSendInvite}>
+              {inviteSent ? "Sent" : "Send Invite"}
+            </Button>
           </div>
-          <p className="text-xs text-muted-foreground">Invite system will be fully implemented with the backend.</p>
+          {inviteSent && (
+            <p className="text-xs text-green-600 flex items-center gap-1">
+              <Check size={12} /> Invite sent
+            </p>
+          )}
         </CardContent>
       </Card>
 
@@ -94,9 +141,14 @@ export function SettingsPageContent() {
           <CardDescription>Permanently delete your account and all application data</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="outline" className="border-destructive/50 text-destructive hover:bg-destructive/10">
+          <Button
+            variant="outline"
+            className="border-destructive/50 text-destructive hover:bg-destructive/10"
+            onClick={handleDeleteAccount}
+            disabled={deleting}
+          >
             <AlertTriangle size={14} />
-            Delete Account
+            {deleting ? "Deleting..." : "Delete Account"}
           </Button>
         </CardContent>
       </Card>
