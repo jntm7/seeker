@@ -7,8 +7,8 @@ import { Separator } from "@/components/ui/separator"
 import { User, MapPin, Cake, FileText, Upload } from "lucide-react"
 
 export function ProfilePageContent() {
-  const [name, setName] = useState("Dev User")
-  const [location, setLocation] = useState("Toronto, ON")
+  const [name, setName] = useState("Demo User")
+  const [location, setLocation] = useState("Seattle")
   const [age, setAge] = useState("25")
   const [resumeName, setResumeName] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)

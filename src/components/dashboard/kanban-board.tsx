@@ -22,15 +22,11 @@ import { useDroppable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { statusConfig, type MockApplication } from "@/lib/data/types"
+import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
 import { type ApplicationStatus } from "@/generated/prisma/client"
 import { updateApplicationStatus } from "@/lib/actions/applications"
 import { toast } from "sonner"
 import { GripVertical } from "lucide-react"
-
-const pipelineOrder: ApplicationStatus[] = [
-  "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
-]
 
 function SortableCard({ app }: { app: MockApplication }) {
   const {
@@ -165,7 +161,7 @@ export function KanbanBoard({
 
     let targetStatus: ApplicationStatus | null = null
 
-    if (pipelineOrder.includes(String(over.id) as ApplicationStatus)) {
+    if (statusOrder.includes(String(over.id) as ApplicationStatus)) {
       targetStatus = String(over.id) as ApplicationStatus
     } else {
       const overApp = apps.find((a) => a.id === over.id)
@@ -196,7 +192,7 @@ export function KanbanBoard({
       onDragEnd={handleDragEnd}
     >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
-        {pipelineOrder.map((status) => (
+        {statusOrder.map((status) => (
           <Column
             key={status}
             status={status}

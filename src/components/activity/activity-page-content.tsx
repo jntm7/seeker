@@ -5,40 +5,9 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { statusConfig } from "@/lib/data/types"
+import { eventColors, eventLabels, type EnrichedEvent } from "@/lib/data/events"
 import type { MockApplication, MockEvent } from "@/lib/data/types"
-import type { EventType } from "@/generated/prisma/client"
 import { History, ArrowRight } from "lucide-react"
-
-const eventColors: Record<EventType, string> = {
-  todo: "#7a7585",
-  applied: "#5b7fa5",
-  screening: "#9a8570",
-  interview: "#8a7ab5",
-  offer: "#5d9f6a",
-  rejection: "#b56a6a",
-  note: "#7a7585",
-}
-
-const eventLabels: Record<EventType, string> = {
-  todo: "To Do",
-  applied: "Applied",
-  screening: "Screening",
-  interview: "Interview",
-  offer: "Offer",
-  rejection: "Rejected",
-  note: "Note",
-}
-
-type EnrichedEvent = {
-  id: string
-  eventType: EventType
-  eventDate: string
-  notes: string | null
-  roleTitle: string
-  company: string
-  applicationId: string
-}
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr)
@@ -113,42 +82,48 @@ export function ActivityPageContent({ applications, events }: { applications: Mo
       <Separator />
 
       {todayEvents.length > 0 && (
-        <section>
-          <h2 className="mb-3 text-sm font-semibold text-status-applied">Today</h2>
-          <div className="space-y-2">
-            {todayEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
-        </section>
+        <>
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-status-applied">Today</h2>
+            <div className="space-y-4">
+              {todayEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          </section>
+          <Separator />
+        </>
       )}
 
       {upcoming.length > 0 && (
-        <section>
-          <h2 className="mb-3 text-sm font-semibold text-foreground">Upcoming</h2>
-          <div className="space-y-4">
-            {upcoming.map(([date, evts]) => (
-              <div key={date}>
-                <h3 className="mb-2 text-xs font-medium text-muted-foreground">{formatDate(date)}</h3>
-                <div className="space-y-2">
-                  {evts.map((event) => (
-                    <EventCard key={event.id} event={event} />
-                  ))}
+        <>
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-foreground">Upcoming</h2>
+            <div className="space-y-8">
+              {upcoming.map(([date, evts]) => (
+                <div key={date}>
+                  <h3 className="mb-2 text-xs font-medium text-muted-foreground">{formatDate(date)}</h3>
+                  <div className="space-y-4">
+                    {evts.map((event) => (
+                      <EventCard key={event.id} event={event} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+          <Separator />
+        </>
       )}
 
       {past.length > 0 && (
         <section>
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">Past</h2>
-          <div className="space-y-4">
+          <div className="space-y-8">
             {past.map(([date, evts]) => (
               <div key={date}>
                 <h3 className="mb-2 text-xs font-medium text-muted-foreground">{formatDate(date)}</h3>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {evts.map((event) => (
                     <EventCard key={event.id} event={event} />
                   ))}
@@ -183,7 +158,7 @@ function EventCard({ event }: { event: EnrichedEvent }) {
               <Badge
                 className="rounded-full border-0 px-2 py-0 text-[10px] font-normal"
                 style={{
-                  backgroundColor: `${eventColors[event.eventType]}18`,
+                  backgroundColor: `${eventColors[event.eventType]}25`,
                   color: eventColors[event.eventType],
                 }}
               >

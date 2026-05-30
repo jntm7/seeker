@@ -11,12 +11,12 @@ export async function deleteAccount() {
   const session = await auth()
   if (!session?.user?.email) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+  const { getPrisma } = await import("@/lib/prisma")
+  const user = await getPrisma().user.findUnique({ where: { email: session.user.email } })
   if (!user) throw new Error("User not found")
 
-  await prisma.application.deleteMany({ where: { userId: user.id } })
-  await prisma.user.delete({ where: { id: user.id } })
+  await getPrisma().application.deleteMany({ where: { userId: user.id } })
+  await getPrisma().user.delete({ where: { id: user.id } })
   return { success: true }
 }
 
@@ -26,9 +26,9 @@ export async function exportData() {
   const session = await auth()
   if (!session?.user?.email) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
+  const { getPrisma } = await import("@/lib/prisma")
 
-  const user = await prisma.user.findUnique({
+  const user = await getPrisma().user.findUnique({
     where: { email: session.user.email },
     include: {
       applications: {

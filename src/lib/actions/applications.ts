@@ -26,12 +26,12 @@ export async function createApplication(data: {
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
-  const user = await prisma.user.findUnique({ where: { id: userId } }) ??
-    await prisma.user.findUnique({ where: { email: userId } })
+  const { getPrisma } = await import("@/lib/prisma")
+  const user = await getPrisma().user.findUnique({ where: { id: userId } }) ??
+    await getPrisma().user.findUnique({ where: { email: userId } })
   if (!user) throw new Error("User not found")
 
-  const app = await prisma.application.create({
+  const app = await getPrisma().application.create({
     data: {
       userId: user.id,
       companyId: data.companyId,
@@ -53,11 +53,11 @@ export async function updateApplicationStatus(id: string, status: ApplicationSta
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
-  const app = await prisma.application.findUnique({ where: { id } })
+  const { getPrisma } = await import("@/lib/prisma")
+  const app = await getPrisma().application.findUnique({ where: { id } })
   if (!app || app.userId !== userId) throw new Error("Not found")
 
-  await prisma.application.update({
+  await getPrisma().application.update({
     where: { id },
     data: { status },
   })
@@ -74,11 +74,11 @@ export async function updateApplication(id: string, data: {
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
-  const app = await prisma.application.findUnique({ where: { id } })
+  const { getPrisma } = await import("@/lib/prisma")
+  const app = await getPrisma().application.findUnique({ where: { id } })
   if (!app || app.userId !== userId) throw new Error("Not found")
 
-  await prisma.application.update({
+  await getPrisma().application.update({
     where: { id },
     data,
   })
@@ -90,11 +90,11 @@ export async function deleteApplication(id: string) {
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
-  const app = await prisma.application.findUnique({ where: { id } })
+  const { getPrisma } = await import("@/lib/prisma")
+  const app = await getPrisma().application.findUnique({ where: { id } })
   if (!app || app.userId !== userId) throw new Error("Not found")
 
-  await prisma.application.delete({ where: { id } })
+  await getPrisma().application.delete({ where: { id } })
 }
 
 export async function createApplicationWithCompany(data: {
@@ -123,21 +123,21 @@ export async function createApplicationWithCompany(data: {
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
-  const user = await prisma.user.findUnique({ where: { id: userId } }) ??
-    await prisma.user.findUnique({ where: { email: userId } })
+  const { getPrisma } = await import("@/lib/prisma")
+  const user = await getPrisma().user.findUnique({ where: { id: userId } }) ??
+    await getPrisma().user.findUnique({ where: { email: userId } })
   if (!user) throw new Error("User not found")
 
-  let company = await prisma.company.findFirst({
+  let company = await getPrisma().company.findFirst({
     where: { name: { equals: data.companyName, mode: "insensitive" } },
   })
   if (!company) {
-    company = await prisma.company.create({
+    company = await getPrisma().company.create({
       data: { name: data.companyName },
     })
   }
 
-  const app = await prisma.application.create({
+  const app = await getPrisma().application.create({
     data: {
       userId: user.id,
       companyId: company.id,
@@ -170,8 +170,8 @@ export async function bulkDeleteApplications(ids: string[]) {
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
-  await prisma.application.deleteMany({
+  const { getPrisma } = await import("@/lib/prisma")
+  await getPrisma().application.deleteMany({
     where: { id: { in: ids }, userId },
   })
 }

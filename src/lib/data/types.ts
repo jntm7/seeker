@@ -27,12 +27,16 @@ export type MockStat = {
   hex: string
 }
 
-export const statusConfig: Record<ApplicationStatus, { label: string; color: string; hex: string }> = {
-  todo: { label: "To Do", color: "bg-status-todo/15 text-status-todo", hex: "#7a7585" },
-  applied: { label: "Applied", color: "bg-status-applied/15 text-status-applied", hex: "#5b7fa5" },
-  screening: { label: "Screening", color: "bg-status-screening/15 text-status-screening", hex: "#9a8570" },
-  interview: { label: "Interview", color: "bg-status-interview/15 text-status-interview", hex: "#8a7ab5" },
-  offer: { label: "Offer", color: "bg-status-offer/15 text-status-offer", hex: "#5d9f6a" },
-  rejected: { label: "Rejected", color: "bg-status-rejected/15 text-status-rejected", hex: "#b56a6a" },
-  withdrawn: { label: "Withdrawn", color: "bg-status-withdrawn/15 text-status-withdrawn", hex: "#6f6978" },
+export const statusOrder: ApplicationStatus[] = [
+  "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
+]
+
+export const statusConfig: Record<ApplicationStatus, { label: string; hex: string }> = {
+  todo: { label: "To Do", hex: "#8a7a60" },
+  applied: { label: "Applied", hex: "#5288d8" },
+  screening: { label: "Screening", hex: "#c4903a" },
+  interview: { label: "Interview", hex: "#845ecc" },
+  offer: { label: "Offer", hex: "#4ea872" },
+  rejected: { label: "Rejected", hex: "#cc5a5a" },
+  withdrawn: { label: "Withdrawn", hex: "#6f7285" },
 }

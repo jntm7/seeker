@@ -5,30 +5,11 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { eventColors, eventLabels, type EnrichedEvent } from "@/lib/data/events"
 import type { MockApplication, MockEvent } from "@/lib/data/types"
 import type { EventType } from "@/generated/prisma/client"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-const eventColors: Record<EventType, string> = {
-  todo: "#7a7585",
-  applied: "#5b7fa5",
-  screening: "#9a8570",
-  interview: "#8a7ab5",
-  offer: "#5d9f6a",
-  rejection: "#b56a6a",
-  note: "#7a7585",
-}
-
-const eventLabels: Record<EventType, string> = {
-  todo: "To Do",
-  applied: "Applied",
-  screening: "Screening",
-  interview: "Interview",
-  offer: "Offer",
-  rejection: "Rejected",
-  note: "Note",
-}
 
 const eventPriority: Record<EventType, number> = {
   interview: 0,
@@ -38,16 +19,6 @@ const eventPriority: Record<EventType, number> = {
   applied: 4,
   rejection: 5,
   note: 6,
-}
-
-type EnrichedEvent = {
-  id: string
-  eventType: EventType
-  eventDate: string
-  notes: string | null
-  roleTitle: string
-  company: string
-  applicationId: string
 }
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -81,7 +52,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
   const [viewDate, setViewDate] = useState(today)
   const [selectedDay, setSelectedDay] = useState<number | null>(today.getDate())
 
-  const { year, month, cells, daysInMonth } = useCalendar(viewDate)
+  const { year, month, cells } = useCalendar(viewDate)
 
   const enrichedEvents = useMemo(() => {
     const appMap = new Map(applications.map((a) => [a.id, a]))
@@ -249,7 +220,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
                             <Badge
                               className="rounded-full border-0 px-2 py-0 text-[10px] font-normal"
                               style={{
-                                backgroundColor: `${eventColors[event.eventType]}18`,
+                                backgroundColor: `${eventColors[event.eventType]}25`,
                                 color: eventColors[event.eventType],
                               }}
                             >
@@ -295,7 +266,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
                             <Badge
                               className="rounded-full border-0 px-1.5 py-0 text-[9px] font-normal"
                               style={{
-                                backgroundColor: `${eventColors[event.eventType]}18`,
+                                backgroundColor: `${eventColors[event.eventType]}25`,
                                 color: eventColors[event.eventType],
                               }}
                             >

@@ -10,15 +10,15 @@ async function requireAdmin() {
   const session = await auth()
   if (!session?.user?.email) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
-  const user = await prisma.user.findUnique({
+  const { getPrisma } = await import("@/lib/prisma")
+  const user = await getPrisma().user.findUnique({
     where: { id: session.user.id },
-  }) ?? await prisma.user.findUnique({
+  }) ?? await getPrisma().user.findUnique({
     where: { email: session.user.email },
   })
   if (!user || !user.email) throw new Error("Unauthorized")
 
-  const invite = await prisma.invite.findFirst({
+  const invite = await getPrisma().invite.findFirst({
     where: { email: user.email, role: "admin", status: "accepted" },
   })
   if (!invite) throw new Error("Forbidden: admin only")

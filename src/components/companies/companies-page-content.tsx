@@ -5,14 +5,8 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { statusConfig } from "@/lib/data/types"
-import type { MockApplication } from "@/lib/data/types"
-import type { ApplicationStatus } from "@/generated/prisma/client"
-import { Search, Building2, ArrowUpRight } from "lucide-react"
-
-const statusOrder: ApplicationStatus[] = [
-  "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
-]
+import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
+import { Search, Building2 } from "lucide-react"
 
 type CompanyGroup = {
   name: string
@@ -75,7 +69,7 @@ export function CompaniesPageContent({ applications }: { applications: MockAppli
             placeholder="Search companies or roles..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-9 w-64 rounded-md border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring md:w-72"
+            className="h-9 w-64 rounded-md border bg-card pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring md:w-72"
           />
         </div>
       </div>
@@ -100,13 +94,6 @@ export function CompaniesPageContent({ applications }: { applications: MockAppli
                       &nbsp;· Last updated {new Date(company.lastUpdated).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </p>
                   </div>
-                  <Link
-                    href={`/applications`}
-                    className="shrink-0 rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                    title="View all applications"
-                  >
-                    <ArrowUpRight size={16} />
-                  </Link>
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
@@ -119,7 +106,7 @@ export function CompaniesPageContent({ applications }: { applications: MockAppli
                         key={status}
                         className="rounded-full border-0 text-xs font-normal"
                         style={{
-                          backgroundColor: `${config.hex}18`,
+                          backgroundColor: `${config.hex}25`,
                           color: config.hex,
                         }}
                       >
