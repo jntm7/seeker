@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Download, Bell, Users, Trash2, AlertTriangle, Check, X } from "lucide-react"
+import { Download, Bell, Users, Trash2, AlertTriangle, Check } from "lucide-react"
 import { exportData, deleteAccount } from "@/lib/actions/account"
-import { sendInvite, cancelInvite } from "@/lib/actions/invites"
+import { sendInvite } from "@/lib/actions/invites"
 import type { InviteRole } from "@/generated/prisma/client"
 
 export function SettingsPageContent() {

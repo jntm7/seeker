@@ -42,18 +42,18 @@ const settingsItems = [
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
-  const [dark, setDark] = useState(false)
+  const [dark, setDark] = useState(() => {
+    if (typeof window === "undefined") return false
+    const stored = localStorage.getItem("theme")
+    if (stored === "dark" || stored === "light") return stored === "dark"
+    return document.documentElement.classList.contains("dark")
+  })
   const pathname = usePathname()
   const { open, setOpen } = useSidebar()
 
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark")
-    setDark(isDark)
-  }, [])
-
-  useEffect(() => {
     setOpen(false)
-  }, [pathname])
+  }, [pathname, setOpen])
 
   function toggleTheme() {
     const next = !dark

@@ -5,10 +5,9 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { statusConfig } from "@/lib/data/types"
 import type { MockApplication, MockEvent } from "@/lib/data/types"
 import type { EventType } from "@/generated/prisma/client"
-import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const eventColors: Record<EventType, string> = {

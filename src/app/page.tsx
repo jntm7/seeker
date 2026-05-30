@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 import { Compass } from "lucide-react"
 import { signIn } from "@/lib/auth"
 import { config } from "@/lib/config"
@@ -114,9 +115,9 @@ export default async function LandingPage({
               </form>
             </div>
             <p className="text-center text-xs text-muted-foreground">
-              <a href="/?view=signin" className="underline underline-offset-4 hover:text-foreground transition-colors">
+              <Link href="/?view=signin" className="underline underline-offset-4 hover:text-foreground transition-colors">
                 View sign-in page
-              </a>
+              </Link>
             </p>
           </div>
         ) : (

@@ -1,4 +1,3 @@
-import { ApplicationStatus, EventType } from "@/generated/prisma/client"
 import type { MockApplication, MockEvent, MockStat } from "./data/types"
 import { statusConfig } from "./data/types"
 

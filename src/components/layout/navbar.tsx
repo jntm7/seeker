@@ -6,8 +6,9 @@ import { useSidebar } from "@/components/layout/sidebar-context"
 import { AnimatedIcon } from "@/components/ui/animated-icon"
 import { Menu, LogOut } from "lucide-react"
 import { signOut } from "next-auth/react"
+import type { MockApplication } from "@/lib/data/types"
 
-export function Navbar() {
+export function Navbar({ applications }: { applications: MockApplication[] }) {
   const { toggle } = useSidebar()
   const router = useRouter()
   const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
@@ -31,7 +32,7 @@ export function Navbar() {
         >
           <AnimatedIcon icon={Menu} size={18} />
         </button>
-        <GlobalSearch />
+        <GlobalSearch applications={applications} />
         <button
           type="button"
           onClick={handleSignOut}

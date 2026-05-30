@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { statusConfig } from "@/lib/data/types"
-import type { MockApplication, MockStat } from "@/lib/data/types"
+import type { MockApplication } from "@/lib/data/types"
 import type { ApplicationStatus } from "@/generated/prisma/client"
 
 const statusOrder: ApplicationStatus[] = [
@@ -16,7 +16,7 @@ function getMonthLabel(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "short", year: "2-digit" })
 }
 
-export function AnalyticsPageContent({ applications, stats }: { applications: MockApplication[]; stats: MockStat[] }) {
+export function AnalyticsPageContent({ applications }: { applications: MockApplication[] }) {
   const { total, byStatus, byMonth, active, interviews, offers, rejected, withdrawn } = useMemo(() => {
     const byStatus = {} as Record<string, number>
     const byMonth = {} as Record<string, number>

@@ -2,20 +2,16 @@
 
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { applications } from "@/lib/mock-data"
 import { statusConfig } from "@/lib/data/types"
+import type { MockApplication } from "@/lib/data/types"
 import { Search } from "lucide-react"
 
-export function GlobalSearch() {
+export function GlobalSearch({ applications }: { applications: MockApplication[] }) {
   const [query, setQuery] = useState("")
   const [open, setOpen] = useState(false)
-  const [isMac, setIsMac] = useState(false)
+  const [isMac] = useState(() => typeof navigator !== "undefined" && navigator.platform.startsWith("Mac"))
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    setIsMac(navigator.platform.startsWith("Mac"))
-  }, [])
 
   const results = query.trim()
     ? applications.filter((app) => {
