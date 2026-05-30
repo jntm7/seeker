@@ -64,7 +64,7 @@ export function CompaniesPageContent({ applications }: { applications: MockAppli
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Companies</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             {applications.length} applications across {companies.length} companies
           </p>
         </div>

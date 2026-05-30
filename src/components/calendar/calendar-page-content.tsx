@@ -153,7 +153,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Calendar</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           Upcoming deadlines, interviews, and events
         </p>
       </div>

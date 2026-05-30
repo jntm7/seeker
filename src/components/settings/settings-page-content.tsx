@@ -49,7 +49,7 @@ export function SettingsPageContent() {
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8 max-w-2xl">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-sm text-muted-foreground">Manage your account and application preferences</p>
+        <p className="mt-1 text-sm text-muted-foreground">Manage your account and application preferences</p>
       </div>
 
       <Separator />

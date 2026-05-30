@@ -27,7 +27,7 @@ export function ProfilePageContent() {
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8 max-w-2xl">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
-        <p className="text-sm text-muted-foreground">Personal information and resume</p>
+        <p className="mt-1 text-sm text-muted-foreground">Personal information and resume</p>
       </div>
 
       <Separator />
