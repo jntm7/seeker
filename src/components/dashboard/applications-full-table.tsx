@@ -124,25 +124,8 @@ export default function ApplicationsFullTable({
   const safePage = Math.min(page, totalPages - 1)
   const paged = filtered.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE)
 
-  function updateStatus(id: string, status: ApplicationStatus) {
-    setApps((prev) =>
-      prev.map((app) =>
-        app.id === id ? { ...app, status, updatedAt: new Date().toISOString().split("T")[0] } : app
-      )
-    )
-  }
-
   function deleteSelected() {
     setApps((prev) => prev.filter((app) => !selectedIds.has(app.id)))
-    setSelectedIds(new Set())
-  }
-
-  function bulkUpdateStatus(status: ApplicationStatus) {
-    setApps((prev) =>
-      prev.map((app) =>
-        selectedIds.has(app.id) ? { ...app, status, updatedAt: new Date().toISOString().split("T")[0] } : app
-      )
-    )
     setSelectedIds(new Set())
   }
 
@@ -204,32 +187,6 @@ export default function ApplicationsFullTable({
                 <Trash2 size={14} />
                 Delete ({selectedIds.size})
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  className="inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
-                >
-                  Move to...
-                  <ChevronDown size={14} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-auto">
-                  {statusOrder.map((status) => {
-                    const sConfig = statusConfig[status]
-                    return (
-                      <DropdownMenuItem
-                        key={status}
-                        onClick={() => bulkUpdateStatus(status)}
-                        className="gap-2"
-                      >
-                        <span
-                          className="h-2 w-2 rounded-full"
-                          style={{ backgroundColor: sConfig.hex }}
-                        />
-                        {sConfig.label}
-                      </DropdownMenuItem>
-                    )
-                  })}
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           )}
         </div>
@@ -381,33 +338,12 @@ export default function ApplicationsFullTable({
                     </TableCell>
                     <TableCell>{app.company}</TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-normal transition-colors hover:bg-muted"
-                          style={{ backgroundColor: `${config.hex}15`, color: config.hex }}
-                        >
-                          {config.label}
-                          <ChevronDown size={12} />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                          {statusOrder.map((status) => {
-                            const sConfig = statusConfig[status]
-                            return (
-                              <DropdownMenuItem
-                                key={status}
-                                onClick={() => updateStatus(app.id, status)}
-                                className="gap-2"
-                              >
-                                <span
-                                  className="h-2 w-2 rounded-full"
-                                  style={{ backgroundColor: sConfig.hex }}
-                                />
-                                {sConfig.label}
-                              </DropdownMenuItem>
-                            )
-                          })}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <span
+                        className="inline-flex items-center rounded-md px-2 py-1 text-xs font-normal"
+                        style={{ backgroundColor: `${config.hex}15`, color: config.hex }}
+                      >
+                        {config.label}
+                      </span>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {app.dateApplied

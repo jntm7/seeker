@@ -89,14 +89,6 @@ export function ApplicationsTable({
       return sortDirection === "desc" ? -cmp : cmp
     })
 
-  function updateStatus(id: string, status: ApplicationStatus) {
-    setApps((prev) =>
-      prev.map((app) =>
-        app.id === id ? { ...app, status, updatedAt: new Date().toISOString().split("T")[0] } : app
-      )
-    )
-  }
-
   function startEditNotes(app: MockApplication) {
     setEditingNotes(app.id)
     setNotesValue(app.notes ?? "")
@@ -240,33 +232,12 @@ export function ApplicationsTable({
                     </TableCell>
                     <TableCell>{app.company}</TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-normal transition-colors hover:bg-muted"
-                          style={{ backgroundColor: `${config.hex}15`, color: config.hex }}
-                        >
-                          {config.label}
-                          <ChevronDown size={12} />
-                        </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-                          {statusOrder.map((status) => {
-                            const sConfig = statusConfig[status]
-                            return (
-                              <DropdownMenuItem
-                                key={status}
-                                onClick={() => updateStatus(app.id, status)}
-                                className="gap-2"
-                              >
-                                <span
-                                  className="h-2 w-2 rounded-full"
-                                  style={{ backgroundColor: sConfig.hex }}
-                                />
-                                {sConfig.label}
-                              </DropdownMenuItem>
-                            )
-                          })}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <span
+                        className="inline-flex items-center rounded-md px-2 py-1 text-xs font-normal"
+                        style={{ backgroundColor: `${config.hex}15`, color: config.hex }}
+                      >
+                        {config.label}
+                      </span>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {app.dateApplied

@@ -32,14 +32,14 @@ export function DashboardContent() {
       <Separator />
 
       <div>
-        <h2 className="mb-4 text-xl font-semibold">Pipeline</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Pipeline</h2>
         <KanbanBoard apps={apps} setApps={setApps} />
       </div>
 
       <Separator />
 
       <div>
-        <h2 className="mb-4 text-xl font-semibold">Applications</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Applications</h2>
         <ApplicationsTable apps={apps} setApps={setApps} />
       </div>
     </div>
