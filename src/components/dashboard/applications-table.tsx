@@ -175,7 +175,7 @@ export function ApplicationsTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[220px]">
+              <TableHead className="w-[220px] pl-6">
                 <button
                   type="button"
                   onClick={() => toggleSort("roleTitle")}
@@ -222,7 +222,7 @@ export function ApplicationsTable({
                 const config = statusConfig[app.status]
                 return (
                   <TableRow key={app.id} className="h-14">
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium pl-6">
                       <Link
                         href={`/applications/${app.id}`}
                         className="hover:underline"

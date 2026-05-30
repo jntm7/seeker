@@ -255,7 +255,7 @@ export default function ApplicationsFullTable({
                   className="rounded border-border"
                 />
               </TableHead>
-              <TableHead>
+              <TableHead className="pl-6">
                 <button
                   type="button"
                   onClick={() => toggleSort("roleTitle")}
@@ -328,7 +328,7 @@ export default function ApplicationsFullTable({
                         className="rounded border-border"
                       />
                     </TableCell>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium pl-6">
                       <Link
                         href={`/applications/${app.id}`}
                         className="hover:underline"
