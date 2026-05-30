@@ -10,8 +10,8 @@ async function getUserId(): Promise<string | null> {
   if (session?.user?.id) return session.user.id
   if (!session?.user?.email) return null
 
-  const { prisma } = await import("@/lib/prisma")
-  const user = await prisma.user.findUnique({
+  const { getPrisma } = await import("@/lib/prisma")
+  const user = await getPrisma().user.findUnique({
     where: { email: session.user.email },
     select: { id: true },
   })
@@ -32,12 +32,12 @@ export async function addEvent(data: {
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
+  const { getPrisma } = await import("@/lib/prisma")
 
-  const application = await prisma.application.findUnique({ where: { id: data.applicationId } })
+  const application = await getPrisma().application.findUnique({ where: { id: data.applicationId } })
   if (!application || application.userId !== userId) throw new Error("Not found")
 
-  const event = await prisma.event.create({
+  const event = await getPrisma().event.create({
     data: {
       applicationId: data.applicationId,
       eventType: data.eventType,
@@ -55,10 +55,10 @@ export async function deleteEvent(id: string) {
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
-  const { prisma } = await import("@/lib/prisma")
+  const { getPrisma } = await import("@/lib/prisma")
 
-  const event = await prisma.event.findUnique({ where: { id }, include: { application: true } })
+  const event = await getPrisma().event.findUnique({ where: { id }, include: { application: true } })
   if (!event || event.application.userId !== userId) throw new Error("Not found")
 
-  await prisma.event.delete({ where: { id } })
+  await getPrisma().event.delete({ where: { id } })
 }

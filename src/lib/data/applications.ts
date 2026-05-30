@@ -20,8 +20,8 @@ export async function getApplications(userId?: string): Promise<Application[]> {
   }
 
   const resolvedUserId = requireUserId(userId)
-  const { prisma } = await import("@/lib/prisma")
-  const apps = await prisma.application.findMany({
+  const { getPrisma } = await import("@/lib/prisma")
+  const apps = await getPrisma().application.findMany({
     where: { userId: resolvedUserId },
     include: { company: true },
   })
@@ -45,8 +45,8 @@ export async function getApplication(id: string, userId?: string): Promise<Appli
   }
 
   const resolvedUserId = requireUserId(userId)
-  const { prisma } = await import("@/lib/prisma")
-  const app = await prisma.application.findFirst({
+  const { getPrisma } = await import("@/lib/prisma")
+  const app = await getPrisma().application.findFirst({
     where: { id, userId: resolvedUserId },
     include: { company: true },
   })
@@ -71,8 +71,8 @@ export async function getEvents(userId?: string): Promise<Event[]> {
   }
 
   const resolvedUserId = requireUserId(userId)
-  const { prisma } = await import("@/lib/prisma")
-  const evts = await prisma.event.findMany({
+  const { getPrisma } = await import("@/lib/prisma")
+  const evts = await getPrisma().event.findMany({
     where: { application: { userId: resolvedUserId } },
   })
   return evts.map((e) => ({
@@ -91,9 +91,9 @@ export async function getEventsByApplication(applicationId: string, userId?: str
   }
 
   const resolvedUserId = requireUserId(userId)
-  const { prisma } = await import("@/lib/prisma")
+  const { getPrisma } = await import("@/lib/prisma")
   const where = { applicationId, application: { userId: resolvedUserId } }
-  const evts = await prisma.event.findMany({ where })
+  const evts = await getPrisma().event.findMany({ where })
   return evts.map((e) => ({
     id: e.id,
     applicationId: e.applicationId,
@@ -110,9 +110,9 @@ export async function getStats(userId?: string): Promise<Stat[]> {
   }
 
   const resolvedUserId = requireUserId(userId)
-  const { prisma } = await import("@/lib/prisma")
+  const { getPrisma } = await import("@/lib/prisma")
 
-  const all = await prisma.application.findMany({
+  const all = await getPrisma().application.findMany({
     where: { userId: resolvedUserId },
     select: { status: true },
   })

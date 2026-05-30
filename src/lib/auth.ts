@@ -16,11 +16,11 @@ async function createAuth() {
   const Google = (await import("next-auth/providers/google")).default
   const Apple = (await import("next-auth/providers/apple")).default
   const { PrismaAdapter } = await import("@auth/prisma-adapter")
-  const { prisma } = await import("./prisma")
+  const { getPrisma } = await import("./prisma")
   const { seedAdminInvite, isValidInvite, acceptInvite } = await import("./data/invites")
 
   return NextAuth({
-    adapter: PrismaAdapter(prisma),
+    adapter: PrismaAdapter(getPrisma()),
     providers: [GitHub, Google, Apple],
     session: { strategy: "database" },
     pages: { signIn: "/" },
