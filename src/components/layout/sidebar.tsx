@@ -71,13 +71,13 @@ export function Sidebar() {
           <aside className="absolute inset-y-0 left-0 z-50 flex w-44 flex-col border-r bg-background">
             <div className="flex h-14 items-center justify-between px-4">
               <Link href="/dashboard" className="flex items-center gap-2.5">
-                <Compass size={20} className="text-purple-700 dark:text-purple-300 shrink-0" />
-                <span className="text-sm font-semibold text-purple-700 dark:text-purple-300 tracking-tight">Seeker</span>
+                <Compass size={20} className="text-purple-800 dark:text-purple-200 shrink-0" />
+                <span className="text-sm font-semibold text-purple-800 dark:text-purple-200 tracking-tight">Seeker</span>
               </Link>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300 transition-colors"
+                className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300 transition-colors"
               >
                 <AnimatedIcon icon={X} size={16} />
               </button>
@@ -95,8 +95,8 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-purple-100/50 text-purple-700 dark:bg-purple-900/25 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300"
+                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
                     )}
                   >
                     <AnimatedIcon icon={Icon} size={18} />
@@ -116,8 +116,8 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-purple-100/50 text-purple-700 dark:bg-purple-900/25 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300"
+                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
                     )}
                   >
                     <AnimatedIcon icon={Icon} size={18} />
@@ -129,7 +129,7 @@ export function Sidebar() {
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors w-full text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300"
+                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors w-full text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
               >
 {dark ? <AnimatedIcon icon={Sun} size={18} /> : <AnimatedIcon icon={Moon} size={18} />}
                 <span>Theme</span>
@@ -144,8 +144,8 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-purple-100/50 text-purple-700 dark:bg-purple-900/25 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300"
+                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
                     )}
                   >
                     <AnimatedIcon icon={Icon} size={18} />
@@ -179,8 +179,8 @@ export function Sidebar() {
             "flex items-center gap-2.5",
             collapsed && "px-2"
           )}>
-            <Compass size={20} className="text-purple-700 dark:text-purple-300 shrink-0" />
-            {!collapsed && <span className="text-sm font-semibold text-purple-700 dark:text-purple-300 tracking-tight">Seeker</span>}
+            <Compass size={20} className="text-purple-800 dark:text-purple-200 shrink-0" />
+            {!collapsed && <span className="text-sm font-semibold text-purple-800 dark:text-purple-200 tracking-tight">Seeker</span>}
           </div>
         </Link>
 
@@ -200,8 +200,8 @@ export function Sidebar() {
                   "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   collapsed && "justify-center px-2",
                   isActive
-                    ? "bg-purple-100/50 text-purple-700 dark:bg-purple-900/25 dark:text-purple-300"
-                    : "text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300"
+                    ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                    : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
                 )}
               >
                 <AnimatedIcon icon={Icon} size={18} />
@@ -224,8 +224,8 @@ export function Sidebar() {
                   "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   collapsed && "justify-center px-2",
                   isActive
-                    ? "bg-purple-100/50 text-purple-700 dark:bg-purple-900/25 dark:text-purple-300"
-                    : "text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300"
+                    ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                    : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
                 )}
               >
                 <AnimatedIcon icon={Icon} size={18} />
@@ -241,10 +241,10 @@ export function Sidebar() {
             className={cn(
               "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors w-full",
               collapsed && "justify-center px-2",
-              "text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300"
+              "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
             )}
           >
-            {dark ? <Sun size={18} className="shrink-0" /> : <Moon size={18} className="shrink-0" />}
+            {dark ? <AnimatedIcon icon={Sun} size={18} /> : <AnimatedIcon icon={Moon} size={18} />}
             {!collapsed && <span>Theme</span>}
           </button>
           {settingsItems.map((item) => {
@@ -259,8 +259,8 @@ export function Sidebar() {
                   "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   collapsed && "justify-center px-2",
                   isActive
-                    ? "bg-purple-100/50 text-purple-700 dark:bg-purple-900/25 dark:text-purple-300"
-                    : "text-muted-foreground hover:bg-purple-50/40 hover:text-purple-700 dark:hover:bg-purple-900/25 dark:hover:text-purple-300"
+                    ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                    : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
                 )}
               >
                 <AnimatedIcon icon={Icon} size={18} />
