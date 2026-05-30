@@ -74,10 +74,8 @@ export default async function LandingPage({
   const session = await auth()
   const isDemo = config.demoMode
 
-  if (isDemo && view !== "signin") {
-    if (session?.user) redirect("/dashboard")
-  } else if (!isDemo) {
-    if (session?.user) redirect("/dashboard")
+  if (!isDemo && session?.user) {
+    redirect("/dashboard")
   }
 
   return (
