@@ -13,9 +13,8 @@ export function AnimatedIcon({ icon: Icon, size = 18, className }: AnimatedIconP
   return (
     <motion.span
       className="inline-flex items-center justify-center shrink-0"
-      whileHover={{ rotate: [0, -8, 8, 0], scale: 1.15 }}
-      whileTap={{ scale: 0.85 }}
-      transition={{ duration: 0.35, ease: "easeInOut" }}
+      whileHover={{ scale: 1.15, transition: { type: "spring", stiffness: 400, damping: 15 } }}
+      whileTap={{ scale: 0.9, transition: { type: "spring", stiffness: 400, damping: 15 } }}
     >
       <Icon size={size} className={className} />
     </motion.span>
