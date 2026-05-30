@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { applications, events, statusConfig } from "@/lib/mock-data"
+import { getApplication, getEventsByApplication } from "@/lib/data/applications"
+import { statusConfig } from "@/lib/data/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -22,16 +23,15 @@ export default async function ApplicationDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const application = applications.find((a) => a.id === id)
+  const application = await getApplication(id)
 
   if (!application) {
     notFound()
   }
 
   const config = statusConfig[application.status]
-  const appEvents = events
-    .filter((e) => e.applicationId === application.id)
-    .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
+  const appEvents = await getEventsByApplication(application.id)
+  const sortedEvents = appEvents.sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
@@ -117,12 +117,12 @@ export default async function ApplicationDetailPage({
             <CardTitle className="text-base">Timeline</CardTitle>
           </CardHeader>
           <CardContent>
-            {appEvents.length === 0 ? (
+            {sortedEvents.length === 0 ? (
               <p className="text-sm text-muted-foreground">No events yet</p>
             ) : (
               <div className="relative space-y-4">
                 <div className="absolute left-2 top-2 bottom-2 w-px bg-border" />
-                {appEvents.map((event) => {
+                {sortedEvents.map((event) => {
                   const eventConfig = eventTypeConfig[event.eventType]
                   return (
                     <div key={event.id} className="relative flex gap-4">

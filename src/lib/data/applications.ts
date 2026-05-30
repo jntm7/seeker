@@ -1,32 +1,10 @@
 import { config } from "@/lib/config"
 import type { ApplicationStatus, EventType } from "@/generated/prisma/client"
+import type { MockApplication as Application, MockEvent as Event, MockStat as Stat } from "./types"
+import { statusConfig } from "./types"
 
-export type Application = {
-  id: string
-  roleTitle: string
-  company: string
-  status: ApplicationStatus
-  dateApplied: string | null
-  location: string | null
-  jobUrl: string | null
-  notes: string | null
-  updatedAt: string
-}
-
-export type Event = {
-  id: string
-  applicationId: string
-  eventType: EventType
-  eventDate: string
-  notes: string | null
-}
-
-export type Stat = {
-  label: string
-  value: number
-  trend?: string
-  hex: string
-}
+export type { Application, Event, Stat }
+export { statusConfig }
 
 export async function getApplications(): Promise<Application[]> {
   if (config.demoMode) {

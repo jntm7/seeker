@@ -5,10 +5,8 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import {
-  applications as allApps,
-  events as allEvents,
-} from "@/lib/mock-data"
+import { statusConfig } from "@/lib/data/types"
+import type { MockApplication, MockEvent } from "@/lib/data/types"
 import type { EventType } from "@/generated/prisma/client"
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -77,7 +75,7 @@ function formatDateShort(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
 }
 
-export function CalendarPageContent() {
+export function CalendarPageContent({ applications, events }: { applications: MockApplication[]; events: MockEvent[] }) {
   const today = useMemo(() => new Date(), [])
   const todayStr = today.toISOString().split("T")[0]
 
@@ -86,9 +84,9 @@ export function CalendarPageContent() {
 
   const { year, month, cells, daysInMonth } = useCalendar(viewDate)
 
-  const events = useMemo(() => {
-    const appMap = new Map(allApps.map((a) => [a.id, a]))
-    return allEvents
+  const enrichedEvents = useMemo(() => {
+    const appMap = new Map(applications.map((a) => [a.id, a]))
+    return events
       .map((e) => {
         const app = appMap.get(e.applicationId)
         if (!app) return null
@@ -99,11 +97,11 @@ export function CalendarPageContent() {
         }
       })
       .filter((e): e is EnrichedEvent => e !== null)
-  }, [])
+  }, [applications, events])
 
   const eventsByDay = useMemo(() => {
     const map = new Map<number, EnrichedEvent[]>()
-    for (const event of events) {
+    for (const event of enrichedEvents) {
       const d = new Date(event.eventDate)
       if (d.getMonth() === month && d.getFullYear() === year) {
         const day = d.getDate()
@@ -114,22 +112,22 @@ export function CalendarPageContent() {
       }
     }
     return map
-  }, [events, month, year])
+  }, [enrichedEvents, month, year])
 
   const selectedEvents = useMemo(() => {
     if (selectedDay === null) return []
     const dayStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`
-    return events
+    return enrichedEvents
       .filter((e) => e.eventDate === dayStr)
       .sort((a, b) => eventPriority[a.eventType] - eventPriority[b.eventType])
-  }, [events, year, month, selectedDay])
+  }, [enrichedEvents, year, month, selectedDay])
 
   const upcomingDeadlines = useMemo(() => {
-    return events
+    return enrichedEvents
       .filter((e) => e.eventDate >= todayStr)
       .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
       .slice(0, 5)
-  }, [events, todayStr])
+  }, [enrichedEvents, todayStr])
 
   function prevMonth() {
     const d = new Date(year, month - 1, 1)

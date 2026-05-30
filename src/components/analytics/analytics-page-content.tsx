@@ -3,10 +3,8 @@
 import { useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import {
-  applications as allApps,
-  statusConfig,
-} from "@/lib/mock-data"
+import { statusConfig } from "@/lib/data/types"
+import type { MockApplication, MockStat } from "@/lib/data/types"
 import type { ApplicationStatus } from "@/generated/prisma/client"
 
 const statusOrder: ApplicationStatus[] = [
@@ -18,7 +16,7 @@ function getMonthLabel(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "short", year: "2-digit" })
 }
 
-export function AnalyticsPageContent() {
+export function AnalyticsPageContent({ applications, stats }: { applications: MockApplication[]; stats: MockStat[] }) {
   const { total, byStatus, byMonth, active, interviews, offers, rejected, withdrawn } = useMemo(() => {
     const byStatus = {} as Record<string, number>
     const byMonth = {} as Record<string, number>
@@ -26,7 +24,7 @@ export function AnalyticsPageContent() {
     let interviews = 0
     let offers = 0
 
-    for (const app of allApps) {
+    for (const app of applications) {
       byStatus[app.status] = (byStatus[app.status] ?? 0) + 1
 
       if (app.dateApplied) {
@@ -40,7 +38,7 @@ export function AnalyticsPageContent() {
     }
 
     return {
-      total: allApps.length,
+      total: applications.length,
       byStatus,
       byMonth,
       active,
@@ -49,9 +47,7 @@ export function AnalyticsPageContent() {
       rejected: byStatus.rejected ?? 0,
       withdrawn: byStatus.withdrawn ?? 0,
     }
-  }, [])
-
-  const maxStatusCount = Math.max(...Object.values(byStatus), 1)
+  }, [applications])
   const maxMonthCount = Math.max(...Object.values(byMonth), 1)
   const monthEntries = Object.entries(byMonth).sort(([a], [b]) => {
     const parse = (s: string) => {

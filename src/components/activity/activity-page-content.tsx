@@ -5,10 +5,8 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import {
-  applications as allApps,
-  events as allEvents,
-} from "@/lib/mock-data"
+import { statusConfig } from "@/lib/data/types"
+import type { MockApplication, MockEvent } from "@/lib/data/types"
 import type { EventType } from "@/generated/prisma/client"
 import { History, ArrowRight } from "lucide-react"
 
@@ -61,10 +59,10 @@ function dateKey(dateStr: string): string {
   return new Date(dateStr).toISOString().split("T")[0]
 }
 
-export function ActivityPageContent() {
-  const events = useMemo(() => {
-    const appMap = new Map(allApps.map((a) => [a.id, a]))
-    return allEvents
+export function ActivityPageContent({ applications, events }: { applications: MockApplication[]; events: MockEvent[] }) {
+  const enriched = useMemo(() => {
+    const appMap = new Map(applications.map((a) => [a.id, a]))
+    return events
       .map((e) => {
         const app = appMap.get(e.applicationId)
         if (!app) return null

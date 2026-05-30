@@ -5,7 +5,8 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { applications as allApps, statusConfig, type MockApplication } from "@/lib/mock-data"
+import { statusConfig } from "@/lib/data/types"
+import type { MockApplication } from "@/lib/data/types"
 import type { ApplicationStatus } from "@/generated/prisma/client"
 import { Search, Building2, ArrowUpRight } from "lucide-react"
 
@@ -45,11 +46,11 @@ function groupByCompany(apps: MockApplication[]): CompanyGroup[] {
     .sort((a, b) => b.total - a.total)
 }
 
-export function CompaniesPageContent() {
+export function CompaniesPageContent({ applications }: { applications: MockApplication[] }) {
   const [search, setSearch] = useState("")
 
   const companies = useMemo(() => {
-    const groups = groupByCompany(allApps)
+    const groups = groupByCompany(applications)
     if (!search) return groups
     const q = search.toLowerCase()
     return groups.filter((c) =>
@@ -64,7 +65,7 @@ export function CompaniesPageContent() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Companies</h1>
           <p className="text-sm text-muted-foreground">
-            {allApps.length} applications across {companies.length} companies
+            {applications.length} applications across {companies.length} companies
           </p>
         </div>
         <div className="relative">
