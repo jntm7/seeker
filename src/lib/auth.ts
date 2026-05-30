@@ -30,7 +30,7 @@ export { handlers, signIn, signOut }
 
 export async function auth() {
   if (config.demoMode) {
-    return { user: { name: "Demo User", email: "demo@seeker.local" } }
+    return { user: { id: "demo", name: "Demo User", email: "demo@seeker.local" } }
   }
   return nextAuth()
 }

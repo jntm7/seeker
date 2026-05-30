@@ -6,14 +6,17 @@ import { statusConfig } from "./types"
 export type { Application, Event, Stat }
 export { statusConfig }
 
-export async function getApplications(): Promise<Application[]> {
+export async function getApplications(userId?: string): Promise<Application[]> {
   if (config.demoMode) {
     const { applications } = await import("@/lib/mock-data")
     return applications
   }
 
   const { prisma } = await import("@/lib/prisma")
-  const apps = await prisma.application.findMany({ include: { company: true } })
+  const apps = await prisma.application.findMany({
+    where: userId ? { userId } : undefined,
+    include: { company: true },
+  })
   return apps.map((app) => ({
     id: app.id,
     roleTitle: app.roleTitle,
@@ -27,7 +30,7 @@ export async function getApplications(): Promise<Application[]> {
   }))
 }
 
-export async function getApplication(id: string): Promise<Application | null> {
+export async function getApplication(id: string, userId?: string): Promise<Application | null> {
   if (config.demoMode) {
     const { applications } = await import("@/lib/mock-data")
     return applications.find((a) => a.id === id) ?? null
@@ -39,6 +42,7 @@ export async function getApplication(id: string): Promise<Application | null> {
     include: { company: true },
   })
   if (!app) return null
+  if (userId && app.userId !== userId) return null
   return {
     id: app.id,
     roleTitle: app.roleTitle,
@@ -52,14 +56,16 @@ export async function getApplication(id: string): Promise<Application | null> {
   }
 }
 
-export async function getEvents(): Promise<Event[]> {
+export async function getEvents(userId?: string): Promise<Event[]> {
   if (config.demoMode) {
     const { events } = await import("@/lib/mock-data")
     return events
   }
 
   const { prisma } = await import("@/lib/prisma")
-  const evts = await prisma.event.findMany()
+  const evts = await prisma.event.findMany({
+    where: userId ? { application: { userId } } : undefined,
+  })
   return evts.map((e) => ({
     id: e.id,
     applicationId: e.applicationId,
@@ -69,14 +75,18 @@ export async function getEvents(): Promise<Event[]> {
   }))
 }
 
-export async function getEventsByApplication(applicationId: string): Promise<Event[]> {
+export async function getEventsByApplication(applicationId: string, userId?: string): Promise<Event[]> {
   if (config.demoMode) {
     const { events } = await import("@/lib/mock-data")
     return events.filter((e) => e.applicationId === applicationId)
   }
 
   const { prisma } = await import("@/lib/prisma")
-  const evts = await prisma.event.findMany({ where: { applicationId } })
+  const where: { applicationId: string; application?: { userId: string } } = { applicationId }
+  if (userId) {
+    where.application = { userId }
+  }
+  const evts = await prisma.event.findMany({ where })
   return evts.map((e) => ({
     id: e.id,
     applicationId: e.applicationId,
@@ -86,16 +96,18 @@ export async function getEventsByApplication(applicationId: string): Promise<Eve
   }))
 }
 
-export async function getStats(): Promise<Stat[]> {
+export async function getStats(userId?: string): Promise<Stat[]> {
   if (config.demoMode) {
     const { stats } = await import("@/lib/mock-data")
     return stats
   }
 
   const { prisma } = await import("@/lib/prisma")
-  const { statusConfig } = await import("@/lib/mock-data")
 
-  const all = await prisma.application.findMany()
+  const all = await prisma.application.findMany({
+    where: userId ? { userId } : undefined,
+    select: { status: true },
+  })
   const active = all.filter((a) =>
     ["applied", "screening", "interview"].includes(a.status)
   ).length
