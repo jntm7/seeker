@@ -27,9 +27,10 @@ COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/src/generated ./src/generated
 
 RUN npx prisma generate
-RUN npx prisma migrate deploy
-RUN npx prisma db seed
+COPY docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 USER nextjs
 EXPOSE 3000
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["node", "server.js"]
