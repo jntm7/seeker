@@ -86,7 +86,7 @@ export function ActivityPageContent({ applications, events }: { applications: Mo
     }
     return Array.from(groups.entries())
       .sort(([a], [b]) => new Date(b).getTime() - new Date(a).getTime())
-  }, [events])
+  }, [enriched])
 
   const today = new Date().toISOString().split("T")[0]
   const [todayEvents, upcoming, past] = useMemo(() => {
