@@ -9,8 +9,13 @@ import { Search } from "lucide-react"
 export function GlobalSearch() {
   const [query, setQuery] = useState("")
   const [open, setOpen] = useState(false)
+  const [isMac, setIsMac] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setIsMac(navigator.platform.startsWith("Mac"))
+  }, [])
 
   const results = query.trim()
     ? applications.filter((app) => {
@@ -55,12 +60,19 @@ export function GlobalSearch() {
       <input
         ref={inputRef}
         type="text"
-        placeholder="Search roles, companies, locations... (⌘K)"
+        placeholder="Search by role, company, or location"
         value={query}
         onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}
-        className="h-9 w-full rounded-md border bg-muted/50 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-colors"
+        className="h-9 w-full rounded-md border bg-muted/50 pl-9 pr-12 text-sm outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-colors"
       />
+      <kbd className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center rounded-md border bg-background px-1.5 text-xs font-medium text-muted-foreground shadow-xs leading-none py-[3px]">
+        {isMac ? (
+          <><span style={{ fontSize: '1.3em', marginRight: '2px' }}>⌘</span>K</>
+        ) : (
+          "Ctrl + K"
+        )}
+      </kbd>
       {open && query.trim() && (
         <div className="absolute top-full left-0 right-0 mt-1 rounded-lg border bg-popover py-1 shadow-md ring-1 ring-foreground/10 z-50 max-h-80 overflow-y-auto">
           {results.length === 0 ? (
