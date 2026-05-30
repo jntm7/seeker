@@ -17,50 +17,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { statusConfig, type MockApplication } from "@/lib/data/types"
-import type { ApplicationStatus } from "@/generated/prisma/client"
-import { updateApplication, bulkDeleteApplications } from "@/lib/actions/applications"
+import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
+import { useApplicationFilters, timeFilterOptions } from "@/lib/hooks/use-application-filters"
+import { StatusBadge } from "@/components/ui/status-badge"
+import { InlineNotesEditor } from "@/components/ui/inline-notes-editor"
+import { bulkDeleteApplications } from "@/lib/actions/applications"
 import { toast } from "sonner"
 import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
   Search,
   Trash2,
 } from "lucide-react"
 
-const statusOrder: ApplicationStatus[] = [
-  "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
-]
-
-type SortField = "roleTitle" | "company" | "dateApplied" | "status" | "location"
-type SortDirection = "asc" | "desc"
-type TimeFilter = "all" | "week" | "month" | "3months" | "6months"
 const PAGE_SIZE = 10
-
-const timeFilterOptions: { value: TimeFilter; label: string }[] = [
-  { value: "all", label: "All time" },
-  { value: "week", label: "This week" },
-  { value: "month", label: "This month" },
-  { value: "3months", label: "Last 3 months" },
-  { value: "6months", label: "Last 6 months" },
-]
-
-function isWithinTimeFilter(dateStr: string | null, filter: TimeFilter): boolean {
-  if (!dateStr || filter === "all") return true
-  const date = new Date(dateStr)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffDays = diffMs / (1000 * 60 * 60 * 24)
-  if (filter === "week") return diffDays <= 7
-  if (filter === "month") return diffDays <= 30
-  if (filter === "3months") return diffDays <= 90
-  if (filter === "6months") return diffDays <= 180
-  return true
-}
 
 export default function ApplicationsFullTable({
   apps,
@@ -71,60 +42,35 @@ export default function ApplicationsFullTable({
 }) {
   const [search, setSearch] = useState("")
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [editingNotes, setEditingNotes] = useState<string | null>(null)
-  const [notesValue, setNotesValue] = useState("")
-  const [statusFilter, setStatusFilter] = useState<ApplicationStatus | "all">("all")
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>("all")
-  const [sortField, setSortField] = useState<SortField>("dateApplied")
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
   const [page, setPage] = useState(0)
 
-  function toggleSort(field: SortField) {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
-    } else {
-      setSortField(field)
-      setSortDirection(field === "dateApplied" ? "desc" : "asc")
-    }
-  }
+  const {
+    filtered,
+    statusFilter,
+    setStatusFilter,
+    timeFilter,
+    setTimeFilter,
+    toggleSort,
+    renderSortIcon,
+  } = useApplicationFilters(apps)
 
-  const filtered = useMemo(() => {
-    return apps
-      .filter((app) => {
-        if (statusFilter !== "all" && app.status !== statusFilter) return false
-        if (!isWithinTimeFilter(app.dateApplied, timeFilter)) return false
-        if (search) {
-          const q = search.toLowerCase()
-          return (
-            app.roleTitle.toLowerCase().includes(q) ||
-            app.company.toLowerCase().includes(q) ||
-            (app.location ?? "").toLowerCase().includes(q)
-          )
-        }
-        return true
-      })
-      .sort((a, b) => {
-        let cmp = 0
-        if (sortField === "dateApplied") {
-          const dateA = a.dateApplied ? new Date(a.dateApplied).getTime() : 0
-          const dateB = b.dateApplied ? new Date(b.dateApplied).getTime() : 0
-          cmp = dateA - dateB
-        } else if (sortField === "roleTitle") {
-          cmp = a.roleTitle.localeCompare(b.roleTitle)
-        } else if (sortField === "company") {
-          cmp = a.company.localeCompare(b.company)
-        } else if (sortField === "status") {
-          cmp = statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
-        } else if (sortField === "location") {
-          cmp = (a.location ?? "").localeCompare(b.location ?? "")
-        }
-        return sortDirection === "desc" ? -cmp : cmp
-      })
-  }, [apps, statusFilter, timeFilter, search, sortField, sortDirection])
+  const searched = useMemo(
+    () => {
+      if (!search) return filtered
+      const q = search.toLowerCase()
+      return filtered.filter(
+        (app) =>
+          app.roleTitle.toLowerCase().includes(q) ||
+          app.company.toLowerCase().includes(q) ||
+          (app.location ?? "").toLowerCase().includes(q)
+      )
+    },
+    [filtered, search]
+  )
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const totalPages = Math.max(1, Math.ceil(searched.length / PAGE_SIZE))
   const safePage = Math.min(page, totalPages - 1)
-  const paged = filtered.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE)
+  const paged = searched.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE)
 
   function deleteSelected() {
     const ids = [...selectedIds]
@@ -150,30 +96,6 @@ export default function ApplicationsFullTable({
       else next.add(id)
       return next
     })
-  }
-
-  function startEditNotes(app: MockApplication) {
-    setEditingNotes(app.id)
-    setNotesValue(app.notes ?? "")
-  }
-
-  function saveNotes(id: string) {
-    setApps((prev) =>
-      prev.map((app) =>
-        app.id === id ? { ...app, notes: notesValue || null } : app
-      )
-    )
-    setEditingNotes(null)
-    updateApplication(id, { notes: notesValue || null }).catch(() => {
-      toast.error("Failed to save notes")
-    })
-  }
-
-  function renderSortIcon(field: SortField) {
-    if (sortField !== field) return <ArrowUpDown size={14} className="opacity-40" />
-    return sortDirection === "asc"
-      ? <ArrowUp size={14} />
-      : <ArrowDown size={14} />
   }
 
   return (
@@ -325,74 +247,51 @@ export default function ApplicationsFullTable({
                 </TableCell>
               </TableRow>
             ) : (
-              paged.map((app) => {
-                const config = statusConfig[app.status]
-                return (
-                  <TableRow key={app.id} className="h-14">
-                    <TableCell>
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.has(app.id)}
-                        onChange={() => toggleSelect(app.id)}
-                        className="rounded border-border"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium pl-6">
-                      <Link
-                        href={`/applications/${app.id}`}
-                        className="hover:underline"
-                      >
-                        {app.roleTitle}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{app.company}</TableCell>
-                    <TableCell>
-                      <span
-                        className="inline-flex items-center rounded-md px-2.5 py-1 text-sm font-medium"
-                        style={{ backgroundColor: `${config.hex}35`, color: config.hex }}
-                      >
-                        {config.label}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      {app.dateApplied
-                        ? new Date(app.dateApplied).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "—"}
-                    </TableCell>
-                    <TableCell>
-                      {app.location ?? "—"}
-                    </TableCell>
-                    <TableCell className="max-w-[200px]">
-                      {editingNotes === app.id ? (
-                        <input
-                          type="text"
-                          value={notesValue}
-                          onChange={(e) => setNotesValue(e.target.value)}
-                          onBlur={() => saveNotes(app.id)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") saveNotes(app.id)
-                            if (e.key === "Escape") setEditingNotes(null)
-                          }}
-                          autoFocus
-                          className="w-full bg-transparent text-sm outline-none"
-                          placeholder="Add notes..."
-                        />
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => startEditNotes(app)}
-                          className="w-full text-left text-sm text-muted-foreground hover:text-foreground truncate"
-                        >
-                          {app.notes ?? "Add notes..."}
-                        </button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                )
-              })
+              paged.map((app) => (
+                <TableRow key={app.id} className="h-14">
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(app.id)}
+                      onChange={() => toggleSelect(app.id)}
+                      className="rounded border-border"
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium pl-6">
+                    <Link
+                      href={`/applications/${app.id}`}
+                      className="hover:underline"
+                    >
+                      {app.roleTitle}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{app.company}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={app.status} />
+                  </TableCell>
+                  <TableCell>
+                    {app.dateApplied
+                      ? new Date(app.dateApplied).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "—"}
+                  </TableCell>
+                  <TableCell>
+                    {app.location ?? "—"}
+                  </TableCell>
+                  <TableCell className="max-w-[200px]">
+                    <InlineNotesEditor
+                      app={app}
+                      onUpdate={(id, updates) =>
+                        setApps((prev) =>
+                          prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
+                        )
+                      }
+                    />
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>
@@ -401,7 +300,7 @@ export default function ApplicationsFullTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>
-            Showing {safePage * PAGE_SIZE + 1}–{Math.min((safePage + 1) * PAGE_SIZE, filtered.length)} of {filtered.length}
+            Showing {safePage * PAGE_SIZE + 1}–{Math.min((safePage + 1) * PAGE_SIZE, searched.length)} of {searched.length}
           </span>
           <div className="flex items-center gap-2">
             <Button

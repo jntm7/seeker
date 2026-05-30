@@ -5,40 +5,9 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { statusConfig } from "@/lib/data/types"
+import { eventColors, eventLabels, type EnrichedEvent } from "@/lib/data/events"
 import type { MockApplication, MockEvent } from "@/lib/data/types"
-import type { EventType } from "@/generated/prisma/client"
 import { History, ArrowRight } from "lucide-react"
-
-const eventColors: Record<EventType, string> = {
-  todo: "#7a7585",
-  applied: "#5b7fa5",
-  screening: "#9a8570",
-  interview: "#8a7ab5",
-  offer: "#5d9f6a",
-  rejection: "#b56a6a",
-  note: "#7a7585",
-}
-
-const eventLabels: Record<EventType, string> = {
-  todo: "To Do",
-  applied: "Applied",
-  screening: "Screening",
-  interview: "Interview",
-  offer: "Offer",
-  rejection: "Rejected",
-  note: "Note",
-}
-
-type EnrichedEvent = {
-  id: string
-  eventType: EventType
-  eventDate: string
-  notes: string | null
-  roleTitle: string
-  company: string
-  applicationId: string
-}
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr)

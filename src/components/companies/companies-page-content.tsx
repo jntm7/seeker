@@ -5,14 +5,8 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { statusConfig } from "@/lib/data/types"
-import type { MockApplication } from "@/lib/data/types"
-import type { ApplicationStatus } from "@/generated/prisma/client"
+import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
 import { Search, Building2 } from "lucide-react"
-
-const statusOrder: ApplicationStatus[] = [
-  "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
-]
 
 type CompanyGroup = {
   name: string

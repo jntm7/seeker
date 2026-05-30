@@ -4,13 +4,7 @@ import { useMemo } from "react"
 import { ChevronRight } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { statusConfig } from "@/lib/data/types"
-import type { MockApplication } from "@/lib/data/types"
-import type { ApplicationStatus } from "@/generated/prisma/client"
-
-const statusOrder: ApplicationStatus[] = [
-  "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
-]
+import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
 
 function getMonthLabel(dateStr: string): string {
   const d = new Date(dateStr)

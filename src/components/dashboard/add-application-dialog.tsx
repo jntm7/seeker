@@ -17,14 +17,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { type MockApplication, statusConfig } from "@/lib/data/types"
+import { type MockApplication, statusConfig, statusOrder } from "@/lib/data/types"
 import { type ApplicationStatus } from "@/generated/prisma/client"
 import { createApplicationWithCompany } from "@/lib/actions/applications"
 import { Plus, ChevronDown } from "lucide-react"
-
-const statusOrder: ApplicationStatus[] = [
-  "todo", "applied", "screening", "interview", "offer", "rejected", "withdrawn",
-]
 
 export function AddApplicationDialog({
   onAdd,

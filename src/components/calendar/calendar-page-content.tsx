@@ -5,30 +5,11 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { eventColors, eventLabels, type EnrichedEvent } from "@/lib/data/events"
 import type { MockApplication, MockEvent } from "@/lib/data/types"
 import type { EventType } from "@/generated/prisma/client"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-const eventColors: Record<EventType, string> = {
-  todo: "#7a7585",
-  applied: "#5b7fa5",
-  screening: "#9a8570",
-  interview: "#8a7ab5",
-  offer: "#5d9f6a",
-  rejection: "#b56a6a",
-  note: "#7a7585",
-}
-
-const eventLabels: Record<EventType, string> = {
-  todo: "To Do",
-  applied: "Applied",
-  screening: "Screening",
-  interview: "Interview",
-  offer: "Offer",
-  rejection: "Rejected",
-  note: "Note",
-}
 
 const eventPriority: Record<EventType, number> = {
   interview: 0,
@@ -38,16 +19,6 @@ const eventPriority: Record<EventType, number> = {
   applied: 4,
   rejection: 5,
   note: 6,
-}
-
-type EnrichedEvent = {
-  id: string
-  eventType: EventType
-  eventDate: string
-  notes: string | null
-  roleTitle: string
-  company: string
-  applicationId: string
 }
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
