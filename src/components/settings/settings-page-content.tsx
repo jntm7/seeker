@@ -8,6 +8,7 @@ import { Download, Bell, Users, Trash2, AlertTriangle, Check } from "lucide-reac
 import { exportData, deleteAccount } from "@/lib/actions/account"
 import { sendInvite } from "@/lib/actions/invites"
 import { signOut } from "next-auth/react"
+import { toast } from "sonner"
 import type { InviteRole } from "@/generated/prisma/client"
 
 export function SettingsPageContent() {
@@ -29,6 +30,7 @@ export function SettingsPageContent() {
     URL.revokeObjectURL(url)
     setExported(true)
     setTimeout(() => setExported(false), 2000)
+    toast.success("Data exported")
   }
 
   async function handleSendInvite() {

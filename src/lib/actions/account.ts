@@ -21,7 +21,21 @@ export async function deleteAccount() {
 }
 
 export async function exportData() {
-  if (config.demoMode) return null
+  if (config.demoMode) {
+    const { applications } = await import("@/lib/mock-data")
+    return {
+      user: { name: "Demo User", email: "demo@seeker.local" },
+      applications: applications.map((app) => ({
+        roleTitle: app.roleTitle,
+        status: app.status,
+        company: app.company,
+        dateApplied: app.dateApplied,
+        location: app.location,
+        jobUrl: app.jobUrl,
+        notes: app.notes,
+      })),
+    }
+  }
 
   const session = await auth()
   if (!session?.user?.email) throw new Error("Unauthorized")
