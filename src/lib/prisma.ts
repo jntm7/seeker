@@ -10,7 +10,7 @@ function createPrisma() {
   if (!url) {
     throw new Error("DATABASE_URL is required")
   }
-  const adapter = new PrismaLibSql({ url })
+  const adapter = new PrismaLibSql({ url, authToken: process.env["DATABASE_AUTH_TOKEN"] })
   return new PrismaClient({ adapter })
 }
 
