@@ -18,9 +18,15 @@ export function EmailSignIn() {
     const password = form.get("password") as string
 
     if (mode === "signup") {
-      const result = await signUp({ error: "" }, form)
-      if (result.error) {
-        setError(result.error)
+      try {
+        const result = await signUp({ error: "" }, form)
+        if (result.error) {
+          setError(result.error)
+          setLoading(false)
+          return
+        }
+      } catch {
+        setError("Something went wrong. Please try again.")
         setLoading(false)
         return
       }
