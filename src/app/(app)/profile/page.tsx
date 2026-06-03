@@ -6,5 +6,10 @@ export default async function ProfilePage() {
   const session = await auth()
   if (!session?.user) redirect("/")
 
-  return <ProfilePageContent />
+  return (
+    <ProfilePageContent
+      userName={session.user.name ?? ""}
+      userEmail={session.user.email ?? ""}
+    />
+  )
 }

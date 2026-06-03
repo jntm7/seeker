@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { User, MapPin, Cake, FileText, Upload } from "lucide-react"
 
-export function ProfilePageContent() {
-  const [name, setName] = useState("Demo User")
-  const [location, setLocation] = useState("Seattle")
-  const [age, setAge] = useState("25")
+export function ProfilePageContent({ userName, userEmail }: { userName: string; userEmail: string }) {
+  const [name, setName] = useState(userName)
+  const [email] = useState(userEmail)
+  const [location, setLocation] = useState("")
+  const [age, setAge] = useState("")
+  const [resumeName, setResumeName] = useState<string | null>(null)
   const [resumeName, setResumeName] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
 
@@ -48,6 +50,16 @@ export function ProfilePageContent() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium">Email</label>
+            <input
+              type="email"
+              value={email}
+              readOnly
+              className="w-full rounded-md border bg-muted/50 px-3 py-2 text-sm text-muted-foreground outline-none cursor-not-allowed"
             />
           </div>
 
