@@ -12,7 +12,6 @@ export function ProfilePageContent({ userName, userEmail }: { userName: string; 
   const [location, setLocation] = useState("")
   const [age, setAge] = useState("")
   const [resumeName, setResumeName] = useState<string | null>(null)
-  const [resumeName, setResumeName] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
 
   function handleResumeUpload(e: React.ChangeEvent<HTMLInputElement>) {
