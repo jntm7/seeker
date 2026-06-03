@@ -84,7 +84,7 @@ export default async function ApplicationDetailPage({
               <Calendar size={16} className="text-muted-foreground" />
               <span>
                 {application.dateApplied
-                  ? `Applied ${new Date(application.dateApplied).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
+                  ? `Applied ${new Date(application.dateApplied).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })}`
                   : "Not yet applied"}
               </span>
             </div>
@@ -156,7 +156,7 @@ export default async function ApplicationDetailPage({
                           <span className="text-xs text-muted-foreground">
                             {new Date(event.eventDate).toLocaleDateString(
                               "en-US",
-                              { month: "short", day: "numeric", year: "numeric" }
+                              { month: "short", day: "numeric", timeZone: "UTC" }
                             )}
                           </span>
                         </div>

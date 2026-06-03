@@ -178,6 +178,7 @@ export function ApplicationsTable({
                       ? new Date(app.dateApplied).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
+                          timeZone: "UTC",
                         })
                       : "—"}
                   </TableCell>

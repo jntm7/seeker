@@ -91,7 +91,7 @@ export function CompaniesPageContent({ applications }: { applications: MockAppli
                     <h3 className="text-base font-semibold truncate">{company.name}</h3>
                     <p className="text-xs text-muted-foreground">
                       {company.total} {company.total === 1 ? "application" : "applications"}
-                      &nbsp;· Last updated {new Date(company.lastUpdated).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      &nbsp;· Last updated {new Date(company.lastUpdated).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" })}
                     </p>
                   </div>
                 </div>
