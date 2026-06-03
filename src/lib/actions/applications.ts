@@ -129,7 +129,7 @@ export async function createApplicationWithCompany(data: {
   if (!user) throw new Error("User not found")
 
   let company = await getPrisma().company.findFirst({
-    where: { name: { equals: data.companyName, mode: "insensitive" } },
+    where: { name: data.companyName },
   })
   if (!company) {
     company = await getPrisma().company.create({
