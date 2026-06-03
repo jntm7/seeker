@@ -5,6 +5,7 @@ export type MockApplication = {
   roleTitle: string
   company: string
   status: ApplicationStatus
+  position: number
   dateApplied: string | null
   location: string | null
   jobUrl: string | null

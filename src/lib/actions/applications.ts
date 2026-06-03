@@ -47,6 +47,24 @@ export async function createApplication(data: {
   return { id: app.id }
 }
 
+export async function updateApplicationPositions(updates: { id: string; position: number }[]) {
+  if (config.demoMode) return
+
+  const userId = await getUserId()
+  if (!userId) throw new Error("Unauthorized")
+
+  const { getPrisma } = await import("@/lib/prisma")
+
+  await getPrisma().$transaction(
+    updates.map(({ id, position }) =>
+      getPrisma().application.update({
+        where: { id },
+        data: { sortOrder: position },
+      })
+    )
+  )
+}
+
 export async function updateApplicationStatus(id: string, status: ApplicationStatus) {
   if (config.demoMode) return
 
@@ -112,6 +130,7 @@ export async function createApplicationWithCompany(data: {
       company: data.companyName,
       roleTitle: data.roleTitle,
       status: data.status ?? "todo",
+      position: 0,
       dateApplied: data.dateApplied ?? null,
       location: data.location ?? null,
       jobUrl: data.jobUrl ?? null,
@@ -156,6 +175,7 @@ export async function createApplicationWithCompany(data: {
     company: app.company.name,
     roleTitle: app.roleTitle,
     status: app.status as ApplicationStatus,
+    position: app.sortOrder,
     dateApplied: app.dateApplied?.toISOString().split("T")[0] ?? null,
     location: app.location,
     jobUrl: app.jobUrl,

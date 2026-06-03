@@ -17,6 +17,7 @@ import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
+  arrayMove,
 } from "@dnd-kit/sortable"
 import { useDroppable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
@@ -24,7 +25,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
 import { type ApplicationStatus } from "@/generated/prisma/client"
-import { updateApplicationStatus } from "@/lib/actions/applications"
+import { updateApplicationStatus, updateApplicationPositions } from "@/lib/actions/applications"
 import { toast } from "sonner"
 import { GripVertical } from "lucide-react"
 
@@ -168,16 +169,66 @@ export function KanbanBoard({
       if (overApp) targetStatus = overApp.status
     }
 
-    if (targetStatus && targetStatus !== activeApp.status) {
+    if (!targetStatus) return
+
+    const today = new Date().toISOString().split("T")[0]
+    const sourceItems = apps
+      .filter((a) => a.status === activeApp.status)
+      .sort((a, b) => a.position - b.position)
+
+    if (targetStatus !== activeApp.status) {
+      const targetItems = apps
+        .filter((a) => a.status === targetStatus)
+        .sort((a, b) => a.position - b.position)
+
+      let insertIndex = targetItems.length
+      if (over.id !== targetStatus) {
+        const overIndex = targetItems.findIndex((a) => a.id === over.id)
+        if (overIndex !== -1) insertIndex = overIndex
+      }
+
+      const moved = { ...activeApp, status: targetStatus, updatedAt: today }
+      const newTarget = [...targetItems]
+      newTarget.splice(insertIndex, 0, moved)
+      const newSource = sourceItems.filter((a) => a.id !== active.id)
+
+      const updates: { id: string; position: number }[] = []
+      newSource.forEach((a, i) => updates.push({ id: a.id, position: i }))
+      newTarget.forEach((a, i) => updates.push({ id: a.id, position: i }))
+
       setApps((prev) =>
-        prev.map((a) =>
-          a.id === activeApp.id
-            ? { ...a, status: targetStatus, updatedAt: new Date().toISOString().split("T")[0] }
-            : a
-        )
+        prev.map((a) => {
+          if (a.id === activeApp.id) {
+            return { ...a, status: targetStatus, position: updates.find((u) => u.id === a.id)?.position ?? 0, updatedAt: today }
+          }
+          const update = updates.find((u) => u.id === a.id)
+          return update ? { ...a, position: update.position } : a
+        })
       )
+
       updateApplicationStatus(String(activeApp.id), targetStatus).catch(() => {
         toast.error("Failed to update application status")
+      })
+      updateApplicationPositions(updates).catch(() => {
+        toast.error("Failed to update application order")
+      })
+    } else if (over.id !== active.id) {
+      const oldIndex = sourceItems.findIndex((a) => a.id === active.id)
+      const newIndex = sourceItems.findIndex((a) => a.id === over.id)
+      if (oldIndex === -1 || newIndex === -1) return
+
+      const reordered = arrayMove(sourceItems, oldIndex, newIndex)
+      const updates = reordered.map((a, i) => ({ id: a.id, position: i }))
+
+      setApps((prev) =>
+        prev.map((a) => {
+          const update = updates.find((u) => u.id === a.id)
+          return update ? { ...a, position: update.position } : a
+        })
+      )
+
+      updateApplicationPositions(updates).catch(() => {
+        toast.error("Failed to update application order")
       })
     }
   }
@@ -196,7 +247,10 @@ export function KanbanBoard({
           <Column
             key={status}
             status={status}
-            items={apps.filter((a) => a.status === status)}
+            items={apps
+              .filter((a) => a.status === status)
+              .sort((a, b) => a.position - b.position)
+            }
           />
         ))}
       </div>
