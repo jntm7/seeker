@@ -18,7 +18,8 @@ const eventPriority: Record<EventType, number> = {
   todo: 3,
   applied: 4,
   rejection: 5,
-  note: 6,
+  withdrawn: 6,
+  note: 7,
 }
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]

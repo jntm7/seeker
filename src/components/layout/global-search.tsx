@@ -56,7 +56,7 @@ export function GlobalSearch({ applications }: { applications: MockApplication[]
       <input
         ref={inputRef}
         type="text"
-        placeholder="Search by role, company, or location"
+        placeholder="Search by role, company, or location..."
         value={query}
         onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}

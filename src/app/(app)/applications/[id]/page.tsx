@@ -6,7 +6,8 @@ import { statusConfig } from "@/lib/data/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, MapPin, Calendar, ExternalLink } from "lucide-react"
+import { ArrowLeft, MapPin, Calendar, ExternalLink, X } from "lucide-react"
+import { deleteEvent } from "@/lib/actions/events"
 import type { EventType } from "@/generated/prisma/client"
 const eventTypeConfig: Record<EventType, { label: string; color: string }> = {
   todo: { label: "To Do", color: "text-status-todo" },
@@ -15,6 +16,7 @@ const eventTypeConfig: Record<EventType, { label: string; color: string }> = {
   interview: { label: "Interview", color: "text-status-interview" },
   offer: { label: "Offer", color: "text-status-offer" },
   rejection: { label: "Rejected", color: "text-status-rejected" },
+  withdrawn: { label: "Withdrawn", color: "text-muted-foreground" },
   note: { label: "Note", color: "text-muted-foreground" },
 }
 
@@ -130,18 +132,18 @@ export default async function ApplicationDetailPage({
                 {sortedEvents.map((event) => {
                   const eventConfig = eventTypeConfig[event.eventType]
                   return (
-                    <div key={event.id} className="relative flex gap-4">
+                    <div key={event.id} className="relative flex gap-4 group">
                       <div
                         className="relative z-10 mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 border-background"
                         style={{
                           borderColor:
-                            event.eventType === "note"
+                            event.eventType === "note" || event.eventType === "withdrawn"
                               ? "var(--muted)"
                               : event.eventType === "rejection"
                                 ? statusConfig.rejected.hex
                                 : statusConfig[event.eventType].hex,
                           backgroundColor:
-                            event.eventType === "note"
+                            event.eventType === "note" || event.eventType === "withdrawn"
                               ? "var(--muted)"
                               : event.eventType === "rejection"
                                 ? statusConfig.rejected.hex
@@ -166,6 +168,15 @@ export default async function ApplicationDetailPage({
                           </p>
                         )}
                       </div>
+                      <form action={deleteEvent.bind(null, event.id)}>
+                        <button
+                          type="submit"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted"
+                          aria-label="Delete event"
+                        >
+                          <X size={14} />
+                        </button>
+                      </form>
                     </div>
                   )
                 })}

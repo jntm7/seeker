@@ -24,12 +24,14 @@ export async function getApplications(userId?: string): Promise<Application[]> {
   const apps = await getPrisma().application.findMany({
     where: { userId: resolvedUserId },
     include: { company: true },
+    orderBy: { sortOrder: "asc" },
   })
   return apps.map((app) => ({
     id: app.id,
     roleTitle: app.roleTitle,
     company: app.company.name,
     status: app.status as ApplicationStatus,
+    position: app.sortOrder,
     dateApplied: app.dateApplied?.toISOString().split("T")[0] ?? null,
     location: app.location,
     jobUrl: app.jobUrl,
@@ -56,6 +58,7 @@ export async function getApplication(id: string, userId?: string): Promise<Appli
     roleTitle: app.roleTitle,
     company: app.company.name,
     status: app.status as ApplicationStatus,
+    position: app.sortOrder,
     dateApplied: app.dateApplied?.toISOString().split("T")[0] ?? null,
     location: app.location,
     jobUrl: app.jobUrl,
