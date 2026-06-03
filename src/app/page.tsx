@@ -1,8 +1,9 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Search } from "lucide-react"
-import { signIn } from "@/lib/auth"
+import { signIn } from "@/lib/auth-client"
 import { config } from "@/lib/config"
+import { EmailSignIn } from "@/components/auth/email-sign-in"
 
 function OAuthButtons({ disabled }: { disabled?: boolean }) {
   const disabledClass = disabled
@@ -81,6 +82,7 @@ export default async function LandingPage() {
         <div className="space-y-3 rounded-lg border border-border/50 bg-card p-6 shadow-sm">
           <h1 className="text-center text-lg font-semibold">Sign in</h1>
           <OAuthButtons disabled={isDemo} />
+          {!isDemo && <EmailSignIn />}
           {isDemo && (
             <p className="text-center text-xs text-muted-foreground">
               Sign-in is disabled in demo mode
