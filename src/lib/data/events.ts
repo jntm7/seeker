@@ -7,6 +7,7 @@ export const eventColors: Record<EventType, string> = {
   interview: "#8a7ab5",
   offer: "#5d9f6a",
   rejection: "#b56a6a",
+  withdrawn: "#7a7585",
   note: "#7a7585",
 }
 
@@ -17,6 +18,7 @@ export const eventLabels: Record<EventType, string> = {
   interview: "Interview",
   offer: "Offer",
   rejection: "Rejected",
+  withdrawn: "Withdrawn",
   note: "Note",
 }
 

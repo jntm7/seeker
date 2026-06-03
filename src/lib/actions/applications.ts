@@ -2,7 +2,17 @@
 
 import { auth } from "@/lib/auth"
 import { config } from "@/lib/config"
-import type { ApplicationStatus } from "@/generated/prisma/client"
+import type { ApplicationStatus, EventType } from "@/generated/prisma/client"
+
+const statusToEventType: Record<string, EventType> = {
+  todo: "todo",
+  applied: "applied",
+  screening: "screening",
+  interview: "interview",
+  offer: "offer",
+  rejected: "rejection",
+  withdrawn: "withdrawn",
+}
 
 async function getUserId(): Promise<string | null> {
   if (config.demoMode) return "demo"
@@ -79,10 +89,24 @@ export async function updateApplicationStatus(id: string, status: ApplicationSta
     where: { id },
     data: { status },
   })
+
+  const eventType = statusToEventType[status]
+  if (eventType) {
+    await getPrisma().event.create({
+      data: {
+        applicationId: id,
+        eventType,
+        eventDate: new Date(),
+      },
+    })
+  }
 }
 
 export async function updateApplication(id: string, data: {
   roleTitle?: string
+  companyName?: string
+  status?: ApplicationStatus
+  dateApplied?: string | null
   location?: string | null
   jobUrl?: string | null
   notes?: string | null
@@ -96,10 +120,44 @@ export async function updateApplication(id: string, data: {
   const app = await getPrisma().application.findUnique({ where: { id } })
   if (!app || app.userId !== userId) throw new Error("Not found")
 
+  const updateData: Record<string, unknown> = {}
+
+  if (data.roleTitle !== undefined) updateData.roleTitle = data.roleTitle
+  if (data.status !== undefined) updateData.status = data.status
+  if (data.dateApplied !== undefined) updateData.dateApplied = data.dateApplied ? new Date(data.dateApplied) : null
+  if (data.location !== undefined) updateData.location = data.location
+  if (data.jobUrl !== undefined) updateData.jobUrl = data.jobUrl
+  if (data.notes !== undefined) updateData.notes = data.notes
+
+  if (data.companyName !== undefined) {
+    let company = await getPrisma().company.findFirst({
+      where: { name: data.companyName },
+    })
+    if (!company) {
+      company = await getPrisma().company.create({
+        data: { name: data.companyName },
+      })
+    }
+    updateData.companyId = company.id
+  }
+
   await getPrisma().application.update({
     where: { id },
-    data,
+    data: updateData,
   })
+
+  if (data.status !== undefined && data.status !== app.status) {
+    const eventType = statusToEventType[data.status]
+    if (eventType) {
+      await getPrisma().event.create({
+        data: {
+          applicationId: id,
+          eventType,
+          eventDate: new Date(),
+        },
+      })
+    }
+  }
 }
 
 export async function deleteApplication(id: string) {

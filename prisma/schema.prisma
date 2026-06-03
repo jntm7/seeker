@@ -24,6 +24,7 @@ enum EventType {
   interview
   offer
   rejection
+  withdrawn
   note
 }
 
