@@ -233,6 +233,17 @@ export async function createApplicationWithCompany(data: {
     include: { company: true },
   })
 
+  const eventType = statusToEventType[data.status ?? "todo"]
+  if (eventType) {
+    await getPrisma().event.create({
+      data: {
+        applicationId: app.id,
+        eventType,
+        eventDate: data.dateApplied ? new Date(data.dateApplied) : new Date(),
+      },
+    })
+  }
+
   return {
     id: app.id,
     company: app.company.name,

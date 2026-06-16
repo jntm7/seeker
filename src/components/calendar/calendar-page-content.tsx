@@ -25,10 +25,7 @@ const eventPriority: Record<EventType, number> = {
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-function useCalendar(now: Date) {
-  const year = now.getFullYear()
-  const month = now.getMonth()
-
+function useCalendar(year: number, month: number) {
   const firstDay = new Date(year, month, 1)
   const lastDay = new Date(year, month + 1, 0)
   const startPad = firstDay.getDay()
@@ -38,7 +35,7 @@ function useCalendar(now: Date) {
   for (let i = 0; i < startPad; i++) cells.push(null)
   for (let d = 1; d <= daysInMonth; d++) cells.push(d)
 
-  return { year, month, cells, daysInMonth }
+  return { cells, daysInMonth }
 }
 
 function formatDateShort(dateStr: string): string {
@@ -47,13 +44,14 @@ function formatDateShort(dateStr: string): string {
 }
 
 export function CalendarPageContent({ applications, events }: { applications: MockApplication[]; events: MockEvent[] }) {
-  const today = useMemo(() => new Date(), [])
-  const todayStr = today.toISOString().split("T")[0]
+  const todayStr = useMemo(() => new Date().toISOString().split("T")[0], [])
+  const [todayYear, todayMonth, todayDay] = todayStr.split("-").map(Number)
 
-  const [viewDate, setViewDate] = useState(today)
-  const [selectedDay, setSelectedDay] = useState<number | null>(today.getDate())
+  const [viewYear, setViewYear] = useState(todayYear)
+  const [viewMonth, setViewMonth] = useState(todayMonth - 1)
+  const [selectedDay, setSelectedDay] = useState<number | null>(todayDay)
 
-  const { year, month, cells } = useCalendar(viewDate)
+  const { cells } = useCalendar(viewYear, viewMonth)
 
   const enrichedEvents = useMemo(() => {
     const appMap = new Map(applications.map((a) => [a.id, a]))
@@ -73,25 +71,24 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
   const eventsByDay = useMemo(() => {
     const map = new Map<number, EnrichedEvent[]>()
     for (const event of enrichedEvents) {
-      const d = new Date(event.eventDate)
-      if (d.getMonth() === month && d.getFullYear() === year) {
-        const day = d.getDate()
-        const list = map.get(day) ?? []
+      const [evtYear, evtMonth, evtDay] = event.eventDate.split("-").map(Number)
+      if (evtMonth - 1 === viewMonth && evtYear === viewYear) {
+        const list = map.get(evtDay) ?? []
         list.push(event)
         list.sort((a, b) => eventPriority[a.eventType] - eventPriority[b.eventType])
-        map.set(day, list)
+        map.set(evtDay, list)
       }
     }
     return map
-  }, [enrichedEvents, month, year])
+  }, [enrichedEvents, viewMonth, viewYear])
 
   const selectedEvents = useMemo(() => {
     if (selectedDay === null) return []
-    const dayStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`
+    const dayStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`
     return enrichedEvents
       .filter((e) => e.eventDate === dayStr)
       .sort((a, b) => eventPriority[a.eventType] - eventPriority[b.eventType])
-  }, [enrichedEvents, year, month, selectedDay])
+  }, [enrichedEvents, viewYear, viewMonth, selectedDay])
 
   const upcomingDeadlines = useMemo(() => {
     return enrichedEvents
@@ -101,19 +98,19 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
   }, [enrichedEvents, todayStr])
 
   function prevMonth() {
-    const d = new Date(year, month - 1, 1)
-    setViewDate(d)
+    setViewMonth((m) => (m === 0 ? 11 : m - 1))
+    setViewYear((y) => (viewMonth === 0 ? y - 1 : y))
     setSelectedDay(null)
   }
 
   function nextMonth() {
-    const d = new Date(year, month + 1, 1)
-    setViewDate(d)
+    setViewMonth((m) => (m === 11 ? 0 : m + 1))
+    setViewYear((y) => (viewMonth === 11 ? y + 1 : y))
     setSelectedDay(null)
   }
 
   const isToday = (day: number) => {
-    return year === today.getFullYear() && month === today.getMonth() && day === today.getDate()
+    return viewYear === todayYear && viewMonth === todayMonth - 1 && day === todayDay
   }
 
   const isSelected = (day: number) => {
@@ -144,7 +141,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
                   <ChevronLeft size={16} />
                 </button>
                 <h2 className="text-base font-semibold">
-                  {MONTHS[month]} {year}
+                  {MONTHS[viewMonth]} {viewYear}
                 </h2>
                 <button
                   type="button"
@@ -205,7 +202,7 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
           {selectedDay !== null && (
             <div className="mt-4 space-y-2">
               <h3 className="text-sm font-semibold">
-                {MONTHS[month]} {selectedDay}
+                {MONTHS[viewMonth]} {selectedDay}
               </h3>
               {selectedEvents.length > 0 ? (
                 selectedEvents.map((event) => (
