@@ -38,6 +38,6 @@ export const statusConfig: Record<ApplicationStatus, { label: string; hex: strin
   screening: { label: "Screening", hex: "#c4903a" },
   interview: { label: "Interview", hex: "#845ecc" },
   offer: { label: "Offer", hex: "#4ea872" },
-  rejected: { label: "Rejected", hex: "#cc5a5a" },
-  withdrawn: { label: "Withdrawn", hex: "#6f7285" },
+  rejected: { label: "Rejected / No Response", hex: "#cc5a5a" },
+  withdrawn: { label: "Withdrawn / Expired", hex: "#6f7285" },
 }
