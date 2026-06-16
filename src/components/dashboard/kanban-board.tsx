@@ -118,7 +118,7 @@ function Column({
         style={{ backgroundColor: `${config.hex}0d` }}
       >
           <CardTitle className="flex items-center justify-between text-sm font-medium">
-          <span style={{ color: config.hex }}>{config.label}</span>
+          <span style={{ color: config.hex }} className="truncate whitespace-nowrap">{config.label}</span>
           <Badge
             variant="secondary"
             className="ml-1 h-5 px-1.5 text-[11px]"
@@ -131,7 +131,7 @@ function Column({
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-1 flex-col gap-1.5 pt-2">
+      <CardContent className="flex flex-1 flex-col gap-1.5 pt-2 overflow-y-auto max-h-[calc(100vh-340px)]">
         <SortableContext items={items.map((a) => a.id)} strategy={verticalListSortingStrategy}>
           {items.length === 0 && (
             <p className="text-xs text-muted-foreground">No applications</p>
