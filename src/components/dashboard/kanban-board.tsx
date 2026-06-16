@@ -110,7 +110,7 @@ function Column({
   return (
     <Card
       ref={setNodeRef}
-      className={`flex flex-col pt-0 gap-0 min-h-[200px] transition-colors border ${isDragOver ? "ring-2 ring-primary/30" : ""}`}
+      className={`pt-0 gap-0 transition-colors border ${isDragOver ? "ring-2 ring-primary/30" : ""}`}
       style={{ borderColor: `${config.hex}50` }}
     >
       <CardHeader
@@ -131,7 +131,7 @@ function Column({
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-1 flex-col gap-1.5 pt-2 overflow-y-auto max-h-[calc(100vh-340px)]">
+      <CardContent className="flex flex-col gap-1.5 pt-2 overflow-y-auto max-h-[calc(100vh-340px)] min-h-[80px]">
         <SortableContext items={items.map((a) => a.id)} strategy={verticalListSortingStrategy}>
           {items.length === 0 && (
             <p className="text-xs text-muted-foreground">No applications</p>
