@@ -50,10 +50,10 @@ export function EditApplicationDialog({
         roleTitle: roleTitle.trim(),
         company: company.trim(),
         status,
-        dateApplied: dateApplied || null,
-        location: location.trim() || null,
-        jobUrl: jobUrl.trim() || null,
-        notes: notes.trim() || null,
+        dateApplied: dateApplied || undefined,
+        location: location.trim() || undefined,
+        jobUrl: jobUrl.trim() || undefined,
+        notes: notes.trim() || undefined,
       }
 
       onUpdate(app.id, updates)
@@ -63,7 +63,7 @@ export function EditApplicationDialog({
         roleTitle: roleTitle.trim(),
         companyName: company.trim(),
         status,
-        dateApplied: dateApplied || null,
+        dateApplied: dateApplied || undefined,
         location: location.trim() || null,
         jobUrl: jobUrl.trim() || null,
         notes: notes.trim() || null,

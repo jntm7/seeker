@@ -85,9 +85,14 @@ export async function updateApplicationStatus(id: string, status: ApplicationSta
   const app = await getPrisma().application.findUnique({ where: { id } })
   if (!app || app.userId !== userId) throw new Error("Not found")
 
+  const updateData: Record<string, unknown> = { status }
+  if (status === "applied" && !app.dateApplied) {
+    updateData.dateApplied = new Date()
+  }
+
   await getPrisma().application.update({
     where: { id },
-    data: { status },
+    data: updateData,
   })
 
   const eventType = statusToEventType[status]

@@ -33,6 +33,15 @@ export function AddApplicationDialog({
   const [company, setCompany] = useState("")
   const [status, setStatus] = useState<ApplicationStatus>("todo")
   const [dateApplied, setDateApplied] = useState("")
+
+  function handleStatusChange(s: ApplicationStatus) {
+    setStatus(s)
+    if (s === "todo") {
+      setDateApplied("")
+    } else if (s === "applied") {
+      setDateApplied(new Date().toISOString().split("T")[0])
+    }
+  }
   const [location, setLocation] = useState("")
   const [jobUrl, setJobUrl] = useState("")
   const [notes, setNotes] = useState("")
@@ -130,7 +139,7 @@ export function AddApplicationDialog({
                 {statusOrder.map((s) => {
                   const sConfig = statusConfig[s]
                   return (
-                    <DropdownMenuItem key={s} onClick={() => setStatus(s)} className="gap-2">
+                    <DropdownMenuItem key={s} onClick={() => handleStatusChange(s)} className="gap-2">
                       <span
                         className="h-2 w-2 rounded-full"
                         style={{ backgroundColor: sConfig.hex }}

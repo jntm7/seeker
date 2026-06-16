@@ -268,7 +268,12 @@ export function KanbanBoard({
     const { app: activeApp, targetStatus, sourceItems, targetItems, insertIndex } = pendingMove
     const today = new Date().toISOString().split("T")[0]
 
-    const moved = { ...activeApp, status: targetStatus, updatedAt: today }
+    const moved: MockApplication = {
+      ...activeApp,
+      status: targetStatus,
+      updatedAt: today,
+      ...(targetStatus === "applied" && !activeApp.dateApplied ? { dateApplied: today } : {}),
+    }
     const newTarget = [...targetItems]
     newTarget.splice(insertIndex, 0, moved)
     const newSource = sourceItems.filter((a) => a.id !== activeApp.id)
