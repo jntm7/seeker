@@ -1,12 +1,15 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { List, LayoutGrid } from "lucide-react"
 import { StatCards } from "@/components/dashboard/stat-cards"
 import { KanbanBoard } from "@/components/dashboard/kanban-board"
 import { ApplicationsTable } from "@/components/dashboard/applications-table"
 import { AddApplicationDialog } from "@/components/dashboard/add-application-dialog"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { statusConfig, type MockApplication } from "@/lib/data/types"
+
 
 function computeStats(apps: MockApplication[]) {
   const active = apps.filter((a) => ["applied", "screening", "interview"].includes(a.status)).length
@@ -23,6 +26,7 @@ function computeStats(apps: MockApplication[]) {
 
 export function DashboardContent({ applications: initialApplications }: { applications: MockApplication[] }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
+  const [showArchived, setShowArchived] = useState(false)
 
   const stats = useMemo(() => computeStats(apps), [apps])
 
@@ -48,11 +52,34 @@ export function DashboardContent({ applications: initialApplications }: { applic
 
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Pipeline</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Kanban view of your application pipeline by stage
-        </p>
+        <div className="mt-1 flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            Kanban view of your application pipeline by stage
+          </p>
+          <div className="relative grid grid-cols-2 rounded-lg border bg-background p-0.5">
+            <div
+              className={`absolute top-0.5 bottom-0.5 rounded-md bg-muted shadow-sm transition-all ${showArchived ? "left-1/2 right-0.5" : "left-0.5 right-1/2"}`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowArchived(false)}
+              className={`relative z-10 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${!showArchived ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <List size={15} />
+              Active
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowArchived(true)}
+              className={`relative z-10 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${showArchived ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <LayoutGrid size={15} />
+              All
+            </button>
+          </div>
+        </div>
       </div>
-      <KanbanBoard apps={apps} setApps={setApps} />
+      <KanbanBoard apps={apps} setApps={setApps} showArchived={showArchived} />
 
       <Separator />
 

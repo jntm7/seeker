@@ -148,9 +148,11 @@ function Column({
 export function KanbanBoard({
   apps,
   setApps,
+  showArchived,
 }: {
   apps: MockApplication[]
   setApps: React.Dispatch<React.SetStateAction<MockApplication[]>>
+  showArchived?: boolean
 }) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [dragOverStatus, setDragOverStatus] = useState<ApplicationStatus | null>(null)
@@ -308,6 +310,10 @@ export function KanbanBoard({
 
   const activeApp = apps.find((a) => a.id === activeId)
 
+  const visibleStatuses = showArchived
+    ? statusOrder
+    : statusOrder.filter((s) => s !== "rejected" && s !== "withdrawn")
+
   return (
     <>
       <DndContext
@@ -317,8 +323,8 @@ export function KanbanBoard({
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
-          {statusOrder.map((status) => (
+        <div className={`grid gap-3 grid-cols-2 sm:grid-cols-3 ${showArchived ? "lg:grid-cols-7" : "lg:grid-cols-5"}`}>
+          {visibleStatuses.map((status) => (
             <Column
               key={status}
               status={status}
