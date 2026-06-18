@@ -20,6 +20,19 @@ async function getUserId(): Promise<string | null> {
   return session?.user?.id ?? session?.user?.email ?? null
 }
 
+async function requireOwner() {
+  if (config.demoMode) return
+  const session = await auth()
+  if (!session?.user?.id) throw new Error("Unauthorized")
+
+  const { getPrisma } = await import("@/lib/prisma")
+  const user = await getPrisma().user.findUnique({
+    where: { id: session.user.id },
+    select: { guestOfId: true },
+  })
+  if (user?.guestOfId) throw new Error("Guests cannot modify data")
+}
+
 export async function createApplication(data: {
   companyId: string
   roleTitle: string
@@ -33,6 +46,7 @@ export async function createApplication(data: {
     return { id: crypto.randomUUID() }
   }
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
@@ -60,6 +74,7 @@ export async function createApplication(data: {
 export async function updateApplicationPositions(updates: { id: string; position: number }[]) {
   if (config.demoMode) return
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
@@ -78,6 +93,7 @@ export async function updateApplicationPositions(updates: { id: string; position
 export async function updateApplicationStatus(id: string, status: ApplicationStatus) {
   if (config.demoMode) return
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
@@ -118,6 +134,7 @@ export async function updateApplication(id: string, data: {
 }) {
   if (config.demoMode) return
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
@@ -168,6 +185,7 @@ export async function updateApplication(id: string, data: {
 export async function deleteApplication(id: string) {
   if (config.demoMode) return
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
@@ -202,6 +220,7 @@ export async function createApplicationWithCompany(data: {
     }
   }
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
@@ -261,6 +280,7 @@ export async function createApplicationWithCompany(data: {
 export async function bulkDeleteApplications(ids: string[]) {
   if (config.demoMode) return
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
