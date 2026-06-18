@@ -149,10 +149,12 @@ export function KanbanBoard({
   apps,
   setApps,
   showArchived,
+  isGuest,
 }: {
   apps: MockApplication[]
   setApps: React.Dispatch<React.SetStateAction<MockApplication[]>>
   showArchived?: boolean
+  isGuest?: boolean
 }) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [dragOverStatus, setDragOverStatus] = useState<ApplicationStatus | null>(null)
@@ -316,30 +318,73 @@ export function KanbanBoard({
 
   return (
     <>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
+      {isGuest ? (
         <div className={`grid gap-3 grid-cols-2 sm:grid-cols-3 ${showArchived ? "lg:grid-cols-7" : "lg:grid-cols-5"}`}>
           {visibleStatuses.map((status) => (
-            <Column
+            <div
               key={status}
-              status={status}
-              items={apps
-                .filter((a) => a.status === status)
-                .sort((a, b) => a.position - b.position)
-              }
-              isDragOver={dragOverStatus === status}
-            />
+              className="pt-0 gap-0 rounded-lg border bg-card"
+              style={{ borderColor: `${statusConfig[status].hex}50` }}
+            >
+              <div
+                className="flex items-center justify-between px-3 py-2 text-sm font-medium rounded-t-lg"
+                style={{ backgroundColor: `${statusConfig[status].hex}0d`, color: statusConfig[status].hex }}
+              >
+                <span className="truncate">{statusConfig[status].label}</span>
+                <span
+                  className="ml-1 h-5 px-1.5 text-[11px] rounded-full inline-flex items-center font-medium"
+                  style={{ backgroundColor: `${statusConfig[status].hex}20`, color: statusConfig[status].hex }}
+                >
+                  {apps.filter((a) => a.status === status).length}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1.5 p-2 overflow-y-auto max-h-[calc(100vh-340px)] min-h-[80px]">
+                {apps.filter((a) => a.status === status).length === 0 && (
+                  <p className="text-xs text-muted-foreground">No applications</p>
+                )}
+                {apps
+                  .filter((a) => a.status === status)
+                  .sort((a, b) => a.position - b.position)
+                  .map((app) => (
+                    <div key={app.id} className="rounded-md border bg-background px-2.5 py-1.5 text-xs leading-snug">
+                      <div className="flex items-start gap-1.5">
+                        <Link href={`/applications/${app.id}`} className="min-w-0 flex-1 hover:underline">
+                          <p className="font-medium break-words">{app.roleTitle}</p>
+                          <p className="text-muted-foreground">{app.company}</p>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
           ))}
         </div>
-        <DragOverlay>
-          {activeApp ? <ColumnCard app={activeApp} /> : null}
-        </DragOverlay>
-      </DndContext>
+      ) : (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+        >
+          <div className={`grid gap-3 grid-cols-2 sm:grid-cols-3 ${showArchived ? "lg:grid-cols-7" : "lg:grid-cols-5"}`}>
+            {visibleStatuses.map((status) => (
+              <Column
+                key={status}
+                status={status}
+                items={apps
+                  .filter((a) => a.status === status)
+                  .sort((a, b) => a.position - b.position)
+                }
+                isDragOver={dragOverStatus === status}
+              />
+            ))}
+          </div>
+          <DragOverlay>
+            {activeApp ? <ColumnCard app={activeApp} /> : null}
+          </DragOverlay>
+        </DndContext>
+      )}
 
       <Dialog open={!!pendingMove} onOpenChange={(open) => { if (!open) cancelMove() }}>
         <DialogContent className="sm:max-w-[380px]">

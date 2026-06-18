@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@/lib/auth"
+import { getPrisma } from "@/lib/prisma"
 import { getApplication, getEventsByApplication } from "@/lib/data/applications"
 import { statusConfig } from "@/lib/data/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,6 +31,12 @@ export default async function ApplicationDetailPage({
 
   const { id } = await params
   const userId = session.user.id ?? session.user.email ?? undefined
+  const user = await getPrisma().user.findUnique({
+    where: { id: session.user.id },
+    select: { guestOfId: true },
+  })
+  const isGuest = !!user?.guestOfId
+
   const application = await getApplication(id, userId)
 
   if (!application) {
@@ -168,15 +175,17 @@ export default async function ApplicationDetailPage({
                           </p>
                         )}
                       </div>
-                      <form action={deleteEvent.bind(null, event.id)}>
-                        <button
-                          type="submit"
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted"
-                          aria-label="Delete event"
-                        >
-                          <X size={14} />
-                        </button>
-                      </form>
+                      {!isGuest && (
+                        <form action={deleteEvent.bind(null, event.id)}>
+                          <button
+                            type="submit"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted"
+                            aria-label="Delete event"
+                          >
+                            <X size={14} />
+                          </button>
+                        </form>
+                      )}
                     </div>
                   )
                 })}
