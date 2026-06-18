@@ -39,17 +39,19 @@ export async function isValidInvite(email: string): Promise<boolean> {
 }
 
 export async function acceptInvite(email: string) {
-  if (config.demoMode) return
+  if (config.demoMode) return null
 
   const invite = await getPrisma().invite.findFirst({
     where: { email, status: "pending" },
   })
-  if (!invite) return
+  if (!invite) return null
 
   await getPrisma().invite.update({
     where: { id: invite.id },
     data: { status: "accepted", usedAt: new Date() },
   })
+
+  return invite
 }
 
 export async function getInvites() {
