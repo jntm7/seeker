@@ -35,6 +35,9 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  guestOfId     String?
+  guestOf       User?        @relation("GuestAccess", fields: [guestOfId], references: [id])
+  guests        User[]       @relation("GuestAccess")
   accounts      Account[]
   sessions      Session[]
   applications  Application[]
@@ -126,7 +129,7 @@ model Event {
 
 enum InviteRole {
   admin
-  mentor
+  guest
 }
 
 model Invite {
