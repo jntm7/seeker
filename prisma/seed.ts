@@ -1,5 +1,6 @@
 import { PrismaClient } from "../src/generated/prisma/client.js"
 import { PrismaLibSql } from "@prisma/adapter-libsql"
+import bcrypt from "bcryptjs"
 
 const url = process.env["DATABASE_URL"]
 if (!url) throw new Error("DATABASE_URL is required")
@@ -8,12 +9,37 @@ const adapter = new PrismaLibSql({ url })
 const prisma = new PrismaClient({ adapter })
 
 async function main() {
+  const passwordHash = await bcrypt.hash("password123", 10)
+
   const demoUser = await prisma.user.upsert({
     where: { email: "demo@seeker.local" },
     update: {},
     create: {
       name: "Demo User",
       email: "demo@seeker.local",
+      password: passwordHash,
+    },
+  })
+
+  await prisma.user.upsert({
+    where: { email: "guest@seeker.local" },
+    update: {},
+    create: {
+      name: "Guest User",
+      email: "guest@seeker.local",
+      password: passwordHash,
+      guestOfId: demoUser.id,
+    },
+  })
+
+  await prisma.invite.upsert({
+    where: { email_status: { email: "demo@seeker.local", status: "accepted" } },
+    update: {},
+    create: {
+      email: "demo@seeker.local",
+      role: "admin",
+      status: "accepted",
+      usedAt: new Date(),
     },
   })
 
