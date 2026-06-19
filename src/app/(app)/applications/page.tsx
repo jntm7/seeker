@@ -3,17 +3,22 @@ import { redirect } from "next/navigation"
 import { getPrisma } from "@/lib/prisma"
 import { ApplicationsPageLoader } from "@/components/dashboard/applications-page-loader"
 import { getApplications } from "@/lib/data/applications"
+import { config } from "@/lib/config"
 
 export default async function ApplicationsPage() {
   const session = await auth()
   if (!session?.user) redirect("/")
 
   const userId = session.user.id ?? session.user.email ?? undefined
-  const user = await getPrisma().user.findUnique({
-    where: { id: session.user.id },
-    select: { guestOfId: true },
-  })
-  const isGuest = !!user?.guestOfId
+
+  let isGuest = false
+  if (!config.demoMode) {
+    const user = await getPrisma().user.findUnique({
+      where: { id: session.user.id },
+      select: { guestOfId: true },
+    })
+    isGuest = !!user?.guestOfId
+  }
 
   const applications = await getApplications(userId)
 

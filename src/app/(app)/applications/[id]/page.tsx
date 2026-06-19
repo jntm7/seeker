@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth"
 import { getPrisma } from "@/lib/prisma"
 import { getApplication, getEventsByApplication } from "@/lib/data/applications"
 import { statusConfig } from "@/lib/data/types"
+import { config as appConfig } from "@/lib/config"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -31,11 +32,15 @@ export default async function ApplicationDetailPage({
 
   const { id } = await params
   const userId = session.user.id ?? session.user.email ?? undefined
-  const user = await getPrisma().user.findUnique({
-    where: { id: session.user.id },
-    select: { guestOfId: true },
-  })
-  const isGuest = !!user?.guestOfId
+
+  let isGuest = false
+  if (!appConfig.demoMode) {
+    const user = await getPrisma().user.findUnique({
+      where: { id: session.user.id },
+      select: { guestOfId: true },
+    })
+    isGuest = !!user?.guestOfId
+  }
 
   const application = await getApplication(id, userId)
 

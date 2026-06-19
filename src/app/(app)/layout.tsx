@@ -5,6 +5,9 @@ import { getPrisma } from "@/lib/prisma"
 import { Navbar } from "@/components/layout/navbar"
 import { Sidebar } from "@/components/layout/sidebar"
 import { SidebarProvider } from "@/components/layout/sidebar-context"
+import { config } from "@/lib/config"
+
+export const dynamic = "force-dynamic"
 
 export default async function AppLayout({
   children,
@@ -15,11 +18,15 @@ export default async function AppLayout({
   if (!session?.user) redirect("/")
 
   const userId = session.user.id ?? session.user.email ?? undefined
-  const user = await getPrisma().user.findUnique({
-    where: { id: session.user.id },
-    select: { guestOfId: true },
-  })
-  const isGuest = !!user?.guestOfId
+
+  let isGuest = false
+  if (!config.demoMode) {
+    const user = await getPrisma().user.findUnique({
+      where: { id: session.user.id },
+      select: { guestOfId: true },
+    })
+    isGuest = !!user?.guestOfId
+  }
 
   const applications = await getApplications(userId)
 
