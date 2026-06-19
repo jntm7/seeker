@@ -1,13 +1,12 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { List, LayoutGrid } from "lucide-react"
 import { StatCards } from "@/components/dashboard/stat-cards"
 import { KanbanBoard } from "@/components/dashboard/kanban-board"
 import { ApplicationsTable } from "@/components/dashboard/applications-table"
 import { AddApplicationDialog } from "@/components/dashboard/add-application-dialog"
 import { StaleApplicationsDialog } from "@/components/dashboard/stale-applications-dialog"
-import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { statusConfig, type MockApplication } from "@/lib/data/types"
 import type { StaleApplication } from "@/lib/data/applications"
@@ -32,14 +31,12 @@ export function DashboardContent({ applications: initialApplications, staleApps:
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
   const [staleApps, setStaleApps] = useState<StaleApplication[]>(initialStaleApps)
   const [showArchived, setShowArchived] = useState(false)
-  const [showStaleDialog, setShowStaleDialog] = useState(false)
-
-  useEffect(() => {
-    if (staleApps.length === 0) return
+  const [showStaleDialog, setShowStaleDialog] = useState(() => {
+    if (initialStaleApps.length === 0) return false
     const dismissedUntil = localStorage.getItem("staleDismissedUntil")
-    if (dismissedUntil && Date.now() < Number(dismissedUntil)) return
-    setShowStaleDialog(true)
-  }, [staleApps])
+    if (dismissedUntil && Date.now() < Number(dismissedUntil)) return false
+    return true
+  })
 
   function dismissStaleForDays(days: number) {
     const until = Date.now() + days * 24 * 60 * 60 * 1000
