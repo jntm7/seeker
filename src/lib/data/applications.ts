@@ -115,6 +115,53 @@ export async function getEventsByApplication(applicationId: string, userId?: str
   }))
 }
 
+export type StaleApplication = {
+  id: string
+  roleTitle: string
+  company: string
+  status: string
+  lastActivity: string
+  daysSinceActivity: number
+}
+
+export async function getStaleApplications(userId?: string): Promise<StaleApplication[]> {
+  if (config.demoMode) return []
+
+  const resolvedUserId = requireUserId(userId)
+  const { getPrisma } = await import("@/lib/prisma")
+
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+
+  const apps = await getPrisma().application.findMany({
+    where: {
+      userId: resolvedUserId,
+      status: { in: ["todo", "applied", "screening", "interview"] },
+    },
+    include: {
+      company: true,
+      events: { orderBy: { eventDate: "desc" }, take: 1 },
+    },
+  })
+
+  const stale: StaleApplication[] = []
+  for (const app of apps) {
+    const lastActivity = app.events[0]?.eventDate ?? app.dateApplied
+    if (!lastActivity || lastActivity >= thirtyDaysAgo) continue
+    const daysSinceActivity = Math.floor(
+      (Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24)
+    )
+    stale.push({
+      id: app.id,
+      roleTitle: app.roleTitle,
+      company: app.company.name,
+      status: app.status,
+      lastActivity: lastActivity.toISOString().split("T")[0],
+      daysSinceActivity,
+    })
+  }
+  return stale
+}
+
 export async function getStats(userId?: string): Promise<Stat[]> {
   if (config.demoMode) {
     const { stats } = await import("@/lib/mock-data")

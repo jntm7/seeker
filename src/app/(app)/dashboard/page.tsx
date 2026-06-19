@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { getPrisma } from "@/lib/prisma"
 import { DashboardLoader } from "@/components/dashboard/dashboard-loader"
-import { getApplications } from "@/lib/data/applications"
+import { getApplications, getStaleApplications } from "@/lib/data/applications"
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -16,6 +16,7 @@ export default async function DashboardPage() {
   const isGuest = !!user?.guestOfId
 
   const applications = await getApplications(userId)
+  const staleApps = await getStaleApplications(userId)
 
-  return <DashboardLoader applications={applications} isGuest={isGuest} />
+  return <DashboardLoader applications={applications} staleApps={staleApps} isGuest={isGuest} />
 }
