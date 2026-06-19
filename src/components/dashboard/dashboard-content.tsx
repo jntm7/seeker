@@ -1,14 +1,18 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { List, LayoutGrid } from "lucide-react"
 import { StatCards } from "@/components/dashboard/stat-cards"
 import { KanbanBoard } from "@/components/dashboard/kanban-board"
 import { ApplicationsTable } from "@/components/dashboard/applications-table"
 import { AddApplicationDialog } from "@/components/dashboard/add-application-dialog"
+import { StaleApplicationsDialog } from "@/components/dashboard/stale-applications-dialog"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { statusConfig, type MockApplication } from "@/lib/data/types"
+import type { StaleApplication } from "@/lib/data/applications"
+import type { ApplicationStatus } from "@/generated/prisma/client"
+import { updateApplicationStatus } from "@/lib/actions/applications"
 
 
 function computeStats(apps: MockApplication[]) {
@@ -24,9 +28,23 @@ function computeStats(apps: MockApplication[]) {
   ]
 }
 
-export function DashboardContent({ applications: initialApplications }: { applications: MockApplication[] }) {
+export function DashboardContent({ applications: initialApplications, staleApps: initialStaleApps }: { applications: MockApplication[]; staleApps: StaleApplication[] }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
+  const [staleApps, setStaleApps] = useState<StaleApplication[]>(initialStaleApps)
   const [showArchived, setShowArchived] = useState(false)
+  const [showStaleDialog, setShowStaleDialog] = useState(false)
+
+  useEffect(() => {
+    if (staleApps.length === 0) return
+    const dismissedUntil = localStorage.getItem("staleDismissedUntil")
+    if (dismissedUntil && Date.now() < Number(dismissedUntil)) return
+    setShowStaleDialog(true)
+  }, [staleApps])
+
+  function dismissStaleForDays(days: number) {
+    const until = Date.now() + days * 24 * 60 * 60 * 1000
+    localStorage.setItem("staleDismissedUntil", String(until))
+  }
 
   const stats = useMemo(() => computeStats(apps), [apps])
 
@@ -34,8 +52,38 @@ export function DashboardContent({ applications: initialApplications }: { applic
     setApps((prev) => [app, ...prev])
   }
 
+  async function handleStaleMove(appId: string, newStatus: ApplicationStatus) {
+    const updatePromise = updateApplicationStatus(appId, newStatus)
+
+    setApps((prev) =>
+      prev.map((a) => (a.id === appId ? { ...a, status: newStatus, updatedAt: new Date().toISOString().split("T")[0] } : a))
+    )
+
+    setStaleApps((prev) => prev.filter((a) => a.id !== appId))
+    if (staleApps.length === 1) {
+      setShowStaleDialog(false)
+    }
+
+    try {
+      await updatePromise
+    } catch {
+      setApps((prev) =>
+        prev.map((a) => (a.id === appId ? { ...a, status: staleApps.find((s) => s.id === appId)?.status as ApplicationStatus ?? a.status } : a))
+      )
+      const { toast } = await import("sonner")
+      toast.error("Failed to update application status")
+    }
+  }
+
   return (
     <div className="flex flex-1 flex-col gap-10 p-4 md:p-6 lg:p-8">
+      <StaleApplicationsDialog
+        staleApps={staleApps}
+        open={showStaleDialog}
+        onOpenChange={setShowStaleDialog}
+        onMoveToStatus={handleStaleMove}
+        onDismissAll={() => dismissStaleForDays(7)}
+      />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
