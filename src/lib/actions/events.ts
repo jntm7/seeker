@@ -19,6 +19,19 @@ async function getUserId(): Promise<string | null> {
   return user?.id ?? null
 }
 
+async function requireOwner() {
+  if (config.demoMode) return
+  const session = await auth()
+  if (!session?.user?.id) throw new Error("Unauthorized")
+
+  const { getPrisma } = await import("@/lib/prisma")
+  const user = await getPrisma().user.findUnique({
+    where: { id: session.user.id },
+    select: { guestOfId: true },
+  })
+  if (user?.guestOfId) throw new Error("Guests cannot modify data")
+}
+
 export async function addEvent(data: {
   applicationId: string
   eventType: EventType
@@ -29,6 +42,7 @@ export async function addEvent(data: {
     return { id: crypto.randomUUID() }
   }
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 
@@ -52,6 +66,7 @@ export async function addEvent(data: {
 export async function deleteEvent(id: string) {
   if (config.demoMode) return
 
+  await requireOwner()
   const userId = await getUserId()
   if (!userId) throw new Error("Unauthorized")
 

@@ -8,6 +8,6 @@ const DashboardContent = dynamic(
   { ssr: false }
 )
 
-export function DashboardLoader({ applications }: { applications: MockApplication[] }) {
-  return <DashboardContent applications={applications} />
+export function DashboardLoader({ applications, isGuest }: { applications: MockApplication[]; isGuest?: boolean }) {
+  return <DashboardContent applications={applications} isGuest={isGuest} />
 }

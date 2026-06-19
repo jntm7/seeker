@@ -24,9 +24,9 @@ function computeStats(apps: MockApplication[]) {
   ]
 }
 
-export function DashboardContent({ applications: initialApplications }: { applications: MockApplication[] }) {
+export function DashboardContent({ applications: initialApplications, isGuest }: { applications: MockApplication[]; isGuest?: boolean }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
-  const [showArchived, setShowArchived] = useState(false)
+  const [showArchived, setShowArchived] = useState(true)
 
   const stats = useMemo(() => computeStats(apps), [apps])
 
@@ -43,7 +43,7 @@ export function DashboardContent({ applications: initialApplications }: { applic
             Overview of your applications and hiring pipeline
           </p>
         </div>
-        <AddApplicationDialog onAdd={addApplication} />
+        {!isGuest && <AddApplicationDialog onAdd={addApplication} />}
       </div>
 
       <StatCards stats={stats} />
@@ -79,7 +79,7 @@ export function DashboardContent({ applications: initialApplications }: { applic
           </div>
         </div>
       </div>
-      <KanbanBoard apps={apps} setApps={setApps} showArchived={showArchived} />
+      <KanbanBoard apps={apps} setApps={setApps} showArchived={showArchived} isGuest={isGuest} />
 
       <Separator />
 
@@ -90,7 +90,7 @@ export function DashboardContent({ applications: initialApplications }: { applic
             {apps.length} {apps.length === 1 ? "application" : "applications"}
           </p>
         </div>
-        <ApplicationsTable apps={apps} setApps={setApps} />
+        <ApplicationsTable apps={apps} setApps={setApps} isGuest={isGuest} />
       </div>
     </div>
   )

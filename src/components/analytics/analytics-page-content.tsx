@@ -45,12 +45,12 @@ function PieChart({ data }: { data: { label: string; value: number; color: strin
           <path key={i} d={s.path} fill={s.color} stroke="var(--color-card)" strokeWidth={2} />
         ))}
       </svg>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1 sm:gap-x-6 sm:gap-y-2">
+      <div className="grid min-w-0 grid-cols-2 gap-x-4 gap-y-1 sm:gap-x-6 sm:gap-y-2">
         {segments.map((s, i) => (
-          <div key={i} className="flex items-center gap-2 text-sm sm:text-base whitespace-nowrap">
+          <div key={i} className="flex min-w-0 items-center gap-1.5 text-sm sm:text-base">
             <span className="h-2.5 w-2.5 shrink-0 rounded-full sm:h-3 sm:w-3" style={{ backgroundColor: s.color }} />
-            <span className="text-muted-foreground">{s.label}</span>
-            <span className="font-medium">{s.percent}%</span>
+            <span className="min-w-0 truncate text-muted-foreground">{s.label}</span>
+            <span className="shrink-0 font-medium">{s.percent}%</span>
           </div>
         ))}
       </div>

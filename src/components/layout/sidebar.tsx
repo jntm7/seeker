@@ -40,7 +40,7 @@ const settingsItems = [
   { href: "/settings", label: "Settings", icon: Settings },
 ]
 
-export function Sidebar() {
+export function Sidebar({ isGuest }: { isGuest?: boolean }) {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
@@ -104,7 +104,26 @@ export function Sidebar() {
               })}
             </nav>
             <div className="border-t p-2 flex flex-col gap-0.5">
-              {userItems.map((item) => {
+              {!isGuest && userItems.map((item) => {
+                const Icon = item.icon
+                const isActive = pathname === item.href
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                      isActive
+                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
+                    )}
+                  >
+                <AnimatedIcon icon={Icon} size={20} />
+                <span>{item.label}</span>
+                  </Link>
+                )
+              })}
+              {!isGuest && settingsItems.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href
                 return (
@@ -131,25 +150,6 @@ export function Sidebar() {
                 <LogOut size={20} />
                 <span>Log Out</span>
               </button>
-              {settingsItems.map((item) => {
-                const Icon = item.icon
-                const isActive = pathname === item.href
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
-                    )}
-                  >
-                <AnimatedIcon icon={Icon} size={20} />
-                <span>{item.label}</span>
-                  </Link>
-                )
-              })}
             </div>
           </aside>
         </div>
@@ -209,7 +209,28 @@ export function Sidebar() {
         </nav>
 
         <div className="border-t p-2 flex flex-col gap-0.5">
-          {userItems.map((item) => {
+          {!isGuest && userItems.map((item) => {
+            const Icon = item.icon
+            const isActive = pathname === item.href
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                title={collapsed ? item.label : undefined}
+                className={cn(
+                      "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                      collapsed && "justify-center px-2",
+                      isActive
+                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
+                    )}
+                  >
+                    <AnimatedIcon icon={Icon} size={20} />
+                    {!collapsed && <span>{item.label}</span>}
+              </Link>
+            )
+          })}
+          {!isGuest && settingsItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
             return (
@@ -243,27 +264,6 @@ export function Sidebar() {
             <LogOut size={20} />
             {!collapsed && <span>Log Out</span>}
           </button>
-          {settingsItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                title={collapsed ? item.label : undefined}
-                className={cn(
-                      "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                      collapsed && "justify-center px-2",
-                      isActive
-                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
-                    )}
-                  >
-                    <AnimatedIcon icon={Icon} size={20} />
-                    {!collapsed && <span>{item.label}</span>}
-              </Link>
-            )
-          })}
         </div>
       </aside>
     </>

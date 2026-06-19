@@ -9,12 +9,10 @@ import { exportData, deleteAccount } from "@/lib/actions/account"
 import { sendInvite } from "@/lib/actions/invites"
 import { signOut } from "next-auth/react"
 import { toast } from "sonner"
-import type { InviteRole } from "@/generated/prisma/client"
 
 export function SettingsPageContent() {
   const [exported, setExported] = useState(false)
   const [inviteEmail, setInviteEmail] = useState("")
-  const [inviteRole, setInviteRole] = useState<InviteRole>("mentor")
   const [inviteSent, setInviteSent] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
@@ -35,7 +33,7 @@ export function SettingsPageContent() {
 
   async function handleSendInvite() {
     if (!inviteEmail) return
-    await sendInvite(inviteEmail, inviteRole)
+    await sendInvite(inviteEmail, "guest")
     setInviteSent(true)
     setInviteEmail("")
     setTimeout(() => setInviteSent(false), 2000)
@@ -108,7 +106,7 @@ export function SettingsPageContent() {
             <Users size={16} className="text-muted-foreground" />
             Invite Management
           </CardTitle>
-          <CardDescription>Invite your career mentor or collaborators to view your pipeline</CardDescription>
+          <CardDescription>Invite a guest to view your pipeline</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-2">
@@ -119,14 +117,6 @@ export function SettingsPageContent() {
               onChange={(e) => setInviteEmail(e.target.value)}
               className="flex-1 rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
-            <select
-              value={inviteRole}
-              onChange={(e) => setInviteRole(e.target.value as InviteRole)}
-              className="rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="mentor">Mentor</option>
-              <option value="admin">Admin</option>
-            </select>
             <Button variant="outline" onClick={handleSendInvite}>
               {inviteSent ? "Sent" : "Send Invite"}
             </Button>
