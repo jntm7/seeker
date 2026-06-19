@@ -2,7 +2,9 @@ import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
 const dbUrl = process.env["DATABASE_URL"];
-const prismaUrl = dbUrl?.startsWith("libsql://") ? "file:./dev.db" : dbUrl;
+const isVercel = process.env["VERCEL"] === "1";
+const bypassOverride = process.env["PRISMA_REMOTE"] === "true";
+const prismaUrl = !bypassOverride && !isVercel && dbUrl?.startsWith("libsql://") ? "file:./dev.db" : dbUrl;
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
