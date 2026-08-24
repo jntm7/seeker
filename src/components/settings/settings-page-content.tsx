@@ -5,16 +5,28 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Download, Bell, Users, Trash2, AlertTriangle, Check } from "lucide-react"
-import { exportData, deleteAccount } from "@/lib/actions/account"
+import { exportData, deleteAccount, updateUserCurrency } from "@/lib/actions/account"
 import { sendInvite } from "@/lib/actions/invites"
 import { signOut } from "next-auth/react"
 import { toast } from "sonner"
+import { CURRENCIES } from "@/lib/data/types"
 
-export function SettingsPageContent() {
+export function SettingsPageContent({ defaultCurrency = "CAD" }: { defaultCurrency?: string }) {
+  const [currency, setCurrency] = useState(defaultCurrency)
   const [exported, setExported] = useState(false)
   const [inviteEmail, setInviteEmail] = useState("")
   const [inviteSent, setInviteSent] = useState(false)
   const [deleting, setDeleting] = useState(false)
+
+  async function handleCurrencyChange(value: string) {
+    setCurrency(value)
+    try {
+      await updateUserCurrency(value)
+      toast.success("Default currency updated")
+    } catch {
+      toast.error("Failed to update currency")
+    }
+  }
 
   async function handleExport() {
     const data = await exportData()
@@ -58,6 +70,31 @@ export function SettingsPageContent() {
       </div>
 
       <Separator />
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Download size={16} className="text-muted-foreground" />
+            Preferences
+          </CardTitle>
+          <CardDescription>Default currency used when you add compensation to applications</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2">
+            <label htmlFor="default-currency" className="text-sm text-muted-foreground">Currency</label>
+            <select
+              id="default-currency"
+              value={currency}
+              onChange={(e) => handleCurrencyChange(e.target.value)}
+              className="rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

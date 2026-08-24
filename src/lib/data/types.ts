@@ -10,7 +10,25 @@ export type MockApplication = {
   location: string | null
   jobUrl: string | null
   notes: string | null
+  salary: number | null
+  salaryCurrency: string | null
   updatedAt: string
+}
+
+export const CURRENCIES = ["USD", "CAD", "EUR", "GBP", "AUD", "INR"] as const
+export type Currency = (typeof CURRENCIES)[number]
+
+export function formatSalary(salary: number | null, currency: string | null): string | null {
+  if (salary == null) return null
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: currency ?? "USD",
+      maximumFractionDigits: 0,
+    }).format(salary)
+  } catch {
+    return `${currency ?? "USD"} ${salary.toLocaleString()}`
+  }
 }
 
 export type MockEvent = {

@@ -23,6 +23,7 @@ import { StatusBadge } from "@/components/ui/status-badge"
 import { InlineNotesEditor } from "@/components/ui/inline-notes-editor"
 import { EditApplicationDialog } from "@/components/dashboard/edit-application-dialog"
 import { bulkDeleteApplications } from "@/lib/actions/applications"
+import { formatSalary } from "@/lib/data/types"
 import { toast } from "sonner"
 import {
   ChevronDown,
@@ -244,17 +245,18 @@ export default function ApplicationsFullTable({
                   {renderSortIcon("location")}
                 </button>
               </TableHead>
+              <TableHead>Compensation</TableHead>
               <TableHead>Notes</TableHead>
               {!isGuest && <TableHead className="w-[40px]"></TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {paged.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={isGuest ? 7 : 9} className="h-24 text-center text-muted-foreground">
-                  No applications found
-                </TableCell>
-              </TableRow>
+                <TableRow>
+                  <TableCell colSpan={isGuest ? 8 : 10} className="h-24 text-center text-muted-foreground">
+                    No applications found
+                  </TableCell>
+                </TableRow>
             ) : (
               paged.map((app) => (
                 <TableRow key={app.id} className="h-14">
@@ -305,6 +307,11 @@ export default function ApplicationsFullTable({
                   </TableCell>
                   <TableCell className="truncate">
                     {app.location ?? "—"}
+                  </TableCell>
+                  <TableCell>
+                    {app.salary != null
+                      ? formatSalary(app.salary, app.salaryCurrency)
+                      : "—"}
                   </TableCell>
                   <TableCell className="max-w-[140px]">
                     {isGuest ? (

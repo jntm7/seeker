@@ -3,6 +3,26 @@
 import { auth } from "@/lib/auth"
 import { config } from "@/lib/config"
 
+export async function updateUserCurrency(currency: string) {
+  if (config.demoMode) {
+    return { success: true }
+  }
+
+  const session = await auth()
+  if (!session?.user?.email) throw new Error("Unauthorized")
+
+  const { getPrisma } = await import("@/lib/prisma")
+  const user = await getPrisma().user.findUnique({ where: { email: session.user.email } })
+  if (!user) throw new Error("User not found")
+  if (user.guestOfId) throw new Error("Guests cannot change settings")
+
+  await getPrisma().user.update({
+    where: { id: user.id },
+    data: { defaultCurrency: currency },
+  })
+  return { success: true }
+}
+
 export async function deleteAccount() {
   if (config.demoMode) {
     return { success: true }

@@ -27,7 +27,7 @@ function computeStats(apps: MockApplication[]) {
   ]
 }
 
-export function DashboardContent({ applications: initialApplications, staleApps: initialStaleApps, isGuest }: { applications: MockApplication[]; staleApps: StaleApplication[]; isGuest?: boolean }) {
+export function DashboardContent({ applications: initialApplications, staleApps: initialStaleApps, isGuest, defaultCurrency = "CAD" }: { applications: MockApplication[]; staleApps: StaleApplication[]; isGuest?: boolean; defaultCurrency?: string }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
   const [staleApps, setStaleApps] = useState<StaleApplication[]>(initialStaleApps)
   const [showArchived, setShowArchived] = useState(false)
@@ -88,7 +88,7 @@ export function DashboardContent({ applications: initialApplications, staleApps:
             Overview of your applications and hiring pipeline
           </p>
         </div>
-        {!isGuest && <AddApplicationDialog onAdd={addApplication} />}
+        {!isGuest && <AddApplicationDialog onAdd={addApplication} defaultCurrency={defaultCurrency} />}
       </div>
 
       <StatCards stats={stats} />

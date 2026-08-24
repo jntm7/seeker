@@ -24,8 +24,10 @@ import { Plus, ChevronDown } from "lucide-react"
 
 export function AddApplicationDialog({
   onAdd,
+  defaultCurrency = "CAD",
 }: {
   onAdd: (app: MockApplication) => void
+  defaultCurrency?: string
 }) {
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -33,6 +35,7 @@ export function AddApplicationDialog({
   const [company, setCompany] = useState("")
   const [status, setStatus] = useState<ApplicationStatus>("todo")
   const [dateApplied, setDateApplied] = useState("")
+  const [salary, setSalary] = useState("")
 
   function handleStatusChange(s: ApplicationStatus) {
     setStatus(s)
@@ -60,6 +63,8 @@ export function AddApplicationDialog({
         location: location.trim() || undefined,
         jobUrl: jobUrl.trim() || undefined,
         notes: notes.trim() || undefined,
+        salary: salary ? Number(salary) : null,
+        salaryCurrency: salary ? defaultCurrency : null,
       })
 
       onAdd(result as MockApplication)
@@ -70,6 +75,7 @@ export function AddApplicationDialog({
       setLocation("")
       setJobUrl("")
       setNotes("")
+      setSalary("")
       setOpen(false)
     } catch {
       const { toast } = await import("sonner")
@@ -181,6 +187,19 @@ export function AddApplicationDialog({
               value={jobUrl}
               onChange={(e) => setJobUrl(e.target.value)}
               placeholder="https://..."
+            />
+          </div>
+
+          <div className="space-y-2.5">
+            <Label htmlFor="salary">Expected Compensation ({defaultCurrency})</Label>
+            <Input
+              id="salary"
+              type="number"
+              min={0}
+              step={1000}
+              value={salary}
+              onChange={(e) => setSalary(e.target.value)}
+              placeholder="e.g. 95000 (optional)"
             />
           </div>
 
