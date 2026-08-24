@@ -12,6 +12,7 @@ export type MockApplication = {
   notes: string | null
   salary: number | null
   salaryCurrency: string | null
+  createdAt: string
   updatedAt: string
 }
 

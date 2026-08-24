@@ -37,9 +37,9 @@ import { updateApplicationStatus } from "@/lib/actions/applications"
 import { toast } from "sonner"
 import { GripVertical } from "lucide-react"
 
-function byDateAppliedDesc(a: MockApplication, b: MockApplication) {
-  const da = a.dateApplied ? new Date(a.dateApplied).getTime() : 0
-  const db = b.dateApplied ? new Date(b.dateApplied).getTime() : 0
+function byCreatedAtDesc(a: MockApplication, b: MockApplication) {
+  const da = new Date(a.createdAt).getTime()
+  const db = new Date(b.createdAt).getTime()
   if (db !== da) return db - da
   return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
 }
@@ -285,7 +285,7 @@ export function KanbanBoard({
               status={status}
               items={apps
                 .filter((a) => a.status === status)
-                .sort(byDateAppliedDesc)
+                .sort(byCreatedAtDesc)
               }
               isDragOver={dragOverStatus === status}
             />

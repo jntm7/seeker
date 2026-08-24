@@ -202,6 +202,7 @@ export async function createApplicationWithCompany(data: {
       notes: data.notes ?? null,
       salary: data.salary ?? null,
       salaryCurrency: data.salaryCurrency ?? "CAD",
+      createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString().split("T")[0],
     }
   }
@@ -263,6 +264,7 @@ export async function createApplicationWithCompany(data: {
     notes: app.notes,
     salary: app.salary,
     salaryCurrency: app.salaryCurrency ?? "CAD",
+    createdAt: app.createdAt.toISOString(),
     updatedAt: app.updatedAt.toISOString().split("T")[0],
   }
 }

@@ -42,6 +42,7 @@ export async function getApplications(userId?: string): Promise<Application[]> {
     notes: app.notes,
     salary: app.salary,
     salaryCurrency: app.salaryCurrency ?? "CAD",
+    createdAt: app.createdAt.toISOString(),
     updatedAt: app.updatedAt.toISOString().split("T")[0],
   }))
 }
@@ -71,6 +72,7 @@ export async function getApplication(id: string, userId?: string): Promise<Appli
     notes: app.notes,
     salary: app.salary,
     salaryCurrency: app.salaryCurrency ?? "CAD",
+    createdAt: app.createdAt.toISOString(),
     updatedAt: app.updatedAt.toISOString().split("T")[0],
   }
 }
