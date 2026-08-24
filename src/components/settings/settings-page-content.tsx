@@ -4,9 +4,8 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Download, Bell, Users, Trash2, AlertTriangle, Check } from "lucide-react"
+import { Download, Bell, Trash2, AlertTriangle } from "lucide-react"
 import { exportData, deleteAccount, updateUserCurrency } from "@/lib/actions/account"
-import { sendInvite } from "@/lib/actions/invites"
 import { signOut } from "next-auth/react"
 import { toast } from "sonner"
 import { CURRENCIES } from "@/lib/data/types"
@@ -14,8 +13,6 @@ import { CURRENCIES } from "@/lib/data/types"
 export function SettingsPageContent({ defaultCurrency = "CAD" }: { defaultCurrency?: string }) {
   const [currency, setCurrency] = useState(defaultCurrency)
   const [exported, setExported] = useState(false)
-  const [inviteEmail, setInviteEmail] = useState("")
-  const [inviteSent, setInviteSent] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
   async function handleCurrencyChange(value: string) {
@@ -41,14 +38,6 @@ export function SettingsPageContent({ defaultCurrency = "CAD" }: { defaultCurren
     setExported(true)
     setTimeout(() => setExported(false), 2000)
     toast.success("Data exported")
-  }
-
-  async function handleSendInvite() {
-    if (!inviteEmail) return
-    await sendInvite(inviteEmail, "guest")
-    setInviteSent(true)
-    setInviteEmail("")
-    setTimeout(() => setInviteSent(false), 2000)
   }
 
   async function handleDeleteAccount() {
@@ -134,35 +123,6 @@ export function SettingsPageContent({ defaultCurrency = "CAD" }: { defaultCurren
               <span className="text-sm text-muted-foreground">Follow-up reminders for stale applications</span>
             </label>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Users size={16} className="text-muted-foreground" />
-            Invite Management
-          </CardTitle>
-          <CardDescription>Invite a guest to view your pipeline</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-2">
-            <input
-              type="email"
-              placeholder="Enter email address..."
-              value={inviteEmail}
-              onChange={(e) => setInviteEmail(e.target.value)}
-              className="flex-1 rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            />
-            <Button variant="outline" onClick={handleSendInvite}>
-              {inviteSent ? "Sent" : "Send Invite"}
-            </Button>
-          </div>
-          {inviteSent && (
-            <p className="text-xs text-green-600 flex items-center gap-1">
-              <Check size={12} /> Invite sent
-            </p>
-          )}
         </CardContent>
       </Card>
 

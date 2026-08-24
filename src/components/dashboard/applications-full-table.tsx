@@ -39,11 +39,9 @@ const PAGE_SIZE_OPTIONS = [10, 25, 50]
 export default function ApplicationsFullTable({
   apps,
   setApps,
-  isGuest,
 }: {
   apps: MockApplication[]
   setApps: React.Dispatch<React.SetStateAction<MockApplication[]>>
-  isGuest?: boolean
 }) {
   const [search, setSearch] = useState("")
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
@@ -118,7 +116,7 @@ export default function ApplicationsFullTable({
               className="h-9 w-76 rounded-md border bg-card pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
-          {!isGuest && selectedIds.size > 0 && (
+          {selectedIds.size > 0 && (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={deleteSelected}>
                 <Trash2 size={14} />
@@ -184,7 +182,6 @@ export default function ApplicationsFullTable({
         <Table>
           <TableHeader>
             <TableRow>
-              {!isGuest && (
               <TableHead className="w-[40px]">
                 <input
                   type="checkbox"
@@ -193,7 +190,6 @@ export default function ApplicationsFullTable({
                   className="rounded border-border"
                 />
               </TableHead>
-            )}
               <TableHead>
                 <button
                   type="button"
@@ -247,29 +243,27 @@ export default function ApplicationsFullTable({
               </TableHead>
               <TableHead>Compensation</TableHead>
               <TableHead>Notes</TableHead>
-              {!isGuest && <TableHead className="w-[40px]"></TableHead>}
+              <TableHead className="w-[40px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paged.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={isGuest ? 8 : 10} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={10} className="h-24 text-center text-muted-foreground">
                     No applications found
                   </TableCell>
                 </TableRow>
             ) : (
               paged.map((app) => (
                 <TableRow key={app.id} className="h-14">
-                  {!isGuest && (
-                    <TableCell>
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.has(app.id)}
-                        onChange={() => toggleSelect(app.id)}
-                        className="rounded border-border"
-                      />
-                    </TableCell>
-                  )}
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(app.id)}
+                      onChange={() => toggleSelect(app.id)}
+                      className="rounded border-border"
+                    />
+                  </TableCell>
                   <TableCell className="font-medium truncate pl-6">
                     <Link
                       href={`/applications/${app.id}`}
@@ -314,33 +308,25 @@ export default function ApplicationsFullTable({
                       : "—"}
                   </TableCell>
                   <TableCell className="max-w-[140px]">
-                    {isGuest ? (
-                      <span className="text-sm text-muted-foreground truncate block">
-                        {app.notes ?? "—"}
-                      </span>
-                    ) : (
-                      <InlineNotesEditor
-                        app={app}
-                        onUpdate={(id, updates) =>
-                          setApps((prev) =>
-                            prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
-                          )
-                        }
-                      />
-                    )}
+                    <InlineNotesEditor
+                      app={app}
+                      onUpdate={(id, updates) =>
+                        setApps((prev) =>
+                          prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
+                        )
+                      }
+                    />
                   </TableCell>
-                  {!isGuest && (
-                    <TableCell>
-                      <EditApplicationDialog
-                        app={app}
-                        onUpdate={(id, updates) =>
-                          setApps((prev) =>
-                            prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
-                          )
-                        }
-                      />
-                    </TableCell>
-                  )}
+                  <TableCell>
+                    <EditApplicationDialog
+                      app={app}
+                      onUpdate={(id, updates) =>
+                        setApps((prev) =>
+                          prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
+                        )
+                      }
+                    />
+                  </TableCell>
                 </TableRow>
               ))
             )}

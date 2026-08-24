@@ -21,28 +21,6 @@ async function main() {
     },
   })
 
-  await prisma.user.upsert({
-    where: { email: "guest@seeker.local" },
-    update: {},
-    create: {
-      name: "Guest User",
-      email: "guest@seeker.local",
-      password: passwordHash,
-      guestOfId: demoUser.id,
-    },
-  })
-
-  await prisma.invite.upsert({
-    where: { email_status: { email: "demo@seeker.local", status: "accepted" } },
-    update: {},
-    create: {
-      email: "demo@seeker.local",
-      role: "admin",
-      status: "accepted",
-      usedAt: new Date(),
-    },
-  })
-
   const shopify = await prisma.company.upsert({
     where: { id: "cm9t08h7l0002t6m8h1d8z8p1" },
     update: {},

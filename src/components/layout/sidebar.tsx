@@ -40,7 +40,7 @@ const settingsItems = [
   { href: "/settings", label: "Settings", icon: Settings },
 ]
 
-export function Sidebar({ isGuest }: { isGuest?: boolean }) {
+export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
@@ -104,7 +104,7 @@ export function Sidebar({ isGuest }: { isGuest?: boolean }) {
               })}
             </nav>
             <div className="border-t p-2 flex flex-col gap-0.5">
-              {!isGuest && userItems.map((item) => {
+              {userItems.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href
                 return (
@@ -123,7 +123,7 @@ export function Sidebar({ isGuest }: { isGuest?: boolean }) {
                   </Link>
                 )
               })}
-              {!isGuest && settingsItems.map((item) => {
+              {settingsItems.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href
                 return (
@@ -209,7 +209,7 @@ export function Sidebar({ isGuest }: { isGuest?: boolean }) {
         </nav>
 
         <div className="border-t p-2 flex flex-col gap-0.5">
-          {!isGuest && userItems.map((item) => {
+          {userItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
             return (
@@ -230,7 +230,7 @@ export function Sidebar({ isGuest }: { isGuest?: boolean }) {
               </Link>
             )
           })}
-          {!isGuest && settingsItems.map((item) => {
+          {settingsItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
             return (

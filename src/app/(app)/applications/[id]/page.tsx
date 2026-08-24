@@ -1,10 +1,8 @@
 import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@/lib/auth"
-import { getPrisma } from "@/lib/prisma"
 import { getApplication, getEventsByApplication } from "@/lib/data/applications"
 import { statusConfig, formatSalary } from "@/lib/data/types"
-import { config as appConfig } from "@/lib/config"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -32,15 +30,6 @@ export default async function ApplicationDetailPage({
 
   const { id } = await params
   const userId = session.user.id ?? session.user.email ?? undefined
-
-  let isGuest = false
-  if (!appConfig.demoMode) {
-    const user = await getPrisma().user.findUnique({
-      where: { id: session.user.id },
-      select: { guestOfId: true },
-    })
-    isGuest = !!user?.guestOfId
-  }
 
   const application = await getApplication(id, userId)
 
@@ -187,17 +176,15 @@ export default async function ApplicationDetailPage({
                           </p>
                         )}
                       </div>
-                      {!isGuest && (
-                        <form action={deleteEvent.bind(null, event.id)}>
-                          <button
-                            type="submit"
-                            className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted"
-                            aria-label="Delete event"
-                          >
+                      <form action={deleteEvent.bind(null, event.id)}>
+                        <button
+                          type="submit"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted"
+                          aria-label="Delete event"
+                        >
                             <X size={14} />
                           </button>
                         </form>
-                      )}
                     </div>
                   )
                 })}

@@ -19,7 +19,6 @@ async function createAuth() {
   const { PrismaAdapter } = await import("@auth/prisma-adapter")
   const bcrypt = await import("bcryptjs")
   const { getPrisma } = await import("./prisma")
-  const { seedAdminInvite, isValidInvite, acceptInvite } = await import("./data/invites")
 
   return NextAuth({
     adapter: PrismaAdapter(getPrisma()),
@@ -65,26 +64,8 @@ async function createAuth() {
         }
         return session
       },
-      async signIn({ user, account }) {
+      async signIn({ user }) {
         if (!user.email) return false
-        if (account?.provider === "credentials") return true
-        await seedAdminInvite()
-        if (!(await isValidInvite(user.email))) return false
-        const invite = await acceptInvite(user.email)
-
-        if (invite?.role === "guest" && invite.invitedBy) {
-          const inviter = await getPrisma().user.findUnique({
-            where: { email: invite.invitedBy },
-            select: { id: true },
-          })
-          if (inviter && user.id) {
-            await getPrisma().user.update({
-              where: { id: user.id },
-              data: { guestOfId: inviter.id },
-            })
-          }
-        }
-
         return true
       },
     },
