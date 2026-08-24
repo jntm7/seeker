@@ -23,13 +23,6 @@ async function requireOwner() {
   if (config.demoMode) return
   const session = await auth()
   if (!session?.user?.id) throw new Error("Unauthorized")
-
-  const { getPrisma } = await import("@/lib/prisma")
-  const user = await getPrisma().user.findUnique({
-    where: { id: session.user.id },
-    select: { guestOfId: true },
-  })
-  if (user?.guestOfId) throw new Error("Guests cannot modify data")
 }
 
 export async function addEvent(data: {
