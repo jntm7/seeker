@@ -1,11 +1,9 @@
 import { getApplications } from "@/lib/data/applications"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { getPrisma } from "@/lib/prisma"
 import { Navbar } from "@/components/layout/navbar"
 import { Sidebar } from "@/components/layout/sidebar"
 import { SidebarProvider } from "@/components/layout/sidebar-context"
-import { config } from "@/lib/config"
 
 export const dynamic = "force-dynamic"
 
@@ -19,22 +17,13 @@ export default async function AppLayout({
 
   const userId = session.user.id ?? session.user.email ?? undefined
 
-  let isGuest = false
-  if (!config.demoMode) {
-    const user = await getPrisma().user.findUnique({
-      where: { id: session.user.id },
-      select: { guestOfId: true },
-    })
-    isGuest = !!user?.guestOfId
-  }
-
   const applications = await getApplications(userId)
 
   return (
     <SidebarProvider>
-      <Navbar applications={applications} isGuest={isGuest} />
+      <Navbar applications={applications} />
       <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
-        <Sidebar isGuest={isGuest} />
+        <Sidebar />
         <main className="flex-1 overflow-x-clip overflow-y-auto">{children}</main>
       </div>
     </SidebarProvider>

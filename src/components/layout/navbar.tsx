@@ -7,7 +7,7 @@ import { Menu, Sun, Moon } from "lucide-react"
 import { useState } from "react"
 import type { MockApplication } from "@/lib/data/types"
 
-export function Navbar({ applications, isGuest }: { applications: MockApplication[]; isGuest?: boolean }) {
+export function Navbar({ applications }: { applications: MockApplication[] }) {
   const { toggle } = useSidebar()
   const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
   const [dark, setDark] = useState(() => {
@@ -39,11 +39,6 @@ export function Navbar({ applications, isGuest }: { applications: MockApplicatio
           {isDemo && (
             <span className="inline-flex items-center rounded-full bg-purple-100 dark:bg-purple-900/30 px-3 py-1 text-xs font-semibold text-purple-700 dark:text-purple-300 mr-2">
               Demo Mode
-            </span>
-          )}
-          {!isDemo && isGuest && (
-            <span className="inline-flex items-center rounded-full bg-purple-100 dark:bg-purple-900/30 px-3 py-1 text-xs font-semibold text-purple-700 dark:text-purple-300 mr-2">
-              Guest Mode
             </span>
           )}
         </div>
