@@ -3,12 +3,12 @@ import Link from "next/link"
 import { auth } from "@/lib/auth"
 import { getPrisma } from "@/lib/prisma"
 import { getApplication, getEventsByApplication } from "@/lib/data/applications"
-import { statusConfig } from "@/lib/data/types"
+import { statusConfig, formatSalary } from "@/lib/data/types"
 import { config as appConfig } from "@/lib/config"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, MapPin, Calendar, ExternalLink, X } from "lucide-react"
+import { ArrowLeft, MapPin, Calendar, ExternalLink, X, DollarSign } from "lucide-react"
 import { deleteEvent } from "@/lib/actions/events"
 import type { EventType } from "@/generated/prisma/client"
 const eventTypeConfig: Record<EventType, { label: string; color: string }> = {
@@ -114,6 +114,13 @@ export default async function ApplicationDetailPage({
                 >
                   View Job Posting
                 </a>
+              </div>
+            )}
+
+            {formatSalary(application.salary, application.salaryCurrency) && (
+              <div className="flex items-center gap-3 text-sm">
+                <DollarSign size={16} className="text-muted-foreground" />
+                <span>{formatSalary(application.salary, application.salaryCurrency)}</span>
               </div>
             )}
 

@@ -11,10 +11,11 @@ export default async function SettingsPage() {
   if (!config.demoMode) {
     const user = await getPrisma().user.findUnique({
       where: { id: session.user.id },
-      select: { guestOfId: true },
+      select: { guestOfId: true, defaultCurrency: true },
     })
     if (user?.guestOfId) redirect("/dashboard")
+    return <SettingsPageContent defaultCurrency={user?.defaultCurrency ?? "CAD"} />
   }
 
-  return <SettingsPageContent />
+  return <SettingsPageContent defaultCurrency="CAD" />
 }

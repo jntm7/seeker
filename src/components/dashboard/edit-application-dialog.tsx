@@ -39,6 +39,7 @@ export function EditApplicationDialog({
   const [location, setLocation] = useState(app.location ?? "")
   const [jobUrl, setJobUrl] = useState(app.jobUrl ?? "")
   const [notes, setNotes] = useState(app.notes ?? "")
+  const [salary, setSalary] = useState(app.salary != null ? String(app.salary) : "")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -54,6 +55,8 @@ export function EditApplicationDialog({
         location: location.trim() || undefined,
         jobUrl: jobUrl.trim() || undefined,
         notes: notes.trim() || undefined,
+        salary: salary ? Number(salary) : null,
+        salaryCurrency: app.salaryCurrency ?? "CAD",
       }
 
       onUpdate(app.id, updates)
@@ -67,6 +70,8 @@ export function EditApplicationDialog({
         location: location.trim() || null,
         jobUrl: jobUrl.trim() || null,
         notes: notes.trim() || null,
+        salary: salary ? Number(salary) : null,
+        salaryCurrency: app.salaryCurrency ?? "CAD",
       })
     } catch {
       toast.error("Failed to update application")
@@ -176,6 +181,19 @@ export function EditApplicationDialog({
               value={jobUrl}
               onChange={(e) => setJobUrl(e.target.value)}
               placeholder="https://..."
+            />
+          </div>
+
+          <div className="space-y-2.5">
+            <Label htmlFor="edit-salary">Expected Compensation ({app.salaryCurrency ?? "CAD"})</Label>
+            <Input
+              id="edit-salary"
+              type="number"
+              min={0}
+              step={1000}
+              value={salary}
+              onChange={(e) => setSalary(e.target.value)}
+              placeholder="e.g. 95000 (optional)"
             />
           </div>
 

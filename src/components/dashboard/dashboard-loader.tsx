@@ -9,6 +9,6 @@ const DashboardContent = dynamic(
   { ssr: false }
 )
 
-export function DashboardLoader({ applications, staleApps = [], isGuest }: { applications: MockApplication[]; staleApps?: StaleApplication[]; isGuest?: boolean }) {
-  return <DashboardContent applications={applications} staleApps={staleApps} isGuest={isGuest} />
+export function DashboardLoader({ applications, staleApps = [], isGuest, defaultCurrency = "CAD" }: { applications: MockApplication[]; staleApps?: StaleApplication[]; isGuest?: boolean; defaultCurrency?: string }) {
+  return <DashboardContent applications={applications} staleApps={staleApps} isGuest={isGuest} defaultCurrency={defaultCurrency} />
 }
