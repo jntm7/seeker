@@ -18,7 +18,6 @@ import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-  arrayMove,
 } from "@dnd-kit/sortable"
 import { useDroppable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
@@ -34,9 +33,16 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
 import { type ApplicationStatus } from "@/generated/prisma/client"
-import { updateApplicationStatus, updateApplicationPositions } from "@/lib/actions/applications"
+import { updateApplicationStatus } from "@/lib/actions/applications"
 import { toast } from "sonner"
 import { GripVertical } from "lucide-react"
+
+function byDateAppliedDesc(a: MockApplication, b: MockApplication) {
+  const da = a.dateApplied ? new Date(a.dateApplied).getTime() : 0
+  const db = b.dateApplied ? new Date(b.dateApplied).getTime() : 0
+  if (db !== da) return db - da
+  return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+}
 
 function SortableCard({ app }: { app: MockApplication }) {
   const {
@@ -161,9 +167,6 @@ export function KanbanBoard({
   const [pendingMove, setPendingMove] = useState<{
     app: MockApplication
     targetStatus: ApplicationStatus
-    sourceItems: MockApplication[]
-    targetItems: MockApplication[]
-    insertIndex: number
   } | null>(null)
 
   const sensors = useSensors(
@@ -224,83 +227,35 @@ export function KanbanBoard({
 
     if (!targetStatus) return
 
-    const sourceItems = apps
-      .filter((a) => a.status === activeApp.status)
-      .sort((a, b) => a.position - b.position)
-
     if (targetStatus !== activeApp.status) {
-      const targetItems = apps
-        .filter((a) => a.status === targetStatus)
-        .sort((a, b) => a.position - b.position)
-
-      let insertIndex = targetItems.length
-      if (over.id !== targetStatus) {
-        const overIndex = targetItems.findIndex((a) => a.id === over.id)
-        if (overIndex !== -1) insertIndex = overIndex
-      }
-
       setPendingMove({
         app: activeApp,
         targetStatus,
-        sourceItems,
-        targetItems,
-        insertIndex,
-      })
-    } else if (over.id !== active.id) {
-      const oldIndex = sourceItems.findIndex((a) => a.id === active.id)
-      const newIndex = sourceItems.findIndex((a) => a.id === over.id)
-      if (oldIndex === -1 || newIndex === -1) return
-
-      const reordered = arrayMove(sourceItems, oldIndex, newIndex)
-      const updates = reordered.map((a, i) => ({ id: a.id, position: i }))
-
-      setApps((prev) =>
-        prev.map((a) => {
-          const update = updates.find((u) => u.id === a.id)
-          return update ? { ...a, position: update.position } : a
-        })
-      )
-
-      updateApplicationPositions(updates).catch(() => {
-        toast.error("Failed to update application order")
       })
     }
   }
 
   function confirmMove() {
     if (!pendingMove) return
-    const { app: activeApp, targetStatus, sourceItems, targetItems, insertIndex } = pendingMove
+    const { app: activeApp, targetStatus } = pendingMove
     const today = new Date().toISOString().split("T")[0]
-
-    const moved: MockApplication = {
-      ...activeApp,
-      status: targetStatus,
-      updatedAt: today,
-      ...(targetStatus === "applied" && !activeApp.dateApplied ? { dateApplied: today } : {}),
-    }
-    const newTarget = [...targetItems]
-    newTarget.splice(insertIndex, 0, moved)
-    const newSource = sourceItems.filter((a) => a.id !== activeApp.id)
-
-    const updates: { id: string; position: number }[] = []
-    newSource.forEach((a, i) => updates.push({ id: a.id, position: i }))
-    newTarget.forEach((a, i) => updates.push({ id: a.id, position: i }))
 
     setApps((prev) =>
       prev.map((a) => {
         if (a.id === activeApp.id) {
-          return { ...a, status: targetStatus, position: updates.find((u) => u.id === a.id)?.position ?? 0, updatedAt: today }
+          return {
+            ...a,
+            status: targetStatus,
+            updatedAt: today,
+            ...(targetStatus === "applied" && !a.dateApplied ? { dateApplied: today } : {}),
+          }
         }
-        const update = updates.find((u) => u.id === a.id)
-        return update ? { ...a, position: update.position } : a
+        return a
       })
     )
 
     updateApplicationStatus(String(activeApp.id), targetStatus).catch(() => {
       toast.error("Failed to update application status")
-    })
-    updateApplicationPositions(updates).catch(() => {
-      toast.error("Failed to update application order")
     })
 
     setPendingMove(null)
@@ -344,7 +299,7 @@ export function KanbanBoard({
                 )}
                 {apps
                   .filter((a) => a.status === status)
-                  .sort((a, b) => a.position - b.position)
+                  .sort(byDateAppliedDesc)
                   .map((app) => (
                     <div key={app.id} className="rounded-md border bg-background px-2.5 py-1.5 text-xs leading-snug">
                       <div className="flex items-start gap-1.5">
@@ -374,7 +329,7 @@ export function KanbanBoard({
                 status={status}
                 items={apps
                   .filter((a) => a.status === status)
-                  .sort((a, b) => a.position - b.position)
+                  .sort(byDateAppliedDesc)
                 }
                 isDragOver={dragOverStatus === status}
               />

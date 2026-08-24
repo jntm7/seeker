@@ -71,25 +71,6 @@ export async function createApplication(data: {
   return { id: app.id }
 }
 
-export async function updateApplicationPositions(updates: { id: string; position: number }[]) {
-  if (config.demoMode) return
-
-  await requireOwner()
-  const userId = await getUserId()
-  if (!userId) throw new Error("Unauthorized")
-
-  const { getPrisma } = await import("@/lib/prisma")
-
-  await getPrisma().$transaction(
-    updates.map(({ id, position }) =>
-      getPrisma().application.update({
-        where: { id },
-        data: { sortOrder: position },
-      })
-    )
-  )
-}
-
 export async function updateApplicationStatus(id: string, status: ApplicationStatus) {
   if (config.demoMode) return
 
