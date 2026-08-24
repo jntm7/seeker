@@ -27,7 +27,7 @@ function computeStats(apps: MockApplication[]) {
   ]
 }
 
-export function DashboardContent({ applications: initialApplications, staleApps: initialStaleApps, isGuest, defaultCurrency = "CAD" }: { applications: MockApplication[]; staleApps: StaleApplication[]; isGuest?: boolean; defaultCurrency?: string }) {
+export function DashboardContent({ applications: initialApplications, staleApps: initialStaleApps, defaultCurrency = "CAD" }: { applications: MockApplication[]; staleApps: StaleApplication[]; defaultCurrency?: string }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
   const [staleApps, setStaleApps] = useState<StaleApplication[]>(initialStaleApps)
   const [showArchived, setShowArchived] = useState(false)
@@ -88,7 +88,7 @@ export function DashboardContent({ applications: initialApplications, staleApps:
             Overview of your applications and hiring pipeline
           </p>
         </div>
-        {!isGuest && <AddApplicationDialog onAdd={addApplication} defaultCurrency={defaultCurrency} />}
+        {<AddApplicationDialog onAdd={addApplication} defaultCurrency={defaultCurrency} />}
       </div>
 
       <StatCards stats={stats} />
@@ -124,7 +124,7 @@ export function DashboardContent({ applications: initialApplications, staleApps:
           </div>
         </div>
       </div>
-      <KanbanBoard apps={apps} setApps={setApps} showArchived={showArchived} isGuest={isGuest} />
+      <KanbanBoard apps={apps} setApps={setApps} showArchived={showArchived} />
 
       <Separator />
 
@@ -135,7 +135,7 @@ export function DashboardContent({ applications: initialApplications, staleApps:
             {apps.length} {apps.length === 1 ? "application" : "applications"}
           </p>
         </div>
-        <ApplicationsTable apps={apps} setApps={setApps} isGuest={isGuest} />
+        <ApplicationsTable apps={apps} setApps={setApps} />
       </div>
     </div>
   )

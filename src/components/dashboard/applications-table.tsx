@@ -24,11 +24,9 @@ import { ChevronDown } from "lucide-react"
 export function ApplicationsTable({
   apps,
   setApps,
-  isGuest,
 }: {
   apps: MockApplication[]
   setApps: React.Dispatch<React.SetStateAction<MockApplication[]>>
-  isGuest?: boolean
 }) {
   const {
     filtered,
@@ -188,20 +186,14 @@ export function ApplicationsTable({
                     {app.location ?? "—"}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell max-w-[200px]">
-                    {isGuest ? (
-                      <span className="text-sm text-muted-foreground truncate block">
-                        {app.notes ?? "—"}
-                      </span>
-                    ) : (
-                      <InlineNotesEditor
-                        app={app}
-                        onUpdate={(id, updates) =>
-                          setApps((prev) =>
-                            prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
-                          )
-                        }
-                      />
-                    )}
+                    <InlineNotesEditor
+                      app={app}
+                      onUpdate={(id, updates) =>
+                        setApps((prev) =>
+                          prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
+                        )
+                      }
+                    />
                   </TableCell>
                 </TableRow>
               ))
