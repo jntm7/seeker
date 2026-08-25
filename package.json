@@ -6,8 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "vercel-build": "prisma migrate deploy; next build",
+    "vercel-build": "tsx prisma/apply-migrations.ts && next build",
     "lint": "eslint",
+    "db:migrate:prod": "tsx prisma/apply-migrations.ts",
     "db:seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate"
   },
