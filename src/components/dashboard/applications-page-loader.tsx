@@ -10,7 +10,7 @@ const ApplicationsFullTable = dynamic(
   { ssr: false }
 )
 
-export function ApplicationsPageLoader({ applications: initialApplications, isGuest }: { applications: MockApplication[]; isGuest?: boolean }) {
+export function ApplicationsPageLoader({ applications: initialApplications }: { applications: MockApplication[] }) {
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
 
   return (
@@ -18,13 +18,13 @@ export function ApplicationsPageLoader({ applications: initialApplications, isGu
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Applications</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {isGuest ? "Viewing all applications" : "Manage and track all your job applications"}
+          Manage and track all your job applications
         </p>
       </div>
 
       <Separator />
 
-      <ApplicationsFullTable apps={apps} setApps={setApps} isGuest={isGuest} />
+      <ApplicationsFullTable apps={apps} setApps={setApps} />
     </div>
   )
 }

@@ -35,9 +35,6 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
-  guestOfId     String?
-  guestOf       User?        @relation("GuestAccess", fields: [guestOfId], references: [id])
-  guests        User[]       @relation("GuestAccess")
   defaultCurrency String?    @default("CAD")
   accounts      Account[]
   sessions      Session[]
@@ -128,23 +125,4 @@ model Event {
 
   @@index([applicationId])
   @@map("events")
-}
-
-enum InviteRole {
-  admin
-  guest
-}
-
-model Invite {
-  id        String     @id @default(uuid())
-  email     String
-  role      InviteRole @default(admin)
-  status    String     @default("pending")
-  invitedBy String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  usedAt    DateTime?
-
-  @@unique([email, status])
-  @@map("invites")
 }

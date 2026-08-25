@@ -7,12 +7,7 @@ export type { Application, Event, Stat }
 export { statusConfig }
 
 async function resolveUserId(userId: string): Promise<string> {
-  const { getPrisma } = await import("@/lib/prisma")
-  const user = await getPrisma().user.findUnique({
-    where: { id: userId },
-    select: { guestOfId: true },
-  })
-  return user?.guestOfId ?? userId
+  return userId
 }
 
 function requireUserId(userId?: string): string {

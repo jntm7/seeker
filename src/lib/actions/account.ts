@@ -14,7 +14,6 @@ export async function updateUserCurrency(currency: string) {
   const { getPrisma } = await import("@/lib/prisma")
   const user = await getPrisma().user.findUnique({ where: { email: session.user.email } })
   if (!user) throw new Error("User not found")
-  if (user.guestOfId) throw new Error("Guests cannot change settings")
 
   await getPrisma().user.update({
     where: { id: user.id },
@@ -34,7 +33,6 @@ export async function deleteAccount() {
   const { getPrisma } = await import("@/lib/prisma")
   const user = await getPrisma().user.findUnique({ where: { email: session.user.email } })
   if (!user) throw new Error("User not found")
-  if (user.guestOfId) throw new Error("Guests cannot delete account")
 
   await getPrisma().application.deleteMany({ where: { userId: user.id } })
   await getPrisma().user.delete({ where: { id: user.id } })

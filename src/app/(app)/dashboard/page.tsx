@@ -11,19 +11,17 @@ export default async function DashboardPage() {
 
   const userId = session.user.id ?? session.user.email ?? undefined
 
-  let isGuest = false
   let defaultCurrency = "CAD"
   if (!config.demoMode) {
     const user = await getPrisma().user.findUnique({
       where: { id: session.user.id },
-      select: { guestOfId: true, defaultCurrency: true },
+      select: { defaultCurrency: true },
     })
-    isGuest = !!user?.guestOfId
     defaultCurrency = user?.defaultCurrency ?? "CAD"
   }
 
   const applications = await getApplications(userId)
   const staleApps = await getStaleApplications(userId)
 
-  return <DashboardLoader applications={applications} staleApps={staleApps} isGuest={isGuest} defaultCurrency={defaultCurrency} />
+  return <DashboardLoader applications={applications} staleApps={staleApps} defaultCurrency={defaultCurrency} />
 }

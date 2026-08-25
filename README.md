@@ -45,7 +45,6 @@ Two Vercel projects share the same repository, differentiated by environment var
 | `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | GitHub OAuth app |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth app |
 | `AUTH_APPLE_ID` / `AUTH_APPLE_SECRET` | Apple OAuth app |
-| `ADMIN_EMAIL` | Your email |
 
 ### Demo Project (preview / recruiter demo)
 
