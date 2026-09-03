@@ -10,7 +10,8 @@ export type MockApplication = {
   location: string | null
   jobUrl: string | null
   notes: string | null
-  salary: number | null
+  salaryMin: number | null
+  salaryMax: number | null
   salaryCurrency: string | null
   createdAt: string
   updatedAt: string
@@ -19,17 +20,29 @@ export type MockApplication = {
 export const CURRENCIES = ["USD", "CAD", "EUR", "GBP", "AUD", "INR"] as const
 export type Currency = (typeof CURRENCIES)[number]
 
-export function formatSalary(salary: number | null, currency: string | null): string | null {
-  if (salary == null) return null
+function formatAmount(amount: number, currency: string): string {
   try {
     return new Intl.NumberFormat(undefined, {
       style: "currency",
-      currency: currency ?? "USD",
+      currency,
       maximumFractionDigits: 0,
-    }).format(salary)
+    }).format(amount)
   } catch {
-    return `${currency ?? "USD"} ${salary.toLocaleString()}`
+    return `${currency} ${amount.toLocaleString()}`
   }
+}
+
+export function formatCompensation(
+  salaryMin: number | null,
+  salaryMax: number | null,
+  currency: string | null
+): string | null {
+  if (salaryMin == null && salaryMax == null) return null
+  const c = currency ?? "USD"
+  if (salaryMin != null && salaryMax != null && salaryMin !== salaryMax) {
+    return `${formatAmount(salaryMin, c)} – ${formatAmount(salaryMax, c)}`
+  }
+  return formatAmount(salaryMin ?? salaryMax!, c)
 }
 
 export type MockEvent = {

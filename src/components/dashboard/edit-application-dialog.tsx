@@ -39,7 +39,8 @@ export function EditApplicationDialog({
   const [location, setLocation] = useState(app.location ?? "")
   const [jobUrl, setJobUrl] = useState(app.jobUrl ?? "")
   const [notes, setNotes] = useState(app.notes ?? "")
-  const [salary, setSalary] = useState(app.salary != null ? String(app.salary) : "")
+  const [salaryMin, setSalaryMin] = useState(app.salaryMin != null ? String(app.salaryMin) : "")
+  const [salaryMax, setSalaryMax] = useState(app.salaryMax != null ? String(app.salaryMax) : "")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -47,6 +48,13 @@ export function EditApplicationDialog({
 
     setSubmitting(true)
     try {
+      let min = salaryMin ? Number(salaryMin) : null
+      let max = salaryMax ? Number(salaryMax) : null
+      if (min != null && max != null && min > max) {
+        ;[min, max] = [max, min]
+      }
+      const salaryCurrency = min != null || max != null ? (app.salaryCurrency ?? "CAD") : null
+
       const updates: Partial<MockApplication> = {
         roleTitle: roleTitle.trim(),
         company: company.trim(),
@@ -55,8 +63,9 @@ export function EditApplicationDialog({
         location: location.trim() || undefined,
         jobUrl: jobUrl.trim() || undefined,
         notes: notes.trim() || undefined,
-        salary: salary ? Number(salary) : null,
-        salaryCurrency: app.salaryCurrency ?? "CAD",
+        salaryMin: min,
+        salaryMax: max,
+        salaryCurrency,
       }
 
       onUpdate(app.id, updates)
@@ -70,8 +79,9 @@ export function EditApplicationDialog({
         location: location.trim() || null,
         jobUrl: jobUrl.trim() || null,
         notes: notes.trim() || null,
-        salary: salary ? Number(salary) : null,
-        salaryCurrency: app.salaryCurrency ?? "CAD",
+        salaryMin: min,
+        salaryMax: max,
+        salaryCurrency,
       })
     } catch {
       toast.error("Failed to update application")
@@ -185,16 +195,27 @@ export function EditApplicationDialog({
           </div>
 
           <div className="space-y-2.5">
-            <Label htmlFor="edit-salary">Expected Compensation ({app.salaryCurrency ?? "CAD"})</Label>
-            <Input
-              id="edit-salary"
-              type="number"
-              min={0}
-              step={1000}
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-              placeholder="e.g. 95000 (optional)"
-            />
+            <Label htmlFor="edit-salaryMin">Expected Compensation ({app.salaryCurrency ?? "CAD"})</Label>
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                id="edit-salaryMin"
+                type="number"
+                min={0}
+                step={1000}
+                value={salaryMin}
+                onChange={(e) => setSalaryMin(e.target.value)}
+                placeholder="Min (optional)"
+              />
+              <Input
+                id="edit-salaryMax"
+                type="number"
+                min={0}
+                step={1000}
+                value={salaryMax}
+                onChange={(e) => setSalaryMax(e.target.value)}
+                placeholder="Max (optional)"
+              />
+            </div>
           </div>
 
           <div className="space-y-2.5">

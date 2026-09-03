@@ -35,7 +35,8 @@ export function AddApplicationDialog({
   const [company, setCompany] = useState("")
   const [status, setStatus] = useState<ApplicationStatus>("todo")
   const [dateApplied, setDateApplied] = useState("")
-  const [salary, setSalary] = useState("")
+  const [salaryMin, setSalaryMin] = useState("")
+  const [salaryMax, setSalaryMax] = useState("")
 
   function handleStatusChange(s: ApplicationStatus) {
     setStatus(s)
@@ -55,6 +56,12 @@ export function AddApplicationDialog({
 
     setSubmitting(true)
     try {
+      let min = salaryMin ? Number(salaryMin) : null
+      let max = salaryMax ? Number(salaryMax) : null
+      if (min != null && max != null && min > max) {
+        ;[min, max] = [max, min]
+      }
+
       const result = await createApplicationWithCompany({
         companyName: company.trim(),
         roleTitle: roleTitle.trim(),
@@ -63,8 +70,9 @@ export function AddApplicationDialog({
         location: location.trim() || undefined,
         jobUrl: jobUrl.trim() || undefined,
         notes: notes.trim() || undefined,
-        salary: salary ? Number(salary) : null,
-        salaryCurrency: salary ? defaultCurrency : null,
+        salaryMin: min,
+        salaryMax: max,
+        salaryCurrency: min != null || max != null ? defaultCurrency : null,
       })
 
       onAdd(result as MockApplication)
@@ -75,7 +83,8 @@ export function AddApplicationDialog({
       setLocation("")
       setJobUrl("")
       setNotes("")
-      setSalary("")
+      setSalaryMin("")
+      setSalaryMax("")
       setOpen(false)
     } catch {
       const { toast } = await import("sonner")
@@ -191,16 +200,27 @@ export function AddApplicationDialog({
           </div>
 
           <div className="space-y-2.5">
-            <Label htmlFor="salary">Expected Compensation ({defaultCurrency})</Label>
-            <Input
-              id="salary"
-              type="number"
-              min={0}
-              step={1000}
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-              placeholder="e.g. 95000 (optional)"
-            />
+            <Label htmlFor="salaryMin">Expected Compensation ({defaultCurrency})</Label>
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                id="salaryMin"
+                type="number"
+                min={0}
+                step={1000}
+                value={salaryMin}
+                onChange={(e) => setSalaryMin(e.target.value)}
+                placeholder="Min (optional)"
+              />
+              <Input
+                id="salaryMax"
+                type="number"
+                min={0}
+                step={1000}
+                value={salaryMax}
+                onChange={(e) => setSalaryMax(e.target.value)}
+                placeholder="Max (optional)"
+              />
+            </div>
           </div>
 
           <div className="space-y-2.5">

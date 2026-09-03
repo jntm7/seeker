@@ -23,7 +23,7 @@ import { StatusBadge } from "@/components/ui/status-badge"
 import { InlineNotesEditor } from "@/components/ui/inline-notes-editor"
 import { EditApplicationDialog } from "@/components/dashboard/edit-application-dialog"
 import { bulkDeleteApplications } from "@/lib/actions/applications"
-import { formatSalary } from "@/lib/data/types"
+import { formatCompensation } from "@/lib/data/types"
 import { toast } from "sonner"
 import {
   ChevronDown,
@@ -303,9 +303,7 @@ export default function ApplicationsFullTable({
                     {app.location ?? "—"}
                   </TableCell>
                   <TableCell>
-                    {app.salary != null
-                      ? formatSalary(app.salary, app.salaryCurrency)
-                      : "—"}
+                    {formatCompensation(app.salaryMin, app.salaryMax, app.salaryCurrency) ?? "—"}
                   </TableCell>
                   <TableCell className="max-w-[140px]">
                     <InlineNotesEditor
