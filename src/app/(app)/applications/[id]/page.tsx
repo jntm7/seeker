@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@/lib/auth"
 import { getApplication, getEventsByApplication } from "@/lib/data/applications"
-import { statusConfig, formatSalary } from "@/lib/data/types"
+import { statusConfig, formatCompensation } from "@/lib/data/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -106,10 +106,10 @@ export default async function ApplicationDetailPage({
               </div>
             )}
 
-            {formatSalary(application.salary, application.salaryCurrency) && (
+            {formatCompensation(application.salaryMin, application.salaryMax, application.salaryCurrency) && (
               <div className="flex items-center gap-3 text-sm">
                 <DollarSign size={16} className="text-muted-foreground" />
-                <span>{formatSalary(application.salary, application.salaryCurrency)}</span>
+                <span>{formatCompensation(application.salaryMin, application.salaryMax, application.salaryCurrency)}</span>
               </div>
             )}
 

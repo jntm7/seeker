@@ -101,7 +101,8 @@ model Application {
   location    String?
   notes       String?
   sortOrder   Int                @default(0)
-  salary      Int?
+  salaryMin   Int?
+  salaryMax   Int?
   salaryCurrency String?         @default("CAD")
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt

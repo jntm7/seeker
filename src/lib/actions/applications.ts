@@ -34,7 +34,8 @@ export async function createApplication(data: {
   location?: string
   jobUrl?: string
   notes?: string
-  salary?: number | null
+  salaryMin?: number | null
+  salaryMax?: number | null
   salaryCurrency?: string | null
 }) {
   if (config.demoMode) {
@@ -60,7 +61,8 @@ export async function createApplication(data: {
       location: data.location,
       jobUrl: data.jobUrl,
       notes: data.notes,
-      salary: data.salary ?? null,
+      salaryMin: data.salaryMin ?? null,
+      salaryMax: data.salaryMax ?? null,
       salaryCurrency: data.salaryCurrency ?? null,
     },
   })
@@ -109,7 +111,8 @@ export async function updateApplication(id: string, data: {
   location?: string | null
   jobUrl?: string | null
   notes?: string | null
-  salary?: number | null
+  salaryMin?: number | null
+  salaryMax?: number | null
   salaryCurrency?: string | null
 }) {
   if (config.demoMode) return
@@ -130,7 +133,8 @@ export async function updateApplication(id: string, data: {
   if (data.location !== undefined) updateData.location = data.location
   if (data.jobUrl !== undefined) updateData.jobUrl = data.jobUrl
   if (data.notes !== undefined) updateData.notes = data.notes
-  if (data.salary !== undefined) updateData.salary = data.salary
+  if (data.salaryMin !== undefined) updateData.salaryMin = data.salaryMin
+  if (data.salaryMax !== undefined) updateData.salaryMax = data.salaryMax
   if (data.salaryCurrency !== undefined) updateData.salaryCurrency = data.salaryCurrency
 
   if (data.companyName !== undefined) {
@@ -186,7 +190,8 @@ export async function createApplicationWithCompany(data: {
   location?: string
   jobUrl?: string
   notes?: string
-  salary?: number | null
+  salaryMin?: number | null
+  salaryMax?: number | null
   salaryCurrency?: string | null
 }) {
   if (config.demoMode) {
@@ -200,7 +205,8 @@ export async function createApplicationWithCompany(data: {
       location: data.location ?? null,
       jobUrl: data.jobUrl ?? null,
       notes: data.notes ?? null,
-      salary: data.salary ?? null,
+      salaryMin: data.salaryMin ?? null,
+      salaryMax: data.salaryMax ?? null,
       salaryCurrency: data.salaryCurrency ?? "CAD",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString().split("T")[0],
@@ -235,7 +241,8 @@ export async function createApplicationWithCompany(data: {
       location: data.location,
       jobUrl: data.jobUrl,
       notes: data.notes,
-      salary: data.salary ?? null,
+      salaryMin: data.salaryMin ?? null,
+      salaryMax: data.salaryMax ?? null,
       salaryCurrency: data.salaryCurrency ?? null,
     },
     include: { company: true },
@@ -262,7 +269,8 @@ export async function createApplicationWithCompany(data: {
     location: app.location,
     jobUrl: app.jobUrl,
     notes: app.notes,
-    salary: app.salary,
+    salaryMin: app.salaryMin,
+    salaryMax: app.salaryMax,
     salaryCurrency: app.salaryCurrency ?? "CAD",
     createdAt: app.createdAt.toISOString(),
     updatedAt: app.updatedAt.toISOString().split("T")[0],
