@@ -22,6 +22,7 @@ import { useApplicationFilters, timeFilterOptions } from "@/lib/hooks/use-applic
 import { StatusBadge } from "@/components/ui/status-badge"
 import { InlineNotesEditor } from "@/components/ui/inline-notes-editor"
 import { EditApplicationDialog } from "@/components/dashboard/edit-application-dialog"
+import { TypeToConfirmDialog } from "@/components/ui/type-to-confirm-dialog"
 import { bulkDeleteApplications } from "@/lib/actions/applications"
 import { formatSalary } from "@/lib/data/types"
 import { toast } from "sonner"
@@ -47,6 +48,7 @@ export default function ApplicationsFullTable({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(0)
   const [pageSize, setPageSize] = useState(10)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const {
     filtered,
@@ -118,7 +120,7 @@ export default function ApplicationsFullTable({
           </div>
           {selectedIds.size > 0 && (
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={deleteSelected}>
+              <Button variant="outline" size="sm" onClick={() => setDeleteOpen(true)}>
                 <Trash2 size={14} />
                 Delete ({selectedIds.size})
               </Button>
@@ -386,6 +388,15 @@ export default function ApplicationsFullTable({
           </div>
         )}
       </div>
+
+      <TypeToConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete applications"
+        description={`This permanently deletes ${selectedIds.size} ${selectedIds.size === 1 ? "application" : "applications"} and their timeline events. This cannot be undone.`}
+        confirmLabel={`Delete (${selectedIds.size})`}
+        onConfirm={deleteSelected}
+      />
     </div>
   )
 }

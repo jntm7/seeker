@@ -17,5 +17,10 @@ export default async function SettingsPage() {
     defaultCurrency = user?.defaultCurrency ?? "CAD"
   }
 
-  return <SettingsPageContent defaultCurrency={defaultCurrency} />
+  return (
+    <SettingsPageContent
+      defaultCurrency={defaultCurrency}
+      userName={session.user.name ?? ""}
+    />
+  )
 }

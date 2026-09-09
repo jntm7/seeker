@@ -8,12 +8,21 @@ import { Download, Bell, Trash2, AlertTriangle } from "lucide-react"
 import { exportData, deleteAccount, updateUserCurrency } from "@/lib/actions/account"
 import { signOut } from "next-auth/react"
 import { toast } from "sonner"
+import { TypeToConfirmDialog } from "@/components/ui/type-to-confirm-dialog"
 import { CURRENCIES } from "@/lib/data/types"
 
-export function SettingsPageContent({ defaultCurrency = "CAD" }: { defaultCurrency?: string }) {
+export function SettingsPageContent({
+  defaultCurrency = "CAD",
+  userName = "",
+}: {
+  defaultCurrency?: string
+  userName?: string
+}) {
   const [currency, setCurrency] = useState(defaultCurrency)
   const [exported, setExported] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const confirmName = userName.trim() || "DELETE"
 
   async function handleCurrencyChange(value: string) {
     setCurrency(value)
@@ -40,10 +49,14 @@ export function SettingsPageContent({ defaultCurrency = "CAD" }: { defaultCurren
     toast.success("Data exported")
   }
 
-  async function handleDeleteAccount() {
-    if (!window.confirm("Are you sure you want to delete your account? This cannot be undone.")) return
+  async function confirmDeleteAccount() {
     setDeleting(true)
-    await deleteAccount()
+    try {
+      await deleteAccount()
+    } catch {
+      toast.error("Failed to delete account")
+      throw new Error("Failed to delete account")
+    }
     if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
       window.location.href = "/"
     } else {
@@ -138,7 +151,7 @@ export function SettingsPageContent({ defaultCurrency = "CAD" }: { defaultCurren
           <Button
             variant="outline"
             className="border-destructive/50 text-destructive hover:bg-destructive/10"
-            onClick={handleDeleteAccount}
+            onClick={() => setDeleteOpen(true)}
             disabled={deleting}
           >
             <AlertTriangle size={14} />
@@ -146,6 +159,15 @@ export function SettingsPageContent({ defaultCurrency = "CAD" }: { defaultCurren
           </Button>
         </CardContent>
       </Card>
+
+      <TypeToConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete account"
+        description="This permanently deletes your account and all application data. This cannot be undone."
+        requiredValue={confirmName}
+        onConfirm={confirmDeleteAccount}
+      />
     </div>
   )
 }
