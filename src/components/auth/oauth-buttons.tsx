@@ -6,15 +6,16 @@ export function OAuthButtons({ disabled }: { disabled?: boolean }) {
   const disabledClass = disabled
     ? "opacity-50 cursor-not-allowed pointer-events-none"
     : ""
+  const btn = `flex w-full flex-1 items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-colors ${disabled ? disabledClass : "hover:bg-muted"}`
   const tooltip = disabled ? "Sign-in is disabled in demo mode" : undefined
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-1 flex-col gap-4">
       <button
         type="button"
         disabled={disabled}
         title={tooltip}
-        className={`flex w-full items-center justify-center gap-2 rounded-md bg-[#24292f] px-4 py-2.5 text-sm font-medium text-white ${disabled ? disabledClass : "hover:bg-[#1b1f24]"}`}
+        className={btn}
         onClick={disabled ? undefined : async () => { await signIn("github", { redirectTo: "/dashboard" }) }}
       >
         <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
@@ -27,7 +28,7 @@ export function OAuthButtons({ disabled }: { disabled?: boolean }) {
         type="button"
         disabled={disabled}
         title={tooltip}
-        className={`flex w-full items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-2.5 text-sm font-medium ${disabled ? disabledClass : "hover:bg-muted/50"}`}
+        className={btn}
         onClick={disabled ? undefined : async () => { await signIn("google", { redirectTo: "/dashboard" }) }}
       >
         <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -43,7 +44,7 @@ export function OAuthButtons({ disabled }: { disabled?: boolean }) {
         type="button"
         disabled={disabled}
         title={tooltip}
-        className={`flex w-full items-center justify-center gap-2 rounded-md bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white ${disabled ? disabledClass : "hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"}`}
+        className={btn}
         onClick={disabled ? undefined : async () => { await signIn("apple", { redirectTo: "/dashboard" }) }}
       >
         <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
