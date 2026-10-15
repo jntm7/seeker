@@ -1,56 +1,21 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { signOut } from "next-auth/react"
-import {
-  LayoutDashboard,
-  Briefcase,
-  Building2,
-  Calendar,
-  BarChart3,
-  Settings,
-  PanelLeftClose,
-  PanelLeftOpen,
-  User,
-  Search,
-  LogOut,
-  X,
-  History,
-} from "lucide-react"
+import { LogOut, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useSidebar } from "@/components/layout/sidebar-context"
+import { navItems, settingsItems, userItems } from "@/components/layout/nav-items"
+import { Logo } from "@/components/brand/logo"
 import { AnimatedIcon } from "@/components/ui/animated-icon"
-
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/applications", label: "Applications", icon: Briefcase },
-  { href: "/companies", label: "Companies", icon: Building2 },
-  { href: "/activity", label: "Activity", icon: History },
-  { href: "/calendar", label: "Calendar", icon: Calendar },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-]
-
-const userItems = [
-  { href: "/profile", label: "Profile", icon: User },
-]
-
-const settingsItems = [
-  { href: "/settings", label: "Settings", icon: Settings },
-]
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-  const { open, setOpen } = useSidebar()
 
   const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
-
-  useEffect(() => {
-    setOpen(false)
-  }, [pathname, setOpen])
 
   function handleSignOut() {
     if (isDemo) {
@@ -62,103 +27,10 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile sidebar overlay */}
-      {open && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-black/30" onClick={() => setOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 z-50 flex w-44 flex-col border-r bg-background">
-            <div className="flex h-14 items-center justify-between pl-5 pr-4">
-              <div className="flex items-center gap-2.5">
-                <Search size={22} className="text-purple-800 dark:text-purple-200 shrink-0" />
-                <span className="text-base font-semibold text-purple-800 dark:text-purple-200 tracking-tight">Seeker</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300 transition-colors"
-              >
-                <AnimatedIcon icon={X} size={16} />
-              </button>
-            </div>
-            <div className="border-t" />
-            <div className="h-2" />
-            <nav className="flex flex-col gap-2 px-2 flex-1">
-              {navItems.map((item) => {
-                const Icon = item.icon
-                const isActive = pathname === item.href
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
-                    )}
-                  >
-                <AnimatedIcon icon={Icon} size={20} />
-                <span>{item.label}</span>
-                  </Link>
-                )
-              })}
-            </nav>
-            <div className="border-t p-2 flex flex-col gap-0.5">
-              {userItems.map((item) => {
-                const Icon = item.icon
-                const isActive = pathname === item.href
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
-                    )}
-                  >
-                <AnimatedIcon icon={Icon} size={20} />
-                <span>{item.label}</span>
-                  </Link>
-                )
-              })}
-              {settingsItems.map((item) => {
-                const Icon = item.icon
-                const isActive = pathname === item.href
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
-                    )}
-                  >
-                <AnimatedIcon icon={Icon} size={20} />
-                <span>{item.label}</span>
-                  </Link>
-                )
-              })}
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors w-full text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
-              >
-                <LogOut size={20} />
-                <span>Log Out</span>
-              </button>
-            </div>
-          </aside>
-        </div>
-      )}
-
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          "hidden md:flex flex-col border-r bg-background transition-all duration-200 relative shrink-0",
+          "hidden md:flex flex-col border-r bg-muted/50 transition-all duration-200 relative shrink-0",
           collapsed ? "w-14" : "w-44"
         )}
       >
@@ -176,15 +48,16 @@ export function Sidebar() {
             "flex items-center gap-2.5",
             collapsed && "px-2"
           )}>
-            <Search size={22} className="text-purple-800 dark:text-purple-200 shrink-0" />
-            {!collapsed && <span className="text-sm font-semibold text-purple-800 dark:text-purple-200 tracking-tight">Seeker</span>}
+            <Logo size={26} />
+            {!collapsed && <span className="text-sm font-semibold text-foreground tracking-tight">Seeker</span>}
           </div>
         </div>
 
         <div className="border-t" />
-        <div className="h-2" />
+        <div className="h-3" />
 
-        <nav className="flex flex-col gap-2 px-2 flex-1">
+        <div className="flex-1 px-2">
+        <nav className="flex flex-col gap-1">
           {navItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
@@ -197,8 +70,8 @@ export function Sidebar() {
                       "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                       collapsed && "justify-center px-2",
                       isActive
-                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
+                        ? "bg-background text-purple-700 shadow-sm ring-1 ring-border dark:text-purple-300"
+                        : "text-muted-foreground hover:bg-background/80 hover:text-foreground hover:shadow-sm hover:ring-1 hover:ring-border/70"
                     )}
                   >
                     <AnimatedIcon icon={Icon} size={20} />
@@ -207,8 +80,10 @@ export function Sidebar() {
             )
           })}
         </nav>
+        </div>
 
-        <div className="border-t p-2 flex flex-col gap-0.5">
+        <div className="border-t p-2">
+        <div className="flex flex-col gap-1">
           {userItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
@@ -221,8 +96,8 @@ export function Sidebar() {
                       "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                       collapsed && "justify-center px-2",
                       isActive
-                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
+                        ? "bg-background text-purple-700 shadow-sm ring-1 ring-border dark:text-purple-300"
+                        : "text-muted-foreground hover:bg-background/80 hover:text-foreground hover:shadow-sm hover:ring-1 hover:ring-border/70"
                     )}
                   >
                     <AnimatedIcon icon={Icon} size={20} />
@@ -242,8 +117,8 @@ export function Sidebar() {
                       "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                       collapsed && "justify-center px-2",
                       isActive
-                        ? "bg-purple-100/30 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
+                        ? "bg-background text-purple-700 shadow-sm ring-1 ring-border dark:text-purple-300"
+                        : "text-muted-foreground hover:bg-background/80 hover:text-foreground hover:shadow-sm hover:ring-1 hover:ring-border/70"
                     )}
                   >
                     <AnimatedIcon icon={Icon} size={20} />
@@ -258,12 +133,13 @@ export function Sidebar() {
             className={cn(
               "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors w-full",
               collapsed && "justify-center px-2",
-              "text-muted-foreground hover:bg-purple-50/20 hover:text-purple-700 dark:hover:bg-purple-900/15 dark:hover:text-purple-300"
+              "text-muted-foreground hover:bg-background/80 hover:text-foreground hover:shadow-sm hover:ring-1 hover:ring-border/70"
             )}
           >
             <LogOut size={20} />
             {!collapsed && <span>Log Out</span>}
           </button>
+        </div>
         </div>
       </aside>
     </>
