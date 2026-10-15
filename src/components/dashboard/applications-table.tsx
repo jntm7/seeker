@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
 import { useApplicationFilters, timeFilterOptions } from "@/lib/hooks/use-application-filters"
+import { statusFilterLabel } from "@/lib/data/status-filter"
 import { StatusBadge } from "@/components/ui/status-badge"
 import { InlineNotesEditor } from "@/components/ui/inline-notes-editor"
 import { ChevronDown } from "lucide-react"
@@ -64,7 +65,7 @@ export function ApplicationsTable({
           <DropdownMenuTrigger
             className="inline-flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted"
           >
-            {statusFilter === "all" ? "Status" : statusConfig[statusFilter].label}
+            {statusFilterLabel(statusFilter, statusConfig)}
             <ChevronDown size={14} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-auto">

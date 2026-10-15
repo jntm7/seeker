@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import type { MockApplication } from "@/lib/data/types"
+import type { MockApplication, MockEvent } from "@/lib/data/types"
 import type { StaleApplication } from "@/lib/data/applications"
 
 const DashboardContent = dynamic(
@@ -9,6 +9,6 @@ const DashboardContent = dynamic(
   { ssr: false }
 )
 
-export function DashboardLoader({ applications, staleApps = [], defaultCurrency = "CAD" }: { applications: MockApplication[]; staleApps?: StaleApplication[]; defaultCurrency?: string }) {
-  return <DashboardContent applications={applications} staleApps={staleApps} defaultCurrency={defaultCurrency} />
+export function DashboardLoader({ firstName, applications, events, staleApps = [], defaultCurrency = "CAD" }: { firstName: string | null; applications: MockApplication[]; events: MockEvent[]; staleApps?: StaleApplication[]; defaultCurrency?: string }) {
+  return <DashboardContent firstName={firstName} applications={applications} events={events} staleApps={staleApps} defaultCurrency={defaultCurrency} />
 }
