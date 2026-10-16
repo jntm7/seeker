@@ -38,19 +38,21 @@ export default async function LandingPage() {
           </p>
         </div>
 
-        <div className={`mx-auto grid w-full gap-5 max-w-[52rem] md:grid-cols-2`}>
-          <section className={`${card} border-purple-300/70 dark:border-purple-400/30`}>
-            <div className="mb-3 flex items-center gap-3">
-              <div className={iconTile}><LogIn size={20} /></div>
-              <h2 className="text-xl font-semibold tracking-tight">Sign in with a provider</h2>
-            </div>
-            <p className="mb-5 text-sm text-muted-foreground">
-              Continue with your GitHub, Google, or Apple account.
-            </p>
-            <div className="flex flex-1 flex-col gap-3">
-              <OAuthButtons disabled={isDemo} />
-            </div>
-          </section>
+        <div className={`mx-auto grid w-full gap-5 ${isDemo ? "max-w-md" : "max-w-[52rem] md:grid-cols-2"}`}>
+          {!isDemo && (
+            <section className={`${card} border-purple-300/70 dark:border-purple-400/30`}>
+              <div className="mb-3 flex items-center gap-3">
+                <div className={iconTile}><LogIn size={20} /></div>
+                <h2 className="text-xl font-semibold tracking-tight">Sign in with a provider</h2>
+              </div>
+              <p className="mb-5 text-sm text-muted-foreground">
+                Continue with your GitHub, Google, or Apple account.
+              </p>
+              <div className="flex flex-1 flex-col gap-3">
+                <OAuthButtons />
+              </div>
+            </section>
+          )}
 
           {isDemo ? (
             <form
