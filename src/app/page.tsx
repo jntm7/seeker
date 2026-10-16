@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { ArrowRight, BarChart3, Briefcase, Calendar, Compass, LayoutDashboard, LogIn } from "lucide-react"
+import { ArrowRight, BarChart3, Briefcase, Calendar, Compass, LayoutDashboard, LogIn, Mail } from "lucide-react"
 import { Logo } from "@/components/brand/logo"
 import { config } from "@/lib/config"
 import { OAuthButtons } from "@/components/auth/oauth-buttons"
@@ -38,22 +38,21 @@ export default async function LandingPage() {
           </p>
         </div>
 
-        <div className={`mx-auto grid w-full gap-5 ${isDemo ? "max-w-3xl md:grid-cols-2" : "max-w-md"}`}>
+        <div className={`mx-auto grid w-full gap-5 max-w-[52rem] md:grid-cols-2`}>
           <section className={`${card} border-purple-300/70 dark:border-purple-400/30`}>
             <div className="mb-3 flex items-center gap-3">
               <div className={iconTile}><LogIn size={20} /></div>
-              <h2 className="text-xl font-semibold tracking-tight">Sign in</h2>
+              <h2 className="text-xl font-semibold tracking-tight">Sign in with a provider</h2>
             </div>
             <p className="mb-5 text-sm text-muted-foreground">
-              Pick up where you left off, or start fresh with an account.
+              Continue with your GitHub, Google, or Apple account.
             </p>
             <div className="flex flex-1 flex-col gap-3">
               <OAuthButtons disabled={isDemo} />
-              {!isDemo && <EmailSignIn />}
             </div>
           </section>
 
-          {isDemo && (
+          {isDemo ? (
             <form
               className="contents"
               action={async () => {
@@ -94,6 +93,17 @@ export default async function LandingPage() {
                 </button>
               </section>
             </form>
+          ) : (
+            <section className={card}>
+              <div className="mb-3 flex items-center gap-3">
+                <div className={iconTile}><Mail size={20} /></div>
+                <h2 className="text-xl font-semibold tracking-tight">Sign in with email</h2>
+              </div>
+              <p className="mb-5 text-sm text-muted-foreground">
+                Use your email and password, or create a new account.
+              </p>
+              <EmailSignIn />
+            </section>
           )}
         </div>
       </main>

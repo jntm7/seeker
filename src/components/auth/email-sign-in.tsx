@@ -41,16 +41,15 @@ export function EmailSignIn() {
   }
 
   return (
-    <div className="border-t pt-4 mt-4">
-      <p className="text-center text-xs text-muted-foreground mb-3">or continue with email</p>
-      <form onSubmit={handleSubmit} className="space-y-3">
+    <div className="flex flex-1 flex-col">
+      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-3">
         {mode === "signup" && (
           <input
             name="name"
             type="text"
-            placeholder="Full name"
+            placeholder="Name"
             required
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border bg-background px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         )}
         <input
@@ -58,7 +57,7 @@ export function EmailSignIn() {
           type="email"
           placeholder="Email"
           required
-          className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border bg-background px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
         />
         <input
           name="password"
@@ -66,13 +65,13 @@ export function EmailSignIn() {
           placeholder="Password"
           required
           minLength={6}
-          className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border bg-background px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
         />
         {error && <p className="text-xs text-red-500">{error}</p>}
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-md bg-purple-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-purple-800 transition-colors disabled:opacity-50"
+          className="mt-auto w-full rounded-md bg-purple-700 px-4 py-3 text-sm font-medium text-white hover:bg-purple-800 transition-colors disabled:opacity-50"
         >
           {loading ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}
         </button>
