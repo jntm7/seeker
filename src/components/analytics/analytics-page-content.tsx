@@ -107,7 +107,7 @@ function StatusBreakdown({ rows }: { rows: StatusRow[] }) {
 }
 
 export function AnalyticsPageContent({ applications }: { applications: MockApplication[] }) {
-  const { total, byStatus, interviews, offers, rejected } = useMemo(() => {
+  const { total, byStatus, interviews, offers } = useMemo(() => {
     const byStatus = {} as Record<string, number>
     let interviews = 0
     let offers = 0
@@ -124,14 +124,13 @@ export function AnalyticsPageContent({ applications }: { applications: MockAppli
       byStatus,
       interviews,
       offers,
-      rejected: byStatus.rejected ?? 0,
     }
   }, [applications])
 
   const submitted = total - (byStatus.todo ?? 0)
   const percentOf = (n: number) => (submitted === 0 ? 0 : Math.round((n / submitted) * 100))
   const stillActive = (byStatus.applied ?? 0) + (byStatus.screening ?? 0) + interviews
-  const heardBack = (byStatus.screening ?? 0) + interviews + offers + rejected
+  const heardBack = (byStatus.screening ?? 0) + interviews + offers
   const rates = [
     { label: "Heard back", count: heardBack, percent: percentOf(heardBack), hex: statusConfig.screening.hex },
     { label: "Reached interview", count: interviews + offers, percent: percentOf(interviews + offers), hex: statusConfig.interview.hex },

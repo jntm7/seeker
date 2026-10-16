@@ -16,7 +16,7 @@ export function OverviewPanel({ apps }: { apps: MockApplication[] }) {
   const total = apps.length
   const active = counts.applied + counts.screening + counts.interview
   const submitted = total - counts.todo
-  const responded = counts.screening + counts.interview + counts.offer + counts.rejected
+  const responded = counts.screening + counts.interview + counts.offer
 
   const kpis: { label: string; value: string; note: string; hex: string; icon: LucideIcon; href?: string }[] = [
     { label: "Active", value: String(active), note: "in progress", hex: statusConfig.applied.hex, icon: Activity, href: "/applications?status=active" },
