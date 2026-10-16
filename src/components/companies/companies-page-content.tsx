@@ -62,14 +62,14 @@ export function CompaniesPageContent({ applications }: { applications: MockAppli
             {applications.length} applications across {companies.length} companies
           </p>
         </div>
-        <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <div className="relative min-w-0 flex-1 md:flex-none">
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search companies or roles..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-9 w-64 rounded-md border bg-card pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring md:w-72"
+            className="h-11 w-full rounded-lg border bg-card pl-10 pr-3 text-base outline-none focus:ring-2 focus:ring-ring md:w-80"
           />
         </div>
       </div>
