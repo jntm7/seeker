@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react"
 import { statusOrder } from "@/lib/data/types"
+import { matchesStatus, type StatusFilter } from "@/lib/data/status-filter"
 import type { MockApplication } from "@/lib/data/types"
-import type { ApplicationStatus } from "@/generated/prisma/client"
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 
 export type SortField = "roleTitle" | "company" | "dateApplied" | "location" | "status"
@@ -51,8 +51,8 @@ function sortApplications(apps: MockApplication[], sortField: SortField, sortDir
   })
 }
 
-export function useApplicationFilters(apps: MockApplication[]) {
-  const [statusFilter, setStatusFilter] = useState<ApplicationStatus | "all">("all")
+export function useApplicationFilters(apps: MockApplication[], initialStatus: StatusFilter = "all") {
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(initialStatus)
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all")
   const [sortField, setSortField] = useState<SortField>("dateApplied")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
@@ -78,7 +78,7 @@ export function useApplicationFilters(apps: MockApplication[]) {
       sortApplications(
         apps.filter(
           (app) =>
-            (statusFilter === "all" || app.status === statusFilter) &&
+            matchesStatus(app.status, statusFilter) &&
             isWithinTimeFilter(app.dateApplied, timeFilter)
         ),
         sortField,

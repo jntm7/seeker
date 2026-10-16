@@ -1,36 +1,40 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { List, LayoutGrid } from "lucide-react"
-import { StatCards } from "@/components/dashboard/stat-cards"
-import { KanbanBoard } from "@/components/dashboard/kanban-board"
-import { ApplicationsTable } from "@/components/dashboard/applications-table"
+import { useState } from "react"
+import { OverviewPanel } from "@/components/dashboard/overview-panel"
+import { UpcomingEvents } from "@/components/dashboard/upcoming-events"
 import { AddApplicationDialog } from "@/components/dashboard/add-application-dialog"
 import { StaleApplicationsDialog } from "@/components/dashboard/stale-applications-dialog"
-import { Separator } from "@/components/ui/separator"
-import { statusConfig, type MockApplication } from "@/lib/data/types"
+import { ApplicationsOverTime } from "@/components/analytics/applications-over-time"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { MockApplication, MockEvent } from "@/lib/data/types"
 import type { StaleApplication } from "@/lib/data/applications"
 import type { ApplicationStatus } from "@/generated/prisma/client"
 import { updateApplicationStatus } from "@/lib/actions/applications"
 
-
-function computeStats(apps: MockApplication[]) {
-  const active = apps.filter((a) => ["applied", "screening", "interview"].includes(a.status)).length
-  const interviews = apps.filter((a) => a.status === "interview").length
-  const offers = apps.filter((a) => a.status === "offer").length
-  const rejected = apps.filter((a) => a.status === "rejected").length
-  return [
-    { label: "Active", value: active, trend: "In Progress", hex: statusConfig.applied.hex },
-    { label: "Interviews", value: interviews, trend: "Scheduled", hex: statusConfig.interview.hex },
-    { label: "Offers", value: offers, trend: offers > 0 ? "Under review" : undefined, hex: statusConfig.offer.hex },
-    { label: "Rejected", value: rejected, trend: "No Offer", hex: statusConfig.rejected.hex },
-  ]
+function greeting(date: Date) {
+  const hour = date.getHours()
+  if (hour < 12) return "Good morning"
+  if (hour < 18) return "Good afternoon"
+  return "Good evening"
 }
 
-export function DashboardContent({ applications: initialApplications, staleApps: initialStaleApps, defaultCurrency = "CAD" }: { applications: MockApplication[]; staleApps: StaleApplication[]; defaultCurrency?: string }) {
+export function DashboardContent({
+  firstName,
+  applications: initialApplications,
+  events,
+  staleApps: initialStaleApps,
+  defaultCurrency = "CAD",
+}: {
+  firstName: string | null
+  applications: MockApplication[]
+  events: MockEvent[]
+  staleApps: StaleApplication[]
+  defaultCurrency?: string
+}) {
+  const now = new Date()
   const [apps, setApps] = useState<MockApplication[]>(initialApplications)
   const [staleApps, setStaleApps] = useState<StaleApplication[]>(initialStaleApps)
-  const [showArchived, setShowArchived] = useState(false)
   const [showStaleDialog, setShowStaleDialog] = useState(() => {
     if (initialStaleApps.length === 0) return false
     const dismissedUntil = localStorage.getItem("staleDismissedUntil")
@@ -42,8 +46,6 @@ export function DashboardContent({ applications: initialApplications, staleApps:
     const until = Date.now() + days * 24 * 60 * 60 * 1000
     localStorage.setItem("staleDismissedUntil", String(until))
   }
-
-  const stats = useMemo(() => computeStats(apps), [apps])
 
   function addApplication(app: MockApplication) {
     setApps((prev) => [app, ...prev])
@@ -73,7 +75,7 @@ export function DashboardContent({ applications: initialApplications, staleApps:
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-10 p-4 md:p-6 lg:p-8">
+    <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
       <StaleApplicationsDialog
         staleApps={staleApps}
         open={showStaleDialog}
@@ -81,61 +83,34 @@ export function DashboardContent({ applications: initialApplications, staleApps:
         onMoveToStatus={handleStaleMove}
         onDismissAll={() => dismissStaleForDays(7)}
       />
-      <div className="flex items-start justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {firstName ? `${greeting(now)}, ${firstName}!` : `${greeting(now)}!`}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Overview of your applications and hiring pipeline
+            {now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
           </p>
         </div>
-        {<AddApplicationDialog onAdd={addApplication} defaultCurrency={defaultCurrency} />}
+        <AddApplicationDialog onAdd={addApplication} defaultCurrency={defaultCurrency} />
       </div>
 
-      <StatCards stats={stats} />
+      <OverviewPanel apps={apps} />
 
-      <Separator />
-
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Pipeline</h2>
-        <div className="mt-1 flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Kanban view of your application pipeline by stage
-          </p>
-          <div className="relative grid grid-cols-2 rounded-lg border bg-background p-0.5">
-            <div
-              className={`absolute top-0.5 bottom-0.5 rounded-md bg-muted shadow-sm transition-all ${showArchived ? "left-1/2 right-0.5" : "left-0.5 right-1/2"}`}
-            />
-            <button
-              type="button"
-              onClick={() => setShowArchived(false)}
-              className={`relative z-10 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${!showArchived ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <List size={15} />
-              Active
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowArchived(true)}
-              className={`relative z-10 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${showArchived ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <LayoutGrid size={15} />
-              All
-            </button>
-          </div>
-        </div>
-      </div>
-      <KanbanBoard apps={apps} setApps={setApps} showArchived={showArchived} />
-
-      <Separator />
-
-      <div className="flex flex-col">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Applications</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {apps.length} {apps.length === 1 ? "application" : "applications"}
-          </p>
-        </div>
-        <ApplicationsTable apps={apps} setApps={setApps} />
+      <div className="grid items-stretch gap-6 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Applications over time</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-1 items-center">
+            <ApplicationsOverTime applications={apps} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <UpcomingEvents applications={apps} events={events} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

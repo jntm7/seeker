@@ -100,8 +100,8 @@ export function AddApplicationDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button variant="outline" size="lg" className="px-5 py-3 text-base">
-            <Plus size={20} />
+          <Button variant="outline" size="lg" className="h-12 gap-2.5 rounded-lg px-6 text-base font-medium">
+            <Plus className="size-5 text-purple-500" />
             Add Application
           </Button>
         }

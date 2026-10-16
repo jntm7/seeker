@@ -17,8 +17,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { statusConfig, statusOrder, type MockApplication } from "@/lib/data/types"
 import { useApplicationFilters, timeFilterOptions } from "@/lib/hooks/use-application-filters"
+import { statusFilterGroups, statusFilterLabel, type StatusFilter } from "@/lib/data/status-filter"
 import { StatusBadge } from "@/components/ui/status-badge"
 import { InlineNotesEditor } from "@/components/ui/inline-notes-editor"
 import { EditApplicationDialog } from "@/components/dashboard/edit-application-dialog"
@@ -40,9 +42,11 @@ const PAGE_SIZE_OPTIONS = [10, 25, 50]
 export default function ApplicationsFullTable({
   apps,
   setApps,
+  initialStatus = "all",
 }: {
   apps: MockApplication[]
   setApps: React.Dispatch<React.SetStateAction<MockApplication[]>>
+  initialStatus?: StatusFilter
 }) {
   const [search, setSearch] = useState("")
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
@@ -59,7 +63,7 @@ export default function ApplicationsFullTable({
     setTimeFilter,
     toggleSort,
     renderSortIcon,
-  } = useApplicationFilters(apps)
+  } = useApplicationFilters(apps, initialStatus)
 
   const searched = useMemo(
     () => {
@@ -106,44 +110,46 @@ export default function ApplicationsFullTable({
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Applications</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage and track all your job applications
+          </p>
+        </div>
+        <div className="flex w-full items-center gap-2 md:w-auto md:gap-3">
+          {selectedIds.size > 0 && (
+            <Button
+              variant="outline"
+              className="h-11 shrink-0 rounded-lg px-4 text-base"
+              onClick={() => {
+                setDeleteCount(selectedIds.size)
+                setDeleteOpen(true)
+              }}
+            >
+              <Trash2 size={16} />
+              Delete ({selectedIds.size})
+            </Button>
+          )}
+          <div className="relative min-w-0 flex-1 md:flex-none">
+            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search by role, company, or location..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(0) }}
-              className="h-9 w-76 rounded-md border bg-card pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="h-11 w-full min-w-0 rounded-lg border bg-card pl-10 pr-3 text-base outline-none focus:ring-2 focus:ring-ring md:w-80"
             />
           </div>
-          {selectedIds.size > 0 && (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setDeleteCount(selectedIds.size)
-                  setDeleteOpen(true)
-                }}
-              >
-                <Trash2 size={14} />
-                Delete ({selectedIds.size})
-              </Button>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger
-              className="inline-flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+              className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-lg border bg-card px-3 text-sm md:gap-2 md:px-4 md:text-base transition-colors hover:bg-muted"
             >
               {timeFilter === "all" ? "Time Range" : timeFilterOptions.find((o) => o.value === timeFilter)?.label}
-              <ChevronDown size={14} />
+              <ChevronDown size={16} />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-auto">
+            <DropdownMenuContent align="end" className="w-auto">
               {timeFilterOptions.map((option) => (
                 <DropdownMenuItem
                   key={option.value}
@@ -156,15 +162,20 @@ export default function ApplicationsFullTable({
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger
-              className="inline-flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+              className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-lg border bg-card px-3 text-sm md:gap-2 md:px-4 md:text-base transition-colors hover:bg-muted"
             >
-              {statusFilter === "all" ? "Status" : statusConfig[statusFilter].label}
-              <ChevronDown size={14} />
+              {statusFilterLabel(statusFilter, statusConfig)}
+              <ChevronDown size={16} />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-auto">
+            <DropdownMenuContent align="end" className="w-auto">
               <DropdownMenuItem onClick={() => { setStatusFilter("all"); setPage(0) }}>
                 All Applications
               </DropdownMenuItem>
+              {statusFilterGroups.map((group) => (
+                <DropdownMenuItem key={group.value} onClick={() => { setStatusFilter(group.value); setPage(0) }}>
+                  {group.label}
+                </DropdownMenuItem>
+              ))}
               {statusOrder.map((status) => {
                 const sConfig = statusConfig[status]
                 const count = apps.filter((a) => a.status === status).length
@@ -187,6 +198,8 @@ export default function ApplicationsFullTable({
           </DropdownMenu>
         </div>
       </div>
+
+      <Separator />
 
       <div className="rounded-md border bg-card">
         <Table>

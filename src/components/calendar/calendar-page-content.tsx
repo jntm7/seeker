@@ -43,6 +43,50 @@ function formatDateShort(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
 }
 
+function EventListCard({ title, events, empty }: { title: string; events: EnrichedEvent[]; empty: string }) {
+  return (
+    <Card>
+      <CardContent className="px-4">
+        <h3 className="mb-3 text-sm font-semibold">{title}</h3>
+        {events.length > 0 ? (
+          <div className="space-y-1">
+            {events.map((event) => (
+              <Link key={event.id} href={`/applications/${event.applicationId}`}>
+                <div className="flex items-start gap-2.5 rounded-md px-2 py-2 transition-colors hover:bg-muted/50">
+                  <span
+                    className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: eventColors[event.eventType] }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {formatDateShort(event.eventDate)}
+                      </span>
+                      <Badge
+                        className="rounded-full border-0 px-1.5 py-0 text-[9px] font-normal"
+                        style={{
+                          backgroundColor: `${eventColors[event.eventType]}25`,
+                          color: eventColors[event.eventType],
+                        }}
+                      >
+                        {eventLabels[event.eventType]}
+                      </Badge>
+                    </div>
+                    <p className="mt-0.5 truncate text-sm">{event.roleTitle}</p>
+                    <p className="truncate text-xs text-muted-foreground">{event.company}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="py-6 text-center text-sm text-muted-foreground">{empty}</p>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
 export function CalendarPageContent({ applications, events }: { applications: MockApplication[]; events: MockEvent[] }) {
   const todayStr = useMemo(() => new Date().toISOString().split("T")[0], [])
   const [todayYear, todayMonth, todayDay] = todayStr.split("-").map(Number)
@@ -94,6 +138,13 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
     return enrichedEvents
       .filter((e) => e.eventDate >= todayStr)
       .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
+      .slice(0, 5)
+  }, [enrichedEvents, todayStr])
+
+  const pastEvents = useMemo(() => {
+    return enrichedEvents
+      .filter((e) => e.eventDate < todayStr)
+      .sort((a, b) => b.eventDate.localeCompare(a.eventDate))
       .slice(0, 5)
   }, [enrichedEvents, todayStr])
 
@@ -243,46 +294,9 @@ export function CalendarPageContent({ applications, events }: { applications: Mo
           )}
         </div>
 
-        <div>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="mb-3 text-sm font-semibold">Upcoming Deadlines</h3>
-              {upcomingDeadlines.length > 0 ? (
-                <div className="space-y-2">
-                  {upcomingDeadlines.map((event) => (
-                    <Link key={event.id} href={`/applications/${event.applicationId}`}>
-                      <div className="flex items-start gap-2.5 rounded-md p-2 transition-colors hover:bg-muted/50">
-                        <span
-                          className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
-                          style={{ backgroundColor: eventColors[event.eventType] }}
-                        />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-medium text-muted-foreground">
-                              {formatDateShort(event.eventDate)}
-                            </span>
-                            <Badge
-                              className="rounded-full border-0 px-1.5 py-0 text-[9px] font-normal"
-                              style={{
-                                backgroundColor: `${eventColors[event.eventType]}25`,
-                                color: eventColors[event.eventType],
-                              }}
-                            >
-                              {eventLabels[event.eventType]}
-                            </Badge>
-                          </div>
-                          <p className="mt-0.5 truncate text-sm">{event.roleTitle}</p>
-                          <p className="truncate text-xs text-muted-foreground">{event.company}</p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="py-8 text-center text-sm text-muted-foreground">No upcoming deadlines</p>
-              )}
-            </CardContent>
-          </Card>
+        <div className="space-y-6">
+          <EventListCard title="Upcoming Deadlines" events={upcomingDeadlines} empty="No upcoming deadlines" />
+          <EventListCard title="Past Events" events={pastEvents} empty="No past events" />
         </div>
       </div>
     </div>

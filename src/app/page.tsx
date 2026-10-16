@@ -1,8 +1,10 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { Search } from "lucide-react"
+import { ArrowRight, BarChart3, Briefcase, Calendar, Compass, LayoutDashboard, LogIn } from "lucide-react"
+import { Logo } from "@/components/brand/logo"
 import { config } from "@/lib/config"
 import { OAuthButtons } from "@/components/auth/oauth-buttons"
+import { ThemeToggle } from "@/components/layout/theme-toggle"
 import { EmailSignIn } from "@/components/auth/email-sign-in"
 
 export default async function LandingPage() {
@@ -13,57 +15,90 @@ export default async function LandingPage() {
     redirect("/dashboard")
   }
 
+  const card = "flex flex-col rounded-3xl border border-border/60 bg-card p-6 shadow-sm"
+  const iconTile = "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300"
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between pt-20 lg:pt-28 p-4 bg-purple-50/30 dark:bg-purple-950/20">
-      <div className="w-full max-w-sm">
-        <div className="mb-14 flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3">
-            <Search size={40} className="text-purple-700 dark:text-purple-300 shrink-0" />
-            <span className="text-4xl font-bold text-purple-700 dark:text-purple-300 tracking-tight">Seeker</span>
-          </div>
-          <p className="text-base text-muted-foreground text-center max-w-xs">
-            Track applications, visualize your pipeline, and stay on top of every opportunity.
+    <div className="flex min-h-screen flex-col bg-background">
+      <header className="flex items-center justify-between px-6 py-4 md:px-10">
+        <div className="flex items-center gap-3">
+          <Logo size={36} />
+          <span className="text-xl font-semibold tracking-tight text-foreground">Seeker</span>
+        </div>
+        <ThemeToggle />
+      </header>
+
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center px-6 py-10 md:px-10">
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
+            Your job search <span className="text-purple-500">companion.</span>
+          </h1>
+          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
+            One place for your applications, pipeline, and upcoming deadlines.
           </p>
         </div>
 
-        <div className="space-y-3 rounded-lg border border-border/50 bg-card p-6 shadow-sm">
-          <h1 className="text-center text-lg font-semibold">Sign in</h1>
-          <OAuthButtons disabled={isDemo} />
-          {!isDemo && <EmailSignIn />}
-          {isDemo && (
-            <p className="text-center text-xs text-muted-foreground">
-              Sign-in is disabled in demo mode
+        <div className={`mx-auto grid w-full gap-5 ${isDemo ? "max-w-3xl md:grid-cols-2" : "max-w-md"}`}>
+          <section className={`${card} border-purple-300/70 dark:border-purple-400/30`}>
+            <div className="mb-3 flex items-center gap-3">
+              <div className={iconTile}><LogIn size={20} /></div>
+              <h2 className="text-xl font-semibold tracking-tight">Sign in</h2>
+            </div>
+            <p className="mb-5 text-sm text-muted-foreground">
+              Pick up where you left off, or start fresh with an account.
             </p>
+            <div className="flex flex-1 flex-col gap-3">
+              <OAuthButtons disabled={isDemo} />
+              {!isDemo && <EmailSignIn />}
+            </div>
+          </section>
+
+          {isDemo && (
+            <form
+              className="contents"
+              action={async () => {
+                "use server"
+                const { cookies } = await import("next/headers")
+                const cookieStore = await cookies()
+                cookieStore.set("demo_mode", "true", { path: "/", maxAge: 60 * 60 * 24 * 30 })
+                redirect("/dashboard")
+              }}
+            >
+              <section className={card}>
+                <div className="mb-3 flex items-center gap-3">
+                  <div className={iconTile}><Compass size={20} /></div>
+                  <h2 className="text-xl font-semibold tracking-tight">Explore the demo</h2>
+                </div>
+                <p className="mb-5 text-sm text-muted-foreground">
+                  See how it works with sample data, no account needed.
+                </p>
+                <p className="mb-2 text-sm font-medium">What&apos;s inside</p>
+                <ul className="mb-6 space-y-2.5 text-sm text-muted-foreground">
+                  {[
+                    [LayoutDashboard, "Drag-and-drop pipeline board"],
+                    [Briefcase, "Sortable applications table"],
+                    [Calendar, "Calendar of interviews and deadlines"],
+                    [BarChart3, "Analytics on your response rate"],
+                  ].map(([Icon, label]) => (
+                    <li key={label as string} className="flex items-center gap-3">
+                      <Icon size={16} className="shrink-0 text-purple-500" />
+                      {label as string}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  type="submit"
+                  className="mt-auto flex w-full items-center justify-center gap-2 rounded-xl bg-purple-700 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-purple-800"
+                >
+                  Continue to dashboard <ArrowRight size={16} />
+                </button>
+              </section>
+            </form>
           )}
         </div>
+      </main>
 
-        {isDemo && (
-          <form
-            action={async () => {
-              "use server"
-              const { cookies } = await import("next/headers")
-              const cookieStore = await cookies()
-              cookieStore.set("demo_mode", "true", { path: "/", maxAge: 60 * 60 * 24 * 30 })
-              redirect("/dashboard")
-            }}
-          >
-            <div className="mt-10 rounded-lg border border-border/50 bg-card p-6 shadow-sm">
-              <h2 className="text-center text-lg font-semibold">Try the Demo</h2>
-              <p className="mt-1 text-center text-sm text-muted-foreground">
-                Explore with sample data — no account needed.
-              </p>
-              <button
-                type="submit"
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-purple-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-purple-800 transition-colors"
-              >
-                Continue to Dashboard
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-
-      <footer className="flex items-center gap-2 pb-6">
+      <footer className="flex items-center justify-center gap-2 pb-6">
         <a
           href="https://github.com/jntm7/seeker"
           target="_blank"
